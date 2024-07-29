@@ -9,5 +9,4 @@ public class CulturalConnectApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CulturalConnectApplication.class, args);
 	}
-
 }
