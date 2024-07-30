@@ -28,7 +28,6 @@ public class EventService {
     public Event createEvent(Event event) {
         return eventRepository.save(event);
     }
-
     // Aggiorna un evento esistente
     public Event updateEvent(Event event) {
         if (event.getId() != null && eventRepository.existsById(event.getId())) {

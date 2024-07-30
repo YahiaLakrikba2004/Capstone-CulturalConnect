@@ -13,6 +13,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
 } from '@mui/material'
 
 const Events = () => {
@@ -28,12 +29,10 @@ const Events = () => {
         if (Array.isArray(response.data)) {
           setEvents(response.data)
         } else {
-          console.error('Expected an array for events')
-          setError('Error loading events')
+          throw new Error('Data is not an array')
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
-        setError('Error fetching data')
+        setError('Error fetching events. Please try again later.')
       } finally {
         setLoading(false)
       }
@@ -72,8 +71,8 @@ const Events = () => {
         <Typography variant="h4" component="h1" gutterBottom>
           Eventi Recenti
         </Typography>
-        <Paper elevation={3} style={{ padding: '20px' }}>
-          <Typography variant="h6" gutterBottom>
+        <Paper elevation={3} style={{ padding: '20px', textAlign: 'center' }}>
+          <Typography variant="h6" color="error" gutterBottom>
             {error}
           </Typography>
         </Paper>
@@ -90,12 +89,14 @@ const Events = () => {
         {events.map(event => (
           <Grid item xs={12} sm={6} md={4} key={event.id}>
             <Card>
-              <CardMedia
-                component="img"
-                height="140"
-                image={event.imageUrl}
-                alt={event.title}
-              />
+              {event.imageUrl && (
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={event.imageUrl}
+                  alt={event.title}
+                />
+              )}
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   {event.title}
@@ -135,10 +136,12 @@ const Events = () => {
             <Typography variant="body1" paragraph>
               {selectedEvent.description}
             </Typography>
+          </DialogContent>
+          <DialogActions>
             <Button onClick={handleCloseModal} color="primary">
               Chiudi
             </Button>
-          </DialogContent>
+          </DialogActions>
         </Dialog>
       )}
     </Container>

@@ -2,6 +2,7 @@ package YahiaLakrikba.CulturalConnect.controller;
 
 import YahiaLakrikba.CulturalConnect.entities.Event;
 import YahiaLakrikba.CulturalConnect.services.EventService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class EventController {
 
     // Crea un nuovo evento
     @PostMapping
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        Event createdEvent = eventService.createEvent(event);
-        return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+    public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event) {
+        Event savedEvent = eventService.createEvent(event);
+        return new ResponseEntity<>(savedEvent, HttpStatus.CREATED);
     }
 
     // Aggiorna un evento esistente

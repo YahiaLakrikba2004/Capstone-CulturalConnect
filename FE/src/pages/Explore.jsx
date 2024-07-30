@@ -3,20 +3,17 @@ import axios from 'axios'
 import {
   Container,
   Typography,
-  Grid,
-  CardContent,
-  CardActions,
-  Button,
-  Alert,
   Box,
-  Divider,
   CircularProgress,
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Divider,
 } from '@mui/material'
-import {
-  StyledCard,
-  StyledCardMedia,
-  StyledButton,
-} from '../components/StyledComponents'
+import Carousel from '../components/Carousel'
 
 const Explore = () => {
   const [events, setEvents] = useState([])
@@ -24,6 +21,11 @@ const Explore = () => {
   const [articles, setArticles] = useState([])
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+  const [connectionMessage, setConnectionMessage] = useState('')
+  const [selectedArticle, setSelectedArticle] = useState(null)
+  const [openArticleDialog, setOpenArticleDialog] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,6 +68,33 @@ const Explore = () => {
     fetchData()
   }, [])
 
+  const handleOpenDetails = event => {
+    setSelectedEvent(event)
+    setOpenDetailsDialog(true)
+  }
+
+  const handleCloseDetails = () => {
+    setOpenDetailsDialog(false)
+    setSelectedEvent(null)
+  }
+
+  const handleConnect = connection => {
+    setConnectionMessage(
+      `Hai inviato una richiesta di connessione a ${connection.name}.`
+    )
+    setTimeout(() => setConnectionMessage(''), 3000)
+  }
+
+  const handleOpenArticleDetails = article => {
+    setSelectedArticle(article)
+    setOpenArticleDialog(true)
+  }
+
+  const handleCloseArticleDetails = () => {
+    setOpenArticleDialog(false)
+    setSelectedArticle(null)
+  }
+
   if (loading) {
     return (
       <Container maxWidth="md" sx={{ textAlign: 'center', mt: 4 }}>
@@ -87,225 +116,156 @@ const Explore = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
-      
+      {/* Sezione Iniziale */}
       <Box
         sx={{
+          mt: 4,
           mb: 6,
-          mt: 8, 
           textAlign: 'center',
-          py: 4,
-          px: 2,
-          borderRadius: 1,
-          backgroundColor: 'primary.light',
-          boxShadow: 3,
+          py: 8,
+          px: 4,
+          bgcolor: '#fff8f1',
+          borderRadius: '16px',
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e0d6cc',
         }}
       >
         <Typography
-          variant="h4"
+          variant="h1"
           component="h1"
-          gutterBottom
           sx={{
-            fontWeight: 'bold',
-            color: 'primary.contrastText',
             mb: 2,
+            fontWeight: 700,
+            color: '#4e342e',
+            fontSize: '3.5rem',
+            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
           }}
         >
           Esplora le Nostre Offerte
         </Typography>
         <Typography
-          variant="h6"
-          component="p"
+          variant="h5"
+          component="h2"
           sx={{
-            color: 'primary.contrastText',
-            maxWidth: '600px',
-            margin: '0 auto',
-            lineHeight: 1.6, 
+            mb: 4,
+            color: '#6d4c41',
+            fontWeight: 400,
+            fontSize: '1.5rem',
           }}
         >
-          Scopri gli eventi, le connessioni e gli articoli più recenti che
-          abbiamo selezionato per te. Approfitta delle nostre offerte e rimani
-          aggiornato sulle novità.
+          Scopri una vasta gamma di eventi, connessioni e articoli per
+          arricchire la tua esperienza culturale.
         </Typography>
+        <Divider
+          sx={{
+            mb: 4,
+            mx: 'auto',
+            width: '80px',
+            borderBottomWidth: '4px',
+            borderColor: '#6d4c41',
+          }}
+        />
       </Box>
 
       {/* Eventi */}
-      <Box sx={{ mb: 6 }}>
-        <Typography
-          variant="h5"
-          component="h2"
-          gutterBottom
-          sx={{
-            mb: 3,
-            fontWeight: 'bold',
-            color: 'primary.main',
-            textAlign: 'center',
-          }}
-        >
-          Eventi
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-        <Grid container spacing={4}>
-          {events.map(event => (
-            <Grid item xs={12} sm={6} md={4} key={event.id}>
-              <StyledCard>
-                <StyledCardMedia
-                  component="img"
-                  image={event.imageUrl}
-                  title={event.title}
-                />
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ fontWeight: 'bold' }}
-                  >
-                    {event.title}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ mb: 1 }}
-                  >
-                    {event.date}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ mb: 1 }}
-                  >
-                    {event.location}
-                  </Typography>
-                  <Typography variant="body2" paragraph>
-                    {event.description}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'flex-start', padding: 2 }}>
-                  <StyledButton
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                  >
-                    Maggiori dettagli
-                  </StyledButton>
-                </CardActions>
-              </StyledCard>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      <Carousel
+        title="Eventi"
+        items={events.map(event => ({
+          id: event.id,
+          title: event.title,
+          date: event.date,
+          location: event.location,
+          description: event.description,
+          imageUrl: event.imageUrl,
+          onClick: handleOpenDetails,
+          buttonText: 'Maggiori dettagli',
+        }))}
+      />
 
       {/* Connessioni */}
-      <Box sx={{ mb: 6 }}>
-        <Typography
-          variant="h5"
-          component="h2"
-          gutterBottom
-          sx={{
-            mb: 3,
-            fontWeight: 'bold',
-            color: 'primary.main',
-            textAlign: 'center',
-          }}
-        >
-          Connessioni
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-        <Grid container spacing={4}>
-          {connections.map(connection => (
-            <Grid item xs={12} sm={6} md={4} key={connection.id}>
-              <StyledCard>
-                <StyledCardMedia
-                  component="img"
-                  image={connection.imageUrl}
-                  title={connection.name}
-                />
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ fontWeight: 'bold' }}
-                  >
-                    {connection.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ mb: 1 }}
-                  >
-                    {connection.interests.join(', ')}
-                  </Typography>
-                  <Typography variant="body2" paragraph>
-                    {connection.bio}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'flex-start', padding: 2 }}>
-                  <StyledButton
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                  >
-                    Connettiti
-                  </StyledButton>
-                </CardActions>
-              </StyledCard>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      <Carousel
+        title="Connessioni"
+        items={connections.map(connection => ({
+          id: connection.id,
+          title: connection.name,
+          description: connection.bio,
+          imageUrl: connection.imageUrl,
+          onClick: () => handleConnect(connection),
+          buttonText: 'Connettiti',
+        }))}
+      />
+      {connectionMessage && (
+        <Alert severity="info" sx={{ mt: 2 }}>
+          {connectionMessage}
+        </Alert>
+      )}
 
       {/* Articoli */}
-      <Box>
-        <Typography
-          variant="h5"
-          component="h2"
-          gutterBottom
-          sx={{
-            mb: 3,
-            fontWeight: 'bold',
-            color: 'primary.main',
-            textAlign: 'center',
-          }}
-        >
-          Articoli
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-        <Grid container spacing={4}>
-          {articles.map(article => (
-            <Grid item xs={12} sm={6} md={4} key={article.id}>
-              <StyledCard>
-                <StyledCardMedia
-                  component="img"
-                  image={article.imageUrl}
-                  title={article.title}
-                />
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ fontWeight: 'bold' }}
-                  >
-                    {article.title}
-                  </Typography>
-                  <Typography variant="body2" paragraph>
-                    {article.content}
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: 'flex-start', padding: 2 }}>
-                  <StyledButton
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                  >
-                    Leggi di più
-                  </StyledButton>
-                </CardActions>
-              </StyledCard>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      <Carousel
+        title="Articoli"
+        items={articles.map(article => ({
+          id: article.id,
+          title: article.title,
+          date: article.date,
+          description: article.content,
+          imageUrl: article.imageUrl,
+          onClick: handleOpenArticleDetails,
+          buttonText: 'Leggi di più',
+        }))}
+      />
 
-      <Box sx={{ height: 50 }} />
+      {/* Modale Dettagli Evento */}
+      <Dialog
+        open={openDetailsDialog}
+        onClose={handleCloseDetails}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Dettagli Evento</DialogTitle>
+        <DialogContent>
+          {selectedEvent && (
+            <>
+              <Typography variant="h5">{selectedEvent.title}</Typography>
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {selectedEvent.description}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                {selectedEvent.date} - {selectedEvent.location}
+              </Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDetails} color="primary">
+            Chiudi
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Modale Dettagli Articolo */}
+      <Dialog
+        open={openArticleDialog}
+        onClose={handleCloseArticleDetails}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Dettagli Articolo</DialogTitle>
+        <DialogContent>
+          {selectedArticle && (
+            <>
+              <Typography variant="h5">{selectedArticle.title}</Typography>
+              <Typography variant="body1" sx={{ mt: 2 }}>
+                {selectedArticle.description}
+              </Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseArticleDetails} color="primary">
+            Chiudi
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   )
 }
