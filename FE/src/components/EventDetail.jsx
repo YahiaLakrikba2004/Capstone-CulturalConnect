@@ -1,7 +1,6 @@
-// src/pages/EventDetail.jsx
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import {
   Container,
   Typography,
@@ -10,33 +9,32 @@ import {
   CardMedia,
   Button,
   CircularProgress,
-  Alert,
-  Box,
-} from '@mui/material'
+  Alert
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const EventDetail = () => {
-  const { id } = useParams()
-  const [event, setEvent] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { id } = useParams();
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const theme = useTheme(); // Usa il tema globale
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/events/${id}`
-        )
-        setEvent(response.data)
+        const response = await axios.get(`http://localhost:8080/api/events/${id}`);
+        setEvent(response.data);
       } catch (error) {
-        console.error('Error fetching event data:', error)
-        setError("Errore nel caricamento dei dati dell'evento")
+        console.error('Error fetching event data:', error);
+        setError("Errore nel caricamento dei dati dell'evento");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchEvent()
-  }, [id])
+    fetchEvent();
+  }, [id]);
 
   if (loading) {
     return (
@@ -46,7 +44,7 @@ const EventDetail = () => {
           Caricamento in corso...
         </Typography>
       </Container>
-    )
+    );
   }
 
   if (error) {
@@ -54,24 +52,32 @@ const EventDetail = () => {
       <Container sx={{ mt: 4 }}>
         <Alert severity="error">{error}</Alert>
       </Container>
-    )
+    );
   }
 
   if (!event) {
-    return null
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Typography variant="h6" color="textSecondary">
+          Nessun evento trovato
+        </Typography>
+      </Container>
+    );
   }
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" sx={{ mt: 4 }}>
       <Card>
-        <CardMedia
-          component="img"
-          height="400"
-          image={event.imageUrl}
-          alt={event.title}
-        />
+        {event.imageUrl && (
+          <CardMedia
+            component="img"
+            height="400"
+            image={event.imageUrl}
+            alt={event.title}
+          />
+        )}
         <CardContent>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ color: theme.palette.text.primary }}>
             {event.title}
           </Typography>
           <Typography variant="h6" color="textSecondary" gutterBottom>
@@ -90,7 +96,7 @@ const EventDetail = () => {
         </CardContent>
       </Card>
     </Container>
-  )
-}
+  );
+};
 
-export default EventDetail
+export default EventDetail;

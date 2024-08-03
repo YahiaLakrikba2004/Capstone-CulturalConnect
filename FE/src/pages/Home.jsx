@@ -1,32 +1,47 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
-  Container,
-  Typography,
-  Grid,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from '@mui/material'
-import { Link } from 'react-router-dom'
-import { StyledCard, StyledButton } from '../components/StyledComponents'
-import { Event, People, LibraryBooks, Close } from '@mui/icons-material'
-import Footer from '../components/Footer'
-import Testimonials from '../components/Testimonial'
-import Logo from '../styles/Logo.jpg' // Importa l'immagine qui
+  Container, Typography, Grid, Box, Dialog, DialogTitle, DialogContent, IconButton, TextField
+} from '@mui/material';
+import { Link } from 'react-router-dom';
+import { StyledCard, StyledButton } from '../components/StyledComponents';
+import { Event, People, LibraryBooks, Article, Close } from '@mui/icons-material';
+import Footer from '../components/Footer';
+import Testimonials from '../components/Testimonial'; // Verifica il percorso e il nome
+
+import Logo from '../styles/Logo.jpg';
+import { motion } from 'framer-motion';
 
 // Hero Section Background Image
-const heroBackground =
-  'https://info.ehl.edu/hubfs/Cultural-Diversity-Accomodation.jpg'
+const heroBackground = 'https://info.ehl.edu/hubfs/Cultural-Diversity-Accomodation.jpg';
 
 const Home = () => {
-  // Stato per gestire la visibilità del modale
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
+  const [expandedFAQ, setExpandedFAQ] = useState(null);
 
-  // Funzioni per aprire e chiudere il modale
-  const handleOpenModal = () => setOpenModal(true)
-  const handleCloseModal = () => setOpenModal(false)
+  // Gestione Modale
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  // Gestione FAQ
+  const toggleFAQ = (index) => {
+    setExpandedFAQ(expandedFAQ === index ? null : index);
+  };
+
+  // Dati FAQ
+  const faqData = [
+    {
+      question: "Come posso connettermi con altre persone?",
+      answer: "Utilizza la nostra funzione di ricerca avanzata per trovare persone con interessi simili e invia loro una richiesta di connessione."
+    },
+    {
+      question: "Dove posso trovare gli eventi locali?",
+      answer: "Visita la nostra sezione 'Eventi' per scoprire gli eventi culturali e sociali in programma nella tua area."
+    },
+    {
+      question: "Come posso contattare il supporto?",
+      answer: "Puoi contattare il nostro supporto tramite il modulo di contatto nella sezione 'Contattaci' o inviarci un'email direttamente."
+    }
+  ];
 
   return (
     <div>
@@ -34,34 +49,26 @@ const Home = () => {
         {/* Hero Section */}
         <Box
           sx={{
-            py: { xs: 8, sm: 10 },
-            textAlign: 'center',
-            bgcolor: 'secondary.main',
-            borderRadius: 3,
-            mt: 3,
-            mb: 8,
-            mx: 'auto',
-            position: 'relative',
-            overflow: 'hidden',
-            background:
-              'linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7))',
-            backgroundImage: `url(${heroBackground})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            height: '450px',
+            background: `url(${heroBackground}) no-repeat center center/cover`,
+            height: '500px',
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: 'inset 0 0 150px rgba(0, 0, 0, 0.5)',
+            borderRadius: '12px',
+            position: 'relative',
+            marginTop: '1rem',
+            boxShadow: 'inset 0 0 0 1000px rgba(0, 0, 0, 0.3)'
           }}
         >
           <Box
             sx={{
-              backgroundColor: 'rgba(0, 0, 0, 0.6)', // Sfondo semitrasparente
-              padding: 3,
-              borderRadius: 2,
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              padding: 4,
+              borderRadius: '12px',
               maxWidth: '80%',
+              textAlign: 'center',
+              color: '#ffffff',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
             }}
           >
             <Typography
@@ -69,13 +76,13 @@ const Home = () => {
               gutterBottom
               sx={{
                 fontWeight: 700,
-                mb: 3,
+                mb: 2,
                 fontSize: { xs: '2.5rem', sm: '3.5rem' },
                 color: '#ffffff',
-                textShadow: '3px 3px 6px rgba(0, 0, 0, 0.7)', // Ombra del testo
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
               }}
             >
-              Benvenuti in CulturalConnect
+              Benvenuti su CulturalConnect
             </Typography>
             <Typography
               variant="h6"
@@ -85,11 +92,10 @@ const Home = () => {
                 margin: '0 auto',
                 fontSize: { xs: '1rem', sm: '1.5rem' },
                 color: '#ffffff',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.6)', // Ombra del testo
+                textShadow: '1px 1px 3px rgba(0, 0, 0, 0.6)',
               }}
             >
-              La tua piattaforma per connetterti con la cultura e gli eventi
-              locali.
+              La tua piattaforma ideale per connetterti con eventi e culture locali.
             </Typography>
             <StyledButton
               variant="contained"
@@ -103,264 +109,173 @@ const Home = () => {
           </Box>
         </Box>
 
-        {/* Grid Section */}
-        <Grid container spacing={4}>
-          {/* Card 1 */}
-          <Grid item xs={12} sm={6} md={4}>
-            <StyledCard
-              elevation={12}
-              sx={{
-                p: 4,
-                textAlign: 'center',
-                borderRadius: 3,
-                bgcolor: 'background.paper',
-                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
-                },
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '300px',
-              }}
-            >
-              <Event sx={{ fontSize: 60, color: 'primary.main' }} />
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ fontWeight: 700, mt: 2 }}
-              >
-                Eventi Recenti
-              </Typography>
-              <Typography
-                variant="body2"
-                paragraph
-                sx={{ color: 'text.secondary', px: 2 }}
-              >
-                Resta aggiornato sui prossimi eventi culturali e sociali.
-              </Typography>
-              <StyledButton
-                variant="outlined"
-                component={Link}
-                to={`/event-details/1`} // Usa un ID dinamico
-                sx={{ mt: 2, px: 4 }}
-              >
-                Leggi di più
-              </StyledButton>
-            </StyledCard>
-          </Grid>
-
-          {/* Card 2 */}
-          <Grid item xs={12} sm={6} md={4}>
-            <StyledCard
-              elevation={12}
-              sx={{
-                p: 4,
-                textAlign: 'center',
-                borderRadius: 3,
-                bgcolor: 'background.paper',
-                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
-                },
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '300px',
-              }}
-            >
-              <People sx={{ fontSize: 60, color: 'primary.main' }} />
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ fontWeight: 700, mt: 2 }}
-              >
-                Nuove Connessioni
-              </Typography>
-              <Typography
-                variant="body2"
-                paragraph
-                sx={{ color: 'text.secondary', px: 2 }}
-              >
-                Trova e connettiti con persone che condividono i tuoi interessi.
-              </Typography>
-              <StyledButton
-                variant="outlined"
-                component={Link}
-                to="/connections"
-                sx={{ mt: 2, px: 4 }}
-              >
-                Scopri
-              </StyledButton>
-            </StyledCard>
-          </Grid>
-
-          {/* Card 3 */}
-          <Grid item xs={12} sm={6} md={4}>
-            <StyledCard
-              elevation={12}
-              sx={{
-                p: 4,
-                textAlign: 'center',
-                borderRadius: 3,
-                bgcolor: 'background.paper',
-                boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                '&:hover': {
-                  transform: 'scale(1.05)',
-                  boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
-                },
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '300px',
-              }}
-            >
-              <LibraryBooks sx={{ fontSize: 60, color: 'primary.main' }} />
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ fontWeight: 700, mt: 2 }}
-              >
-                Risorse Utili
-              </Typography>
-              <Typography
-                variant="body2"
-                paragraph
-                sx={{ color: 'text.secondary', px: 2 }}
-              >
-                Accedi a una vasta gamma di risorse per arricchire la tua
-                conoscenza culturale.
-              </Typography>
-              <StyledButton
-                variant="outlined"
-                component={Link}
-                to="/resources"
-                sx={{ mt: 2, px: 4 }}
-              >
-                Esplora Risorse
-              </StyledButton>
-            </StyledCard>
-          </Grid>
-        </Grid>
-
-        {/* Sezione degli Aggiornamenti Importanti */}
+        {/* Chi Siamo */}
         <Box sx={{ my: 8, textAlign: 'center' }}>
           <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-            Aggiornamenti Importanti
+            Chi Siamo
           </Typography>
-          <Typography
-            variant="body1"
-            paragraph
-            sx={{ color: 'text.secondary', mb: 4 }}
-          >
-            Scopri le ultime novità e aggiornamenti importanti.
+          <Typography variant="body1" paragraph sx={{ color: 'text.secondary', maxWidth: '800px', margin: '0 auto' }}>
+            Siamo CulturalConnect, la tua finestra sul mondo culturale. Offriamo una piattaforma unica per scoprire e interagire con eventi e contenuti culturali locali e globali. La nostra missione è creare connessioni significative e arricchire la tua esperienza culturale.
           </Typography>
-          <StyledButton
-            variant="outlined"
-            onClick={handleOpenModal}
-            sx={{ px: 4 }}
-          >
-            Leggi ora
-          </StyledButton>
         </Box>
-        <Testimonials />
 
-        {/* Modale per Aggiornamenti Importanti */}
-        <Dialog
-          open={openModal}
-          onClose={handleCloseModal}
-          maxWidth="md"
-          fullWidth
-          sx={{
-            '& .MuiDialogContent-root': { p: 3 },
-            '& .MuiDialogTitle-root': { p: 2 },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              backgroundColor: 'primary.main',
-              color: 'white',
-              fontWeight: 700,
-              textAlign: 'center',
-              position: 'relative',
-              py: 2,
-            }}
-          >
-            Aggiornamenti Importanti
+        {/* Grid Section */}
+        <Grid container spacing={4} sx={{ mt: 4 }}>
+          {[
+            {
+              icon: <Event sx={{ fontSize: 60, color: 'primary.main' }} />,
+              title: 'Eventi Recenti',
+              description: 'Resta aggiornato sugli eventi culturali e sociali più recenti nella tua area.',
+              link: '/events'
+            },
+            {
+              icon: <People sx={{ fontSize: 60, color: 'primary.main' }} />,
+              title: 'Nuove Connessioni',
+              description: 'Trova e connettiti con persone che condividono i tuoi interessi e passioni.',
+              link: '/connections'
+            },
+            {
+              icon: <Article sx={{ fontSize: 60, color: 'primary.main' }} />,
+              title: 'Articoli Recenti',
+              description: 'Leggi articoli informativi e stimolanti sul mondo della cultura e degli eventi.',
+              link: '/articles'
+            },
+            {
+              icon: <LibraryBooks sx={{ fontSize: 60, color: 'primary.main' }} />,
+              title: 'Risorse Utili',
+              description: 'Accedi a risorse preziose e materiali educativi per approfondire le tue conoscenze culturali.',
+              link: '/resources'
+            }
+          ].map((item, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <StyledCard
+                  elevation={12}
+                  sx={{
+                    p: 4,
+                    textAlign: 'center',
+                    borderRadius: '12px',
+                    bgcolor: 'background.paper',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
+                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: '300px',
+                  }}
+                >
+                  {item.icon}
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mt: 2 }}>
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" paragraph sx={{ color: 'text.secondary', px: 2 }}>
+                    {item.description}
+                  </Typography>
+                  <StyledButton
+                    variant="outlined"
+                    component={Link}
+                    to={item.link}
+                    sx={{ mt: 2, px: 4 }}
+                  >
+                    Scopri
+                  </StyledButton>
+                </StyledCard>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Sezione Domande Frequenti (FAQ) */}
+        <Box sx={{ my: 8 }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, mb: 4, textAlign: 'center' }}>
+            Domande Frequenti
+          </Typography>
+          <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+            {faqData.map((faq, index) => (
+              <Box key={index} sx={{ mb: 4 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ cursor: 'pointer', fontWeight: 700 }}
+                  onClick={() => toggleFAQ(index)}
+                >
+                  {faq.question}
+                </Typography>
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: expandedFAQ === index ? 1 : 0, height: expandedFAQ === index ? 'auto' : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Typography variant="body2" sx={{ mt: 2 }}>
+                    {faq.answer}
+                  </Typography>
+                </motion.div>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+
+        {/* Modale di Contatto */}
+        <Dialog open={openModal} onClose={handleCloseModal}>
+          <DialogTitle>
+            Contattaci
             <IconButton
               edge="end"
               color="inherit"
               onClick={handleCloseModal}
               aria-label="close"
-              sx={{
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: 'white',
-              }}
+              sx={{ position: 'absolute', right: 8, top: 8 }}
             >
               <Close />
             </IconButton>
           </DialogTitle>
-          <DialogContent
-            sx={{
-              backgroundColor: 'background.default',
-              color: 'text.primary',
-              textAlign: 'center',
-              py: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Typography variant="h6" gutterBottom>
-              Nuove Funzionalità e Miglioramenti
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Siamo entusiasti di annunciare una serie di aggiornamenti che
-              miglioreranno la tua esperienza su CulturalConnect. Abbiamo
-              aggiunto nuove funzionalità per facilitare la tua connessione con
-              la cultura locale e migliorato l'interfaccia utente per una
-              navigazione più fluida.
-            </Typography>
-            <Typography variant="body2" paragraph>
-              Ecco alcune delle principali novità:
-            </Typography>
-            <Typography variant="body2" paragraph>
-              - **Nuove Sezioni di Eventi**: Scopri e partecipa a eventi
-              culturali esclusivi con una nuova sezione dedicata agli eventi
-              recenti.
-            </Typography>
-            <Typography variant="body2" paragraph>
-              - **Miglioramenti nella Connessione**: Trova facilmente persone
-              con interessi simili grazie a un sistema di connessione
-              aggiornato.
-            </Typography>
-            <Typography variant="body2" paragraph>
-              - **Espansione delle Risorse**: Accedi a una vasta gamma di
-              risorse culturali e educative aggiornate.
-            </Typography>
-            <img
-              src={Logo} 
-              alt="Aggiornamenti"
-              style={{ marginTop: 16, maxWidth: '25%', borderRadius: 8 }}
-            />
+          <DialogContent>
+            <form>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Nome"
+                type="text"
+                fullWidth
+                variant="standard"
+                required
+              />
+              <TextField
+                margin="dense"
+                id="email"
+                label="Email"
+                type="email"
+                fullWidth
+                variant="standard"
+                required
+              />
+              <TextField
+                margin="dense"
+                id="message"
+                label="Messaggio"
+                type="text"
+                fullWidth
+                multiline
+                rows={4}
+                variant="standard"
+                required
+              />
+            </form>
           </DialogContent>
         </Dialog>
       </Container>
-
-      {/* Footer */}
+      <Testimonials /> {/* Corretto uso del componente Testimonials */}
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

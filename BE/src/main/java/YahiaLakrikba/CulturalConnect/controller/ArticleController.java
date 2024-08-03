@@ -22,8 +22,9 @@ public class ArticleController {
     }
 
     @PostMapping
-    public Article createArticle(@RequestBody Article article) {
-        return articleService.createArticle(article);
+    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+        Article createdArticle = articleService.createArticle(article);
+        return ResponseEntity.ok(createdArticle);
     }
 
     @PutMapping("/{id}")

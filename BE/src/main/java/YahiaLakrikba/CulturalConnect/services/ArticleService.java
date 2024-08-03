@@ -24,8 +24,7 @@ public class ArticleService {
     }
 
     public Article updateArticle(Long id, Article article) {
-        Optional<Article> existingArticle = articleRepository.findById(id);
-        if (existingArticle.isPresent()) {
+        if (articleRepository.existsById(id)) {
             article.setId(id);
             return articleRepository.save(article);
         } else {

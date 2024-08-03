@@ -1,39 +1,57 @@
-// src/App.js
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 
-import Home from './pages/Home'
-import Events from './pages/Eventi'
-import Connections from './pages/Connections'
-import Resources from './pages/Resources'
-import Terms from './pages/Terms'
-import Privacy from './pages/Privacy'
-import Explore from './pages/Explore'
-
-import EventDetail from './components/EventDetail'
-import UserList from './components/UserList'
-import UserForm from './components/UserForm'
-import CustomAppBar from './components/AppBar'
+// Importazione delle pagine
+import Home from './pages/Home';
+import Explore from './pages/Explore';
+import Events from './pages/Eventi';
+import EventDetail from './components/EventDetail';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
+import Articles from './pages/Articles';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import UserList from './components/UserList';
+import Register from './components/Register';
+import Connections from './pages/Connections';
+import Resources from './pages/Resources';
+import CustomAppBar from './components/AppBar';
+import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
   return (
     <Router>
-      <CustomAppBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/edit-user/:id" element={<UserForm mode="edit" />} />
-        <Route path="/create-user" element={<UserForm mode="create" />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/events/:id" element={<EventDetail />} />
-        <Route path="/connections" element={<Connections />} />
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<Privacy />} />
-      </Routes>
-    </Router>
-  )
-}
+      <AuthProvider>
+        <CustomAppBar />
+        <Routes>
+          {/* Rotte pubbliche */}
+          <Route path="/" element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/events" element={<Events />} />
+          <Route path="/events/:id" element={<EventDetail />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/articles" element={<Articles />} />
 
-export default App
+          {/* Rotte protette */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/edit-user/:id" element={<Register mode="edit" />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/connections" element={<Connections />} />
+            <Route path="/resources" element={<Resources />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </Router>
+  );
+};
+
+export default App;

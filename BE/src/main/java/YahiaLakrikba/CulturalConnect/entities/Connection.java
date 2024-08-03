@@ -18,9 +18,8 @@ public class Connection {
     private String name;
     private String bio;
     private String imageUrl;
+    private String gender; // Nuovo campo per il genere
 
     @ElementCollection
     private List<String> interests;
-
-
 }

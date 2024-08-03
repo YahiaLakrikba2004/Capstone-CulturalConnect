@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -9,36 +9,47 @@ import {
   CardActions,
   CardMedia,
   Divider,
-} from '@mui/material'
-import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material'
-import { styled } from '@mui/material/styles'
+} from '@mui/material';
+import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: 'auto',
+  height: 400, // Imposta un'altezza fissa per tutte le card
   maxWidth: 345,
+  minWidth: 200, // Assicurati che tutte le card abbiano almeno questa larghezza
   boxShadow: theme.shadows[3],
   borderRadius: theme.shape.borderRadius,
   overflow: 'hidden',
-}))
+  display: 'flex',
+  flexDirection: 'column', // Assicurati che la card sia un contenitore a colonna
+}));
 
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: 140,
-  width: '100%',
-  objectFit: 'cover',
-}))
+  height: 150, // Altezza fissa per l'immagine
+  width: '100%', // L'immagine deve occupare tutta la larghezza della card
+  objectFit: 'cover', // Mantiene le proporzioni dell'immagine senza distorsione
+}));
 
 const StyledButton = styled(Button)(({ theme }) => ({
   margin: theme.spacing(1),
-}))
+}));
 
-const Carousel = ({ items, title, onClick }) => {
-  const [currentIndex, setCurrentIndex] = useState(items.length)
-  const itemsPerPage = 3
-  const carouselRef = useRef(null)
+const Carousel = ({ items, title }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemsPerPage = 3;
+  const carouselRef = useRef(null);
 
   // Duplicare gli elementi per la ripetizione continua
-  const duplicatedItems = [...items, ...items, ...items]
+  const duplicatedItems = [...items, ...items, ...items];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex]);
 
   const handleNext = () => {
     if (carouselRef.current) {
@@ -46,55 +57,44 @@ const Carousel = ({ items, title, onClick }) => {
         const newIndex = Math.min(
           prevIndex + itemsPerPage,
           duplicatedItems.length - itemsPerPage
-        )
-        carouselRef.current.style.transform = `translateX(-${
-          (newIndex / itemsPerPage) * 100
-        }%)`
+        );
+        carouselRef.current.style.transform = `translateX(-${(newIndex / itemsPerPage) * 100}%)`;
+
         // Gestire il ritorno all'inizio
         if (newIndex >= items.length * 2) {
           setTimeout(() => {
-            carouselRef.current.style.transition = 'none'
-            setCurrentIndex(items.length)
+            carouselRef.current.style.transition = 'none';
+            setCurrentIndex(items.length);
             setTimeout(() => {
-              carouselRef.current.style.transition = 'transform 0.5s ease'
-            }, 50)
-          }, 500)
+              carouselRef.current.style.transition = 'transform 0.5s ease';
+            }, 50);
+          }, 500);
         }
-        return newIndex
-      })
+        return newIndex;
+      });
     }
-  }
+  };
 
   const handlePrev = () => {
     if (carouselRef.current) {
       setCurrentIndex(prevIndex => {
-        const newIndex = Math.max(prevIndex - itemsPerPage, 0)
-        carouselRef.current.style.transform = `translateX(-${
-          (newIndex / itemsPerPage) * 100
-        }%)`
+        const newIndex = Math.max(prevIndex - itemsPerPage, 0);
+        carouselRef.current.style.transform = `translateX(-${(newIndex / itemsPerPage) * 100}%)`;
+
         // Gestire il ritorno alla fine
         if (newIndex < items.length) {
           setTimeout(() => {
-            carouselRef.current.style.transition = 'none'
-            setCurrentIndex(items.length * 2 - itemsPerPage)
+            carouselRef.current.style.transition = 'none';
+            setCurrentIndex(items.length * 2 - itemsPerPage);
             setTimeout(() => {
-              carouselRef.current.style.transition = 'transform 0.5s ease'
-            }, 50)
-          }, 500)
+              carouselRef.current.style.transition = 'transform 0.5s ease';
+            }, 50);
+          }, 500);
         }
-        return newIndex
-      })
+        return newIndex;
+      });
     }
-  }
-
-  // Set up an interval to automatically change slides every 3 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext()
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [duplicatedItems.length])
+  };
 
   return (
     <Box>
@@ -120,7 +120,7 @@ const Carousel = ({ items, title, onClick }) => {
             <Box
               key={item.id + index}
               className="carousel-item"
-              sx={{ flex: '0 0 auto', width: '33.33%', p: 1 }}
+              sx={{ flex: '0 0 auto', width: `${100 / itemsPerPage}%`, p: 1 }}
             >
               <StyledCard>
                 <StyledCardMedia
@@ -128,7 +128,7 @@ const Carousel = ({ items, title, onClick }) => {
                   image={item.imageUrl}
                   title={item.title}
                 />
-                <CardContent>
+                <CardContent sx={{ height: 'calc(400px - 150px)', overflow: 'hidden' }}>
                   <Typography variant="h6" gutterBottom>
                     {item.title}
                   </Typography>
@@ -146,7 +146,7 @@ const Carousel = ({ items, title, onClick }) => {
                     {item.description || item.content}
                   </Typography>
                 </CardContent>
-                <CardActions>
+                <CardActions sx={{ marginTop: 'auto' }}> {/* Assicurati che le azioni siano posizionate correttamente */}
                   <StyledButton
                     size="small"
                     color="primary"
@@ -164,7 +164,7 @@ const Carousel = ({ items, title, onClick }) => {
       <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
         <IconButton
           onClick={handlePrev}
-          disabled={currentIndex === items.length}
+          disabled={currentIndex === 0}
         >
           <ArrowBackIos />
         </IconButton>
@@ -176,7 +176,7 @@ const Carousel = ({ items, title, onClick }) => {
         </IconButton>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default Carousel
+export default Carousel;

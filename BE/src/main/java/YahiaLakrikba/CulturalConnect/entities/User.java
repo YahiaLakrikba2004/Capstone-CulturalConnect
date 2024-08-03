@@ -1,9 +1,8 @@
-package YahiaLakrikba.CulturalConnect.entities;
+package YahiaLakrikba.CulturalConnect.entities;// src/main/java/YahiaLakrikba/CulturalConnect/entities/User.java
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter
@@ -25,5 +24,5 @@ public class User {
 
     private String role;
 
-
+    private String profilePic; // Nuovo campo per la foto del profilo
 }

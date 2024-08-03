@@ -1,10 +1,8 @@
 package YahiaLakrikba.CulturalConnect.controller;
 
 import YahiaLakrikba.CulturalConnect.entities.Connection;
-import YahiaLakrikba.CulturalConnect.services.ConnectionService;
+import YahiaLakrikba.CulturalConnect.repositories.ConnectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,37 +12,35 @@ import java.util.List;
 public class ConnectionController {
 
     @Autowired
-    private ConnectionService connectionService;
+    private ConnectionRepository connectionRepository;
 
     @PostMapping
-    public ResponseEntity<Connection> createConnection(@RequestBody Connection connection) {
-        Connection createdConnection = connectionService.createConnection(connection);
-        return new ResponseEntity<>(createdConnection, HttpStatus.CREATED);
+    public Connection createConnection(@RequestBody Connection connection) {
+        // Usa l'URL dell'immagine fornito o lascia vuoto se non è fornito
+        return connectionRepository.save(connection);
     }
 
     @GetMapping
     public List<Connection> getAllConnections() {
-        return connectionService.getAllConnections();
+        return connectionRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Connection getConnectionById(@PathVariable Long id) {
+        return connectionRepository.findById(id).orElse(null);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Connection> updateConnection(
-            @PathVariable Long id,
-            @RequestBody Connection connection) {
-        Connection updatedConnection = connectionService.updateConnection(id, connection);
-        if (updatedConnection != null) {
-            return new ResponseEntity<>(updatedConnection, HttpStatus.OK);
-        } else {
-            return ResponseEntity.notFound().build();
+    public Connection updateConnection(@PathVariable Long id, @RequestBody Connection connection) {
+        if (connectionRepository.existsById(id)) {
+            connection.setId(id);
+            return connectionRepository.save(connection);
         }
+        return null;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteConnection(@PathVariable Long id) {
-        if (connectionService.deleteConnection(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public void deleteConnection(@PathVariable Long id) {
+        connectionRepository.deleteById(id);
     }
 }
