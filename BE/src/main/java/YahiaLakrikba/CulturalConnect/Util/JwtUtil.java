@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtUtil {
 
     // Usa una chiave segreta generata e assicurati che sia coerente con quella usata per la verifica
-    private static final String SECRET_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTY4MTY5OTI4MiwiaWF0IjoxNjgxNjk1NjgyfQ.SW0XbSe5kw9z9Tk7BGU9O5Q79mpGqEjPj_vlT2kYY-4"; // Sostituisci con la chiave generata
+    private static final String SECRET_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvbWFyIiwiaWF0IjoxNzIyODQ5ODExLCJleHAiOjE3MjI5MzYyMTF9.xKgOvOnivvRPxGlkyzjpptlCS4PCyPQnkE7F1bHaHpI"; // Sostituisci con la chiave generata
     private static final long EXPIRATION_TIME = 86400000; // 1 giorno in millisecondi
 
     public String generateToken(String username) {

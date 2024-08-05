@@ -8,15 +8,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.Collections;
 
 @Component
 public class JWTRequestFilter extends OncePerRequestFilter {
@@ -24,83 +26,49 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration}")
-    private long expiration;
-
     private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    public JWTRequestFilter(UserDetailsService userDetailsService) {
+    public JWTRequestFilter(UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
         this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final String header = request.getHeader("Authorization");
-        String username = null;
-        String jwtToken = null;
 
-        if (header != null && header.startsWith("Bearer ")) {
-            jwtToken = header.substring(7); // Rimuovi "Bearer " dalla stringa
+        final String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwtToken = authorizationHeader.substring(7);
             try {
                 Claims claims = Jwts.parser()
-                        .setSigningKey(secretKey)
+                        .setSigningKey(secretKey.getBytes())
                         .parseClaimsJws(jwtToken)
                         .getBody();
 
-                username = claims.getSubject();
-                if (username == null || !validateToken(jwtToken, userDetailsService.loadUserByUsername(username))) {
-                    throw new SignatureException("Invalid JWT token");
+                String username = claims.getSubject();
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    if (validateToken(jwtToken, userDetails)) {
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, Collections.emptyList());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
                 }
             } catch (SignatureException e) {
-                logger.warn("Invalid JWT signature");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT signature");
-                return;
+                System.out.println("Invalid JWT signature");
             } catch (Exception e) {
-                logger.warn("Invalid JWT token");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
-                return;
+                e.printStackTrace();
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails;
-            try {
-                userDetails = userDetailsService.loadUserByUsername(username);
-                if (userDetails != null && validateToken(jwtToken, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (Exception e) {
-                logger.warn("User not found");
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not found");
-                return;
-            }
-        }
-
-        // Configura CORS per tutte le risposte
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 
     private boolean validateToken(String token, UserDetails userDetails) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(secretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
-
-            String username = claims.getSubject();
-            // Controlla se il token è scaduto e se l'utente è quello giusto
-            return (username != null && username.equals(userDetails.getUsername())
-                    && !claims.getExpiration().before(new Date()));
-        } catch (Exception e) {
-            return false;
-        }
+        // You may need to customize this method based on your requirements
+        return !Jwts.parser().setSigningKey(secretKey.getBytes()).isSigned(token);
     }
 }

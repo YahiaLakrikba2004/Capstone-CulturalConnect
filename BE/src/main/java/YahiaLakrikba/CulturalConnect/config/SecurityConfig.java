@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.AuthenticationManager;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +35,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTRequestFilter jwtRequestFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -43,7 +50,6 @@ public class SecurityConfig {
                                 .requestMatchers("/api/recipes/**").permitAll()
                                 .requestMatchers("/api/connections/**").permitAll()
                                 .requestMatchers("/api/articles/**").permitAll()
-
                                 .requestMatchers("/api/users/me/update").authenticated()
                                 .requestMatchers("/api/profile/**").authenticated()
                                 .anyRequest().authenticated()

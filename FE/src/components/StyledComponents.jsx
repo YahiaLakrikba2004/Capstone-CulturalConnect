@@ -10,6 +10,10 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   textAlign: 'center',
   backgroundColor: theme.palette.background.paper,
   overflow: 'hidden',
+  minHeight: '500px', // Altezza minima uniforme
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
   '&:hover': {
     transform: 'scale(1.03)',
     boxShadow: theme.shadows[8],
@@ -22,6 +26,7 @@ export const StyledCard = styled(Card)(({ theme }) => ({
     transform: 'scale(0.98)',
   },
 }));
+
 
 // StyledCardMedia component
 export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({

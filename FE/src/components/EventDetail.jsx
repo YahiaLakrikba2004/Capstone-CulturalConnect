@@ -9,7 +9,8 @@ import {
   CardMedia,
   Button,
   CircularProgress,
-  Alert
+  Alert,
+  Box,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
@@ -24,10 +25,14 @@ const EventDetail = () => {
     const fetchEvent = async () => {
       try {
         const response = await axios.get(`http://localhost:8080/api/events/${id}`);
-        setEvent(response.data);
+        if (response.data) {
+          setEvent(response.data);
+        } else {
+          setError("Evento non trovato.");
+        }
       } catch (error) {
-        console.error('Error fetching event data:', error);
-        setError("Errore nel caricamento dei dati dell'evento");
+        console.error('Errore nel caricamento dei dati dell\'evento:', error);
+        setError("Errore nel caricamento dei dati dell'evento.");
       } finally {
         setLoading(false);
       }
@@ -67,13 +72,14 @@ const EventDetail = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Card>
+      <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
         {event.imageUrl && (
           <CardMedia
             component="img"
             height="400"
             image={event.imageUrl}
             alt={event.title}
+            sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}
           />
         )}
         <CardContent>
@@ -86,13 +92,16 @@ const EventDetail = () => {
           <Typography variant="body1" paragraph>
             {event.description}
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => window.history.back()}
-          >
-            Torna indietro
-          </Button>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => window.history.back()}
+              sx={{ borderRadius: 2 }}
+            >
+              Torna indietro
+            </Button>
+          </Box>
         </CardContent>
       </Card>
     </Container>

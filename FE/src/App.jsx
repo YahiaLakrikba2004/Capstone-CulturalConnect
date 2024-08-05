@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 
 // Importazione delle pagine
@@ -48,6 +48,9 @@ const App = () => {
             <Route path="/connections" element={<Connections />} />
             <Route path="/resources" element={<Resources />} />
           </Route>
+
+          {/* Redirect per assicurare che una pagina predefinita sia visibile */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

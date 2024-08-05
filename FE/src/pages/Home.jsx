@@ -120,78 +120,82 @@ const Home = () => {
         </Box>
 
         {/* Grid Section */}
-        <Grid container spacing={4} sx={{ mt: 4 }}>
-          {[
-            {
-              icon: <Event sx={{ fontSize: 60, color: 'primary.main' }} />,
-              title: 'Eventi Recenti',
-              description: 'Resta aggiornato sugli eventi culturali e sociali più recenti nella tua area.',
-              link: '/events'
+        <Grid container spacing={5} sx={{ mt: 4 }}>
+  {[
+    {
+      icon: <Event sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: 'Eventi Recenti',
+      description: 'Resta aggiornato sugli eventi culturali e sociali più recenti nella tua area.',
+      link: '/events'
+    },
+    {
+      icon: <People sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: 'Nuove Connessioni',
+      description: 'Trova e connettiti con persone che condividono i tuoi interessi e passioni.',
+      link: '/connections'
+    },
+    {
+      icon: <Article sx={{ fontSize: 60, color: 'primary.main' }} />,
+      title: 'Articoli Recenti',
+      description: 'Leggi articoli informativi e stimolanti sul mondo della cultura e degli eventi.',
+      link: '/articles'
+    },
+    {
+      icon: <LibraryBooks sx={{ fontSize: 40, color: 'primary.main' }} />,
+      title: 'Risorse Utili',
+      description: 'Accedi a risorse preziose e materiali educativi per approfondire le tue conoscenze culturali.',
+      link: '/resources'
+    }
+  ].map((item, index) => (
+    <Grid item xs={12} sm={6} md={3} key={index}>
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+      >
+        <StyledCard
+          elevation={12}
+          sx={{
+            p: 4,
+            textAlign: 'center',
+            borderRadius: '12px',
+            bgcolor: 'background.paper',
+            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.05)',
+              boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
             },
-            {
-              icon: <People sx={{ fontSize: 60, color: 'primary.main' }} />,
-              title: 'Nuove Connessioni',
-              description: 'Trova e connettiti con persone che condividono i tuoi interessi e passioni.',
-              link: '/connections'
-            },
-            {
-              icon: <Article sx={{ fontSize: 60, color: 'primary.main' }} />,
-              title: 'Articoli Recenti',
-              description: 'Leggi articoli informativi e stimolanti sul mondo della cultura e degli eventi.',
-              link: '/articles'
-            },
-            {
-              icon: <LibraryBooks sx={{ fontSize: 60, color: 'primary.main' }} />,
-              title: 'Risorse Utili',
-              description: 'Accedi a risorse preziose e materiali educativi per approfondire le tue conoscenze culturali.',
-              link: '/resources'
-            }
-          ].map((item, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: 'spring', stiffness: 300 }}
-              >
-                <StyledCard
-                  elevation={12}
-                  sx={{
-                    p: 4,
-                    textAlign: 'center',
-                    borderRadius: '12px',
-                    bgcolor: 'background.paper',
-                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'scale(1.05)',
-                      boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
-                    },
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: '300px',
-                  }}
-                >
-                  {item.icon}
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mt: 2 }}>
-                    {item.title}
-                  </Typography>
-                  <Typography variant="body2" paragraph sx={{ color: 'text.secondary', px: 2 }}>
-                    {item.description}
-                  </Typography>
-                  <StyledButton
-                    variant="outlined"
-                    component={Link}
-                    to={item.link}
-                    sx={{ mt: 2, px: 4 }}
-                  >
-                    Scopri
-                  </StyledButton>
-                </StyledCard>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '100%', // Altezza uniforme
+            minHeight: '300px', // Altezza minima uniforme
+          }}
+        >
+          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {item.icon}
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mt: 2 }}>
+              {item.title}
+            </Typography>
+            <Typography variant="body2" paragraph sx={{ color: 'text.secondary', px: 2 }}>
+              {item.description}
+            </Typography>
+          </Box>
+          <StyledButton
+            variant="outlined"
+            component={Link}
+            to={item.link}
+            sx={{ mt: 2, px: 4 }}
+          >
+            Scopri
+          </StyledButton>
+        </StyledCard>
+      </motion.div>
+    </Grid>
+  ))}
+</Grid>
+
 
         {/* Sezione Domande Frequenti (FAQ) */}
         <Box sx={{ my: 8 }}>

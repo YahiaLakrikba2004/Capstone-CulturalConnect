@@ -54,6 +54,7 @@ const Articles = () => {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [favorites, setFavorites] = useState(new Set()); // Gestione degli articoli preferiti
   const [snackbarOpen, setSnackbarOpen] = useState(false); // Gestione Snackbar
+  const [snackbarMessage, setSnackbarMessage] = useState(''); // Messaggio dello Snackbar
   const theme = useTheme();
 
   useEffect(() => {
@@ -102,7 +103,10 @@ const Articles = () => {
       text: `Leggi questo articolo: ${article.title} - ${article.content}`,
       url: window.location.href, // Link alla pagina dell'articolo
     };
-    navigator.share(shareData).catch(console.error);
+    navigator.share(shareData).then(() => {
+      setSnackbarMessage('Articolo condiviso con successo!');
+      setSnackbarOpen(true);
+    }).catch(console.error);
   };
 
   const handleSnackbarClose = () => {
@@ -227,55 +231,66 @@ const Articles = () => {
               variants={cardVariants}
             >
               <Card
-                sx={{
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  overflow: 'hidden',
-                  animation: `${fadeIn} 0.5s ease-in-out`,
-                }}
-              >
+  sx={{
+    borderRadius: 2,
+    boxShadow: 3,
+    overflow: 'hidden',
+    minHeight: '300px', // Altezza minima per garantire la coerenza
+    maxHeight: '500px', // Altezza massima per evitare che le card diventino troppo alte
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.03)',
+      boxShadow: 6,
+    },
+    animation: `${fadeIn} 0.5s ease-in-out`,
+  }}
+>
+
+
                 {article.imageUrl && (
                   <CardMedia
-                    component="img"
-                    image={article.imageUrl}
-                    alt={article.title}
-                    sx={{ borderBottom: `1px solid ${theme.palette.divider}`, height: '200px', objectFit: 'cover' }}
-                  />
+                  component="img"
+                  image={article.imageUrl}
+                  alt={article.title}
+                  sx={{ height: '250px', objectFit: 'cover' }}
+                />
+                
                 )}
-                <CardContent>
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                    {article.title}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {article.content}
-                  </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
-                        <IconButton onClick={() => toggleFavorite(article.id)} color={favorites.has(article.id) ? "primary" : "default"}>
-                          {favorites.has(article.id) ? <Star /> : <StarBorder />}
-                        </IconButton>
-                      </Tooltip>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleShare(article)}
-                      >
-                        <Share sx={{ mr: 1 }} />
-                        Condividi
-                      </Button>
-                    </Box>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleOpenModal(article)}
-                    >
-                      Maggiori Dettagli
-                    </Button>
-                  </Box>
-                </CardContent>
+                <CardContent sx={{ padding: 2 }}>
+  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+    {article.title}
+  </Typography>
+  <Typography variant="body2" color="textSecondary">
+    {article.content}
+  </Typography>
+  <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 3 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
+        <IconButton onClick={() => toggleFavorite(article.id)} color={favorites.has(article.id) ? "primary" : "default"}>
+          {favorites.has(article.id) ? <Star /> : <StarBorder />}
+        </IconButton>
+      </Tooltip>
+      <Button
+        size="small"
+        variant="contained"
+        color="secondary"
+        onClick={() => handleShare(article)}
+      >
+        <Share sx={{ mr: 1 }} />
+        Condividi
+      </Button>
+    </Box>
+    <Button
+      size="small"
+      variant="contained"
+      color="primary"
+      onClick={() => handleOpenModal(article)}
+    >
+      Maggiori Dettagli
+    </Button>
+  </Box>
+</CardContent>
+
               </Card>
             </motion.div>
           </Grid>
@@ -319,7 +334,7 @@ const Articles = () => {
       <ToastContainer />
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <AlertComponent onClose={handleSnackbarClose} severity="success">
-          Articolo condiviso con successo!
+          {snackbarMessage}
         </AlertComponent>
       </Snackbar>
     </Container>

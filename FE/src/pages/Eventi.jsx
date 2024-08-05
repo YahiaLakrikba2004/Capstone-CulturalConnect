@@ -28,7 +28,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useTheme } from '@mui/material/styles';
 import { Star, StarBorder, Share, CalendarToday } from '@mui/icons-material';
 import MuiAlert from '@mui/material/Alert';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 // Animazioni
 const fadeIn = keyframes`
@@ -64,7 +64,7 @@ const Events = () => {
         if (Array.isArray(response.data)) {
           setEvents(response.data);
         } else {
-          throw new Error('Data is not an array');
+          throw new Error('I dati non sono un array');
         }
       } catch (error) {
         setError('Errore nel recupero degli eventi. Riprova più tardi.');
@@ -107,7 +107,7 @@ const Events = () => {
   };
 
   const handleAddToCalendar = (event) => {
-    const start = format(new Date(event.date), "yyyyMMdd'T'HHmmss");
+    const start = format(parseISO(event.date), "yyyyMMdd'T'HHmmss");
     const end = format(new Date(new Date(event.date).getTime() + 60 * 60 * 1000), "yyyyMMdd'T'HHmmss");
     const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${start}/${end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
     window.open(calendarUrl, '_blank');
@@ -255,7 +255,7 @@ const Events = () => {
                     {event.title}
                   </Typography>
                   <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic' }}>
-                    {event.date}
+                    {format(parseISO(event.date), 'd MMMM yyyy HH:mm')}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     {event.location}
@@ -328,7 +328,7 @@ const Events = () => {
               />
             )}
             <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              {selectedEvent.date}
+              {format(parseISO(selectedEvent.date), 'd MMMM yyyy HH:mm')}
             </Typography>
             <Typography variant="body1" paragraph>
               {selectedEvent.location}
