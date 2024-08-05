@@ -60,7 +60,7 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/events');
+        const response = await axios.get('https://your-koyeb-backend-url.koyeb.app/api/events');
         if (Array.isArray(response.data)) {
           setEvents(response.data);
         } else {
@@ -73,6 +73,7 @@ const Events = () => {
         setLoading(false);
       }
     };
+    
 
     fetchEvents();
   }, []);
