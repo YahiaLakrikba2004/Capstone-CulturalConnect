@@ -50,7 +50,7 @@ const Home = () => {
         <Box
           sx={{
             background: `url(${heroBackground}) no-repeat center center/cover`,
-            height: '500px',
+            height: { xs: '300px', sm: '400px', md: '500px' }, // Altezza reattiva
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -63,9 +63,9 @@ const Home = () => {
           <Box
             sx={{
               backgroundColor: 'rgba(0, 0, 0, 0.6)',
-              padding: 4,
+              padding: { xs: 2, sm: 3, md: 4 }, // Padding reattivo
               borderRadius: '12px',
-              maxWidth: '80%',
+              maxWidth: '90%',
               textAlign: 'center',
               color: '#ffffff',
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
@@ -77,7 +77,7 @@ const Home = () => {
               sx={{
                 fontWeight: 700,
                 mb: 2,
-                fontSize: { xs: '2.5rem', sm: '3.5rem' },
+                fontSize: { xs: '2rem', sm: '2.5rem', md: '3.5rem' },
                 color: '#ffffff',
                 textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
               }}
@@ -90,7 +90,7 @@ const Home = () => {
               sx={{
                 maxWidth: '90%',
                 margin: '0 auto',
-                fontSize: { xs: '1rem', sm: '1.5rem' },
+                fontSize: { xs: '0.875rem', sm: '1rem', md: '1.5rem' },
                 color: '#ffffff',
                 textShadow: '1px 1px 3px rgba(0, 0, 0, 0.6)',
               }}
@@ -102,7 +102,7 @@ const Home = () => {
               color="primary"
               component={Link}
               to="/explore"
-              sx={{ mt: 3, fontSize: '1rem', px: 4 }}
+              sx={{ mt: 3, fontSize: { xs: '0.875rem', sm: '1rem' }, px: 4 }}
             >
               Esplora Ora
             </StyledButton>
@@ -121,81 +121,80 @@ const Home = () => {
 
         {/* Grid Section */}
         <Grid container spacing={5} sx={{ mt: 4 }}>
-  {[
-    {
-      icon: <Event sx={{ fontSize: 60, color: 'primary.main' }} />,
-      title: 'Eventi Recenti',
-      description: 'Resta aggiornato sugli eventi culturali e sociali più recenti nella tua area.',
-      link: '/events'
-    },
-    {
-      icon: <People sx={{ fontSize: 60, color: 'primary.main' }} />,
-      title: 'Nuove Connessioni',
-      description: 'Trova e connettiti con persone che condividono i tuoi interessi e passioni.',
-      link: '/connections'
-    },
-    {
-      icon: <Article sx={{ fontSize: 60, color: 'primary.main' }} />,
-      title: 'Articoli Recenti',
-      description: 'Leggi articoli informativi e stimolanti sul mondo della cultura e degli eventi.',
-      link: '/articles'
-    },
-    {
-      icon: <LibraryBooks sx={{ fontSize: 40, color: 'primary.main' }} />,
-      title: 'Risorse Utili',
-      description: 'Accedi a risorse preziose e materiali educativi per approfondire le tue conoscenze culturali.',
-      link: '/resources'
-    }
-  ].map((item, index) => (
-    <Grid item xs={12} sm={6} md={3} key={index}>
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: 'spring', stiffness: 300 }}
-      >
-        <StyledCard
-          elevation={12}
-          sx={{
-            p: 4,
-            textAlign: 'center',
-            borderRadius: '12px',
-            bgcolor: 'background.paper',
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-            transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-            '&:hover': {
-              transform: 'scale(1.05)',
-              boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
+          {[
+            {
+              icon: <Event sx={{ fontSize: { xs: 40, sm: 50, md: 60 }, color: 'primary.main' }} />,
+              title: 'Eventi Recenti',
+              description: 'Resta aggiornato sugli eventi culturali e sociali più recenti nella tua area.',
+              link: '/events'
             },
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: '100%', // Altezza uniforme
-            minHeight: '300px', // Altezza minima uniforme
-          }}
-        >
-          <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {item.icon}
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mt: 2 }}>
-              {item.title}
-            </Typography>
-            <Typography variant="body2" paragraph sx={{ color: 'text.secondary', px: 2 }}>
-              {item.description}
-            </Typography>
-          </Box>
-          <StyledButton
-            variant="outlined"
-            component={Link}
-            to={item.link}
-            sx={{ mt: 2, px: 4 }}
-          >
-            Scopri
-          </StyledButton>
-        </StyledCard>
-      </motion.div>
-    </Grid>
-  ))}
-</Grid>
-
+            {
+              icon: <People sx={{ fontSize: { xs: 40, sm: 50, md: 60 }, color: 'primary.main' }} />,
+              title: 'Nuove Connessioni',
+              description: 'Trova e connettiti con persone che condividono i tuoi interessi e passioni.',
+              link: '/connections'
+            },
+            {
+              icon: <Article sx={{ fontSize: { xs: 40, sm: 50, md: 60 }, color: 'primary.main' }} />,
+              title: 'Articoli Recenti',
+              description: 'Leggi articoli informativi e stimolanti sul mondo della cultura e degli eventi.',
+              link: '/articles'
+            },
+            {
+              icon: <LibraryBooks sx={{ fontSize: { xs: 30, sm: 35, md: 40 }, color: 'primary.main' }} />,
+              title: 'Risorse Utili',
+              description: 'Accedi a risorse preziose e materiali educativi per approfondire le tue conoscenze culturali.',
+              link: '/resources'
+            }
+          ].map((item, index) => (
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <StyledCard
+                  elevation={12}
+                  sx={{
+                    p: 3,
+                    textAlign: 'center',
+                    borderRadius: '12px',
+                    bgcolor: 'background.paper',
+                    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 16px 32px rgba(0, 0, 0, 0.4)',
+                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    height: '100%', // Altezza uniforme
+                    minHeight: '300px', // Altezza minima uniforme
+                  }}
+                >
+                  <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    {item.icon}
+                    <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mt: 2 }}>
+                      {item.title}
+                    </Typography>
+                    <Typography variant="body2" paragraph sx={{ color: 'text.secondary', px: 2 }}>
+                      {item.description}
+                    </Typography>
+                  </Box>
+                  <StyledButton
+                    variant="outlined"
+                    component={Link}
+                    to={item.link}
+                    sx={{ mt: 2, px: 4 }}
+                  >
+                    Scopri
+                  </StyledButton>
+                </StyledCard>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
 
         {/* Sezione Domande Frequenti (FAQ) */}
         <Box sx={{ my: 8 }}>
@@ -227,7 +226,7 @@ const Home = () => {
         </Box>
 
         {/* Modale di Contatto */}
-        <Dialog open={openModal} onClose={handleCloseModal}>
+        <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
           <DialogTitle>
             Contattaci
             <IconButton
@@ -251,6 +250,7 @@ const Home = () => {
                 fullWidth
                 variant="standard"
                 required
+                sx={{ mb: 2 }}
               />
               <TextField
                 margin="dense"
@@ -260,6 +260,7 @@ const Home = () => {
                 fullWidth
                 variant="standard"
                 required
+                sx={{ mb: 2 }}
               />
               <TextField
                 margin="dense"
