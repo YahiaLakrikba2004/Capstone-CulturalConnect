@@ -18,10 +18,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
   StyledCard,
   StyledCardMedia,
-  StyledButton, // Importa il componente StyledButton già definito
+  StyledButton, // Assicurati che questo sia ben definito
 } from '../components/StyledComponents';
 
-// Animazione di Fade-In
+// Animazioni
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -31,7 +31,6 @@ const fadeIn = keyframes`
   }
 `;
 
-// Animazione di Scale per hover
 const scaleHover = keyframes`
   from {
     transform: scale(1);
@@ -41,15 +40,15 @@ const scaleHover = keyframes`
   }
 `;
 
-// Miglioramenti ai colori e spaziature
+// Stili per la Card
 const cardStyles = {
   transition: 'transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease',
-  borderRadius: '12px', // Angolo di arrotondamento ottimizzato
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Ombra più sottile per un aspetto più elegante
+  borderRadius: '12px',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
   '&:hover': {
     animation: `${scaleHover} 0.3s ease-in-out`,
     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-    filter: 'brightness(1.05)', // Leggero aumento di luminosità
+    filter: 'brightness(1.05)',
   },
 };
 
@@ -62,15 +61,16 @@ const Connections = () => {
   useEffect(() => {
     const fetchConnections = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/connections');
+        const response = await axios.get('https://cultural-connect-hazel.vercel.app/api/connections'); // URL aggiornato
         if (Array.isArray(response.data)) {
           setConnections(response.data);
         } else {
           throw new Error('Data is not an array');
         }
       } catch (error) {
-        setError('Errore nel recupero delle connessioni. Riprova più tardi.');
-        toast.error('Errore nel recupero delle connessioni. Riprova più tardi.');
+        const errorMsg = error.response?.data?.message || 'Errore nel recupero delle connessioni. Riprova più tardi.';
+        setError(errorMsg);
+        toast.error(errorMsg);
       } finally {
         setLoading(false);
       }
@@ -122,10 +122,10 @@ const Connections = () => {
           textAlign: 'center',
           py: { xs: 6, sm: 8 },
           px: { xs: 3, sm: 4 },
-          bgcolor: '#f5f5f5', // Colore di sfondo chiaro per un buon contrasto
-          borderRadius: '12px', // Angolo di arrotondamento uniforme
+          bgcolor: '#f5f5f5',
+          borderRadius: '12px',
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #b0bec5', // Colore del bordo per coerenza
+          border: '1px solid #b0bec5',
           animation: `${fadeIn} 0.5s ease-in-out`,
         }}
       >
@@ -135,7 +135,7 @@ const Connections = () => {
           sx={{
             mb: 2,
             fontWeight: 700,
-            color: '#37474f', // Colore del testo principale
+            color: '#37474f',
             fontSize: { xs: '2rem', sm: '2.5rem' },
             textShadow: '0px 1px 2px rgba(0, 0, 0, 0.2)',
           }}
@@ -146,7 +146,7 @@ const Connections = () => {
           variant="h6"
           sx={{
             mb: 4,
-            color: '#546e7a', // Colore del testo secondario
+            color: '#546e7a',
             fontWeight: 400,
             fontSize: { xs: '1rem', sm: '1.2rem' },
           }}
@@ -159,7 +159,7 @@ const Connections = () => {
             mx: 'auto',
             width: { xs: '60px', sm: '80px' },
             borderBottomWidth: '4px',
-            borderColor: '#37474f', // Colore del divisore
+            borderColor: '#37474f',
           }}
         />
       </Box>
@@ -177,7 +177,7 @@ const Connections = () => {
                   component="img"
                   image={connection.imageUrl || 'https://via.placeholder.com/300'}
                   title={connection.name}
-                  sx={{ height: 160, objectFit: 'cover', borderBottom: '4px solid #b0bec5' }} // Bordo inferiore per abbinare il colore del bordo
+                  sx={{ height: 160, objectFit: 'cover', borderBottom: '4px solid #b0bec5' }}
                 />
                 <CardContent sx={{ height: 180 }}>
                   <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#37474f' }}>

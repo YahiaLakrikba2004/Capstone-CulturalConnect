@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   Container,
   Typography,
@@ -12,83 +12,87 @@ import {
   DialogTitle,
   Button,
   Divider,
-} from '@mui/material';
-import Carousel from '../components/Carousel';
+} from '@mui/material'
+import Carousel from '../components/Carousel' // Assicurati che il percorso sia corretto
 
 const Explore = () => {
-  const [events, setEvents] = useState([]);
-  const [connections, setConnections] = useState([]);
-  const [articles, setArticles] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const [connectionMessage, setConnectionMessage] = useState('');
-  const [selectedArticle, setSelectedArticle] = useState(null);
-  const [openArticleDialog, setOpenArticleDialog] = useState(false);
+  const [events, setEvents] = useState([])
+  const [connections, setConnections] = useState([])
+  const [articles, setArticles] = useState([])
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [openDetailsDialog, setOpenDetailsDialog] = useState(false)
+  const [connectionMessage, setConnectionMessage] = useState('')
+  const [selectedArticle, setSelectedArticle] = useState(null)
+  const [openArticleDialog, setOpenArticleDialog] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [eventsResponse, connectionsResponse, articlesResponse] =
           await Promise.all([
-            axios.get('http://localhost:8080/api/events'),
-            axios.get('http://localhost:8080/api/connections'),
-            axios.get('http://localhost:8080/api/articles'),
-          ]);
+            axios.get('https://cultural-connect-hazel.vercel.app/api/events'),
+            axios.get(
+              'https://cultural-connect-hazel.vercel.app/api/connections'
+            ),
+            axios.get('https://cultural-connect-hazel.vercel.app/api/articles'),
+          ])
 
         if (Array.isArray(eventsResponse.data)) {
-          setEvents(eventsResponse.data);
+          setEvents(eventsResponse.data)
         } else {
-          throw new Error('Expected an array for events');
+          throw new Error('Expected an array for events')
         }
 
         if (Array.isArray(connectionsResponse.data)) {
-          setConnections(connectionsResponse.data);
+          setConnections(connectionsResponse.data)
         } else {
-          throw new Error('Expected an array for connections');
+          throw new Error('Expected an array for connections')
         }
 
         if (Array.isArray(articlesResponse.data)) {
-          setArticles(articlesResponse.data);
+          setArticles(articlesResponse.data)
         } else {
-          throw new Error('Expected an array for articles');
+          throw new Error('Expected an array for articles')
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Error fetching data');
+        console.error('Error fetching data:', error)
+        setError('Error fetching data')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
-  const handleOpenDetails = (event) => {
-    setSelectedEvent(event);
-    setOpenDetailsDialog(true);
-  };
+  const handleOpenDetails = event => {
+    setSelectedEvent(event)
+    setOpenDetailsDialog(true)
+  }
 
   const handleCloseDetails = () => {
-    setOpenDetailsDialog(false);
-    setSelectedEvent(null);
-  };
+    setOpenDetailsDialog(false)
+    setSelectedEvent(null)
+  }
 
-  const handleConnect = (connection) => {
-    setConnectionMessage(`Hai inviato una richiesta di connessione a ${connection.name}.`);
-    setTimeout(() => setConnectionMessage(''), 3000);
-  };
+  const handleConnect = connection => {
+    setConnectionMessage(
+      `Hai inviato una richiesta di connessione a ${connection.name}.`
+    )
+    setTimeout(() => setConnectionMessage(''), 3000)
+  }
 
-  const handleOpenArticleDetails = (article) => {
-    setSelectedArticle(article);
-    setOpenArticleDialog(true);
-  };
+  const handleOpenArticleDetails = article => {
+    setSelectedArticle(article)
+    setOpenArticleDialog(true)
+  }
 
   const handleCloseArticleDetails = () => {
-    setOpenArticleDialog(false);
-    setSelectedArticle(null);
-  };
+    setOpenArticleDialog(false)
+    setSelectedArticle(null)
+  }
 
   if (loading) {
     return (
@@ -98,7 +102,7 @@ const Explore = () => {
           Caricamento in corso...
         </Typography>
       </Container>
-    );
+    )
   }
 
   if (error) {
@@ -106,7 +110,7 @@ const Explore = () => {
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Alert severity="error">{error}</Alert>
       </Container>
-    );
+    )
   }
 
   return (
@@ -148,7 +152,8 @@ const Explore = () => {
             fontSize: '1.5rem',
           }}
         >
-          Scopri una vasta gamma di eventi, connessioni e articoli per arricchire la tua esperienza culturale.
+          Scopri una vasta gamma di eventi, connessioni e articoli per
+          arricchire la tua esperienza culturale.
         </Typography>
         <Divider
           sx={{
@@ -164,7 +169,7 @@ const Explore = () => {
       {/* Eventi */}
       <Carousel
         title="Eventi"
-        items={events.map((event) => ({
+        items={events.map(event => ({
           id: event.id,
           title: event.title,
           date: event.date,
@@ -179,7 +184,7 @@ const Explore = () => {
       {/* Connessioni */}
       <Carousel
         title="Connessioni"
-        items={connections.map((connection) => ({
+        items={connections.map(connection => ({
           id: connection.id,
           title: connection.name,
           description: connection.bio,
@@ -197,7 +202,7 @@ const Explore = () => {
       {/* Articoli */}
       <Carousel
         title="Articoli"
-        items={articles.map((article) => ({
+        items={articles.map(article => ({
           id: article.id,
           title: article.title,
           date: article.date,
@@ -261,7 +266,7 @@ const Explore = () => {
         </DialogActions>
       </Dialog>
     </Container>
-  );
-};
+  )
+}
 
-export default Explore;
+export default Explore

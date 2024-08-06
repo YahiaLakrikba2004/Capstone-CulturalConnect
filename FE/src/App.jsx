@@ -37,6 +37,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/articles" element={<Articles />} />
+          <Route path="/register" element={<Register />} /> {/* Spostato fuori dal blocco PrivateRoute */}
 
           {/* Rotte protette */}
           <Route element={<PrivateRoute />}>
@@ -44,7 +45,6 @@ const App = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/users" element={<UserList />} />
             <Route path="/edit-user/:id" element={<Register mode="edit" />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/resources" element={<Resources />} />
           </Route>
