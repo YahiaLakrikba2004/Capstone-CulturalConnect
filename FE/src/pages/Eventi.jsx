@@ -60,26 +60,24 @@ const Events = () => {
   const theme = useTheme()
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://api.cultural-connect.com/api/events');
-        const data = response.data;
-  
-        if (Array.isArray(data)) {
-          setEvents(data); 
+        const response = await axios.get('https://cultural-connect-hazel.vercel.app/api/events')
+        if (Array.isArray(response.data)) {
+          setEvents(response.data)
         } else {
-          throw new Error('Expected an array for events');
+          throw new Error('I dati non sono un array')
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
-        toast.error('Error fetching data');
+        setError('Errore nel recupero degli eventi. Riprova più tardi.')
+        toast.error('Errore nel recupero degli eventi.')
+      } finally {
+        setLoading(false)
       }
-    };
-  
-    fetchData();
-  }, []);
-  
-  
+    }
+
+    fetchEvents()
+  }, [])
 
   const handleOpenModal = event => {
     setSelectedEvent(event)
