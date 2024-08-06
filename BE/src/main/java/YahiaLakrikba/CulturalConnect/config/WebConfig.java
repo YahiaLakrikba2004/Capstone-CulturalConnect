@@ -10,7 +10,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://cultural-connect-hazel.vercel.app") // Permetti solo il dominio di Vercel
+                .allowedOrigins("https://cultural-connect-hazel.vercel.app")
+                .allowedOrigins("http://localhost:3000")// Permetti solo il dominio di Vercel
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
