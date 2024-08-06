@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import {
   Container,
   Typography,
@@ -18,17 +18,17 @@ import {
   Divider,
   IconButton,
   Tooltip,
-  Snackbar
-} from '@mui/material';
-import { keyframes } from '@mui/system';
-import { motion } from 'framer-motion';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { useTheme } from '@mui/material/styles';
-import { Star, StarBorder, Share, CalendarToday } from '@mui/icons-material';
-import MuiAlert from '@mui/material/Alert';
-import { format, parseISO } from 'date-fns';
+  Snackbar,
+} from '@mui/material'
+import { keyframes } from '@mui/system'
+import { motion } from 'framer-motion'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { useTheme } from '@mui/material/styles'
+import { Star, StarBorder, Share, CalendarToday } from '@mui/icons-material'
+import MuiAlert from '@mui/material/Alert'
+import { format, parseISO } from 'date-fns'
 
 // Animazioni
 const fadeIn = keyframes`
@@ -38,90 +38,102 @@ const fadeIn = keyframes`
   to {
     opacity: 1;
   }
-`;
+`
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.98 },
   visible: { opacity: 1, scale: 1 },
-};
+}
 
 // Funzione di notifica per Alert
-const AlertComponent = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const AlertComponent = props => (
+  <MuiAlert elevation={6} variant="filled" {...props} />
+)
 
 const Events = () => {
-  const [events, setEvents] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [favorites, setFavorites] = useState(new Set()); // Gestione degli eventi preferiti
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Gestione Snackbar
-  const theme = useTheme();
+  const [events, setEvents] = useState([])
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [favorites, setFavorites] = useState(new Set()) // Gestione degli eventi preferiti
+  const [snackbarOpen, setSnackbarOpen] = useState(false) // Gestione Snackbar
+  const theme = useTheme()
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://your-koyeb-backend-url.koyeb.app/api/events');
+        const response = await axios.get('http://localhost:8080/api/events')
         if (Array.isArray(response.data)) {
-          setEvents(response.data);
+          setEvents(response.data)
         } else {
-          throw new Error('I dati non sono un array');
+          throw new Error('I dati non sono un array')
         }
       } catch (error) {
-        setError('Errore nel recupero degli eventi. Riprova più tardi.');
-        toast.error('Errore nel recupero degli eventi.');
+        setError('Errore nel recupero degli eventi. Riprova più tardi.')
+        toast.error('Errore nel recupero degli eventi.')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    
+    }
 
-    fetchEvents();
-  }, []);
+    fetchEvents()
+  }, [])
 
-  const handleOpenModal = (event) => {
-    setSelectedEvent(event);
-  };
+  const handleOpenModal = event => {
+    setSelectedEvent(event)
+  }
 
   const handleCloseModal = () => {
-    setSelectedEvent(null);
-  };
+    setSelectedEvent(null)
+  }
 
-  const toggleFavorite = (id) => {
+  const toggleFavorite = id => {
     setFavorites(prevFavorites => {
-      const newFavorites = new Set(prevFavorites);
+      const newFavorites = new Set(prevFavorites)
       if (newFavorites.has(id)) {
-        newFavorites.delete(id);
+        newFavorites.delete(id)
       } else {
-        newFavorites.add(id);
+        newFavorites.add(id)
       }
-      return newFavorites;
-    });
-  };
+      return newFavorites
+    })
+  }
 
-  const handleShare = (event) => {
+  const handleShare = event => {
     const shareData = {
       title: event.title,
       text: `Scopri questo evento: ${event.title} - ${event.description}`,
       url: window.location.href, // Link alla pagina dell'evento
-    };
-    navigator.share(shareData).catch(console.error);
-  };
+    }
+    navigator.share(shareData).catch(console.error)
+  }
 
-  const handleAddToCalendar = (event) => {
-    const start = format(parseISO(event.date), "yyyyMMdd'T'HHmmss");
-    const end = format(new Date(new Date(event.date).getTime() + 60 * 60 * 1000), "yyyyMMdd'T'HHmmss");
-    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&dates=${start}/${end}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.location)}`;
-    window.open(calendarUrl, '_blank');
-  };
+  const handleAddToCalendar = event => {
+    const start = format(parseISO(event.date), "yyyyMMdd'T'HHmmss")
+    const end = format(
+      new Date(new Date(event.date).getTime() + 60 * 60 * 1000),
+      "yyyyMMdd'T'HHmmss"
+    )
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      event.title
+    )}&dates=${start}/${end}&details=${encodeURIComponent(
+      event.description
+    )}&location=${encodeURIComponent(event.location)}`
+    window.open(calendarUrl, '_blank')
+  }
 
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+    setSnackbarOpen(false)
+  }
 
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}
+        >
           Caricamento Eventi
         </Typography>
         <Box
@@ -140,13 +152,17 @@ const Events = () => {
           </Typography>
         </Box>
       </Container>
-    );
+    )
   }
 
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}
+        >
           Eventi Recenti
         </Typography>
         <Box
@@ -166,12 +182,16 @@ const Events = () => {
           >
             {error}
           </AlertComponent>
-          <Button variant="contained" color="error" onClick={() => window.location.reload()}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => window.location.reload()}
+          >
             Riprova
           </Button>
         </Box>
       </Container>
-    );
+    )
   }
 
   return (
@@ -228,7 +248,7 @@ const Events = () => {
 
       {/* Eventi */}
       <Grid container spacing={4}>
-        {events.map((event) => (
+        {events.map(event => (
           <Grid item xs={12} sm={6} md={4} key={event.id}>
             <motion.div
               initial="hidden"
@@ -248,14 +268,26 @@ const Events = () => {
                     component="img"
                     image={event.imageUrl}
                     alt={event.title}
-                    sx={{ borderBottom: `1px solid ${theme.palette.divider}`, height: '200px', objectFit: 'cover' }}
+                    sx={{
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                      height: '200px',
+                      objectFit: 'cover',
+                    }}
                   />
                 )}
                 <CardContent>
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ fontWeight: 600, color: theme.palette.text.primary }}
+                  >
                     {event.title}
                   </Typography>
-                  <Typography variant="body2" color="textSecondary" sx={{ fontStyle: 'italic' }}>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    sx={{ fontStyle: 'italic' }}
+                  >
                     {format(parseISO(event.date), 'd MMMM yyyy HH:mm')}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
@@ -264,10 +296,28 @@ const Events = () => {
                   <Typography variant="body2" paragraph sx={{ mt: 2 }}>
                     {event.description}
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 2 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      gap: 1,
+                      flexDirection: 'column',
+                      mt: 2,
+                    }}
+                  >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Tooltip title={favorites.has(event.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
-                        <IconButton onClick={() => toggleFavorite(event.id)} color={favorites.has(event.id) ? "primary" : "default"}>
+                      <Tooltip
+                        title={
+                          favorites.has(event.id)
+                            ? 'Rimuovi dai preferiti'
+                            : 'Aggiungi ai preferiti'
+                        }
+                      >
+                        <IconButton
+                          onClick={() => toggleFavorite(event.id)}
+                          color={
+                            favorites.has(event.id) ? 'primary' : 'default'
+                          }
+                        >
                           {favorites.has(event.id) ? <Star /> : <StarBorder />}
                         </IconButton>
                       </Tooltip>
@@ -347,13 +397,17 @@ const Events = () => {
       )}
 
       <ToastContainer />
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <AlertComponent onClose={handleSnackbarClose} severity="success">
           Evento aggiunto al calendario!
         </AlertComponent>
       </Snackbar>
     </Container>
-  );
-};
+  )
+}
 
-export default Events;
+export default Events
