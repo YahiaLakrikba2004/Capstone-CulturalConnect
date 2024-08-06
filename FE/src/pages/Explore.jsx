@@ -32,9 +32,9 @@ const Explore = () => {
       try {
         const [eventsResponse, connectionsResponse, articlesResponse] =
           await Promise.all([
-            axios.get('http://localhost:8080/api/events'),
-            axios.get('http://localhost:8080/api/connections'),
-            axios.get('http://localhost:8080/api/articles'),
+            axios.get('https://cultural-connect-hazel.vercel.app/api/events'),
+            axios.get('https://cultural-connect-hazel.vercel.app/api/connections'),
+            axios.get('https://cultural-connect-hazel.vercel.app/api/articles'),
           ]);
 
         if (Array.isArray(eventsResponse.data)) {

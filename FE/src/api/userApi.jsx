@@ -1,7 +1,8 @@
 // src/api/userApi.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api';
+// URL di produzione del backend
+const API_URL = 'https://cultural-connect-hazel.vercel.app/api';
 
 // Crea un'istanza di axios per configurare default e interceptors
 const apiClient = axios.create({

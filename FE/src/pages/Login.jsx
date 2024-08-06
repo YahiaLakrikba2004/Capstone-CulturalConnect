@@ -30,7 +30,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/auth/login',
+        'https://cultural-connect-hazel.vercel.app/api/auth/login',
         { username, password }
       );
       const { token } = response.data;

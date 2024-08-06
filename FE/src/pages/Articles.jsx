@@ -60,7 +60,7 @@ const Articles = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/articles');
+        const response = await axios.get('https://cultural-connect-hazel.vercel.app/api/articles'); // Sostituisci con l'URL corretto
         if (Array.isArray(response.data)) {
           setArticles(response.data);
         } else {
@@ -231,66 +231,62 @@ const Articles = () => {
               variants={cardVariants}
             >
               <Card
-  sx={{
-    borderRadius: 2,
-    boxShadow: 3,
-    overflow: 'hidden',
-    minHeight: '300px', // Altezza minima per garantire la coerenza
-    maxHeight: '500px', // Altezza massima per evitare che le card diventino troppo alte
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.03)',
-      boxShadow: 6,
-    },
-    animation: `${fadeIn} 0.5s ease-in-out`,
-  }}
->
-
-
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  overflow: 'hidden',
+                  minHeight: '300px', // Altezza minima per garantire la coerenza
+                  maxHeight: '500px', // Altezza massima per evitare che le card diventino troppo alte
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.03)',
+                    boxShadow: 6,
+                  },
+                  animation: `${fadeIn} 0.5s ease-in-out`,
+                }}
+              >
                 {article.imageUrl && (
                   <CardMedia
-                  component="img"
-                  image={article.imageUrl}
-                  alt={article.title}
-                  sx={{ height: '250px', objectFit: 'cover' }}
-                />
-                
+                    component="img"
+                    image={article.imageUrl}
+                    alt={article.title}
+                    sx={{ height: '250px', objectFit: 'cover' }}
+                  />
                 )}
                 <CardContent sx={{ padding: 2 }}>
-  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-    {article.title}
-  </Typography>
-  <Typography variant="body2" color="textSecondary">
-    {article.content}
-  </Typography>
-  <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 3 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
-        <IconButton onClick={() => toggleFavorite(article.id)} color={favorites.has(article.id) ? "primary" : "default"}>
-          {favorites.has(article.id) ? <Star /> : <StarBorder />}
-        </IconButton>
-      </Tooltip>
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        onClick={() => handleShare(article)}
-      >
-        <Share sx={{ mr: 1 }} />
-        Condividi
-      </Button>
-    </Box>
-    <Button
-      size="small"
-      variant="contained"
-      color="primary"
-      onClick={() => handleOpenModal(article)}
-    >
-      Maggiori Dettagli
-    </Button>
-  </Box>
-</CardContent>
-
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                    {article.title}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {article.content}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
+                        <IconButton onClick={() => toggleFavorite(article.id)} color={favorites.has(article.id) ? "primary" : "default"}>
+                          {favorites.has(article.id) ? <Star /> : <StarBorder />}
+                        </IconButton>
+                      </Tooltip>
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleShare(article)}
+                      >
+                        <Share sx={{ mr: 1 }} />
+                        Condividi
+                      </Button>
+                    </Box>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleOpenModal(article)}
+                    >
+                      Maggiori Dettagli
+                    </Button>
+                  </Box>
+                </CardContent>
               </Card>
             </motion.div>
           </Grid>
