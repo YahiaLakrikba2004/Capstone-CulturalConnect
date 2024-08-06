@@ -18,10 +18,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import {
   StyledCard,
   StyledCardMedia,
-  StyledButton, // Assicurati che questo sia ben definito
+  StyledButton, // Importa il componente StyledButton già definito
 } from '../components/StyledComponents';
 
-// Animazioni
+// Animazione di Fade-In
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -31,6 +31,7 @@ const fadeIn = keyframes`
   }
 `;
 
+// Animazione di Scale per hover
 const scaleHover = keyframes`
   from {
     transform: scale(1);
@@ -40,15 +41,15 @@ const scaleHover = keyframes`
   }
 `;
 
-// Stili per la Card
+// Miglioramenti ai colori e spaziature
 const cardStyles = {
   transition: 'transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease',
-  borderRadius: '12px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+  borderRadius: '12px', // Angolo di arrotondamento ottimizzato
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Ombra più sottile per un aspetto più elegante
   '&:hover': {
     animation: `${scaleHover} 0.3s ease-in-out`,
     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
-    filter: 'brightness(1.05)',
+    filter: 'brightness(1.05)', // Leggero aumento di luminosità
   },
 };
 
@@ -61,16 +62,15 @@ const Connections = () => {
   useEffect(() => {
     const fetchConnections = async () => {
       try {
-        const response = await axios.get('https://cultural-connect-hazel.vercel.app/api/connections'); // URL aggiornato
+        const response = await axios.get('http://localhost:8080/api/connections');
         if (Array.isArray(response.data)) {
           setConnections(response.data);
         } else {
           throw new Error('Data is not an array');
         }
       } catch (error) {
-        const errorMsg = error.response?.data?.message || 'Errore nel recupero delle connessioni. Riprova più tardi.';
-        setError(errorMsg);
-        toast.error(errorMsg);
+        setError('Errore nel recupero delle connessioni. Riprova più tardi.');
+        toast.error('Errore nel recupero delle connessioni. Riprova più tardi.');
       } finally {
         setLoading(false);
       }
@@ -122,10 +122,10 @@ const Connections = () => {
           textAlign: 'center',
           py: { xs: 6, sm: 8 },
           px: { xs: 3, sm: 4 },
-          bgcolor: '#f5f5f5',
-          borderRadius: '12px',
+          bgcolor: '#f5f5f5', // Colore di sfondo chiaro per un buon contrasto
+          borderRadius: '12px', // Angolo di arrotondamento uniforme
           boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #b0bec5',
+          border: '1px solid #b0bec5', // Colore del bordo per coerenza
           animation: `${fadeIn} 0.5s ease-in-out`,
         }}
       >
@@ -135,7 +135,7 @@ const Connections = () => {
           sx={{
             mb: 2,
             fontWeight: 700,
-            color: '#37474f',
+            color: '#37474f', // Colore del testo principale
             fontSize: { xs: '2rem', sm: '2.5rem' },
             textShadow: '0px 1px 2px rgba(0, 0, 0, 0.2)',
           }}
@@ -146,7 +146,7 @@ const Connections = () => {
           variant="h6"
           sx={{
             mb: 4,
-            color: '#546e7a',
+            color: '#546e7a', // Colore del testo secondario
             fontWeight: 400,
             fontSize: { xs: '1rem', sm: '1.2rem' },
           }}
@@ -159,7 +159,7 @@ const Connections = () => {
             mx: 'auto',
             width: { xs: '60px', sm: '80px' },
             borderBottomWidth: '4px',
-            borderColor: '#37474f',
+            borderColor: '#37474f', // Colore del divisore
           }}
         />
       </Box>
@@ -177,7 +177,7 @@ const Connections = () => {
                   component="img"
                   image={connection.imageUrl || 'https://via.placeholder.com/300'}
                   title={connection.name}
-                  sx={{ height: 160, objectFit: 'cover', borderBottom: '4px solid #b0bec5' }}
+                  sx={{ height: 160, objectFit: 'cover', borderBottom: '4px solid #b0bec5' }} // Bordo inferiore per abbinare il colore del bordo
                 />
                 <CardContent sx={{ height: 180 }}>
                   <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: '#37474f' }}>

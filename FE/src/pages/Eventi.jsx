@@ -62,7 +62,7 @@ const Events = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://cultural-connect-hazel.vercel.app/api/events')
+        const response = await axios.get('http://localhost:8080/api/events')
         if (Array.isArray(response.data)) {
           setEvents(response.data)
         } else {

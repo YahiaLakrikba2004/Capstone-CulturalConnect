@@ -13,7 +13,7 @@ import {
   Button,
   Divider,
 } from '@mui/material';
-import Carousel from '../components/Carousel'; // Assicurati che il percorso sia corretto
+import Carousel from '../components/Carousel';
 
 const Explore = () => {
   const [events, setEvents] = useState([]);
@@ -32,9 +32,9 @@ const Explore = () => {
       try {
         const [eventsResponse, connectionsResponse, articlesResponse] =
           await Promise.all([
-            axios.get('https://cultural-connect-hazel.vercel.app/api/events'),
-            axios.get('https://cultural-connect-hazel.vercel.app/api/connections'),
-            axios.get('https://cultural-connect-hazel.vercel.app/api/articles'),
+            axios.get('http://localhost:8080/api/events'),
+            axios.get('http://localhost:8080/api/connections'),
+            axios.get('http://localhost:8080/api/articles'),
           ]);
 
         if (Array.isArray(eventsResponse.data)) {
