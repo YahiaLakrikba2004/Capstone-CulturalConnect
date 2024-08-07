@@ -6,11 +6,11 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[4],
   transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
-  padding: theme.spacing(3),
+  padding: theme.spacing(2), // Ridotto il padding per mobile
   textAlign: 'center',
   backgroundColor: theme.palette.background.paper,
   overflow: 'hidden',
-  minHeight: '500px', // Altezza minima uniforme
+  minHeight: '300px', // Altezza minima adattata per mobile
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -25,8 +25,10 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   '&:active': {
     transform: 'scale(0.98)',
   },
+  [theme.breakpoints.down('sm')]: {
+    minHeight: '250px', // Altezza per schermi piccoli
+  },
 }));
-
 
 // StyledCardMedia component
 export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
@@ -36,6 +38,9 @@ export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   borderTopRightRadius: theme.shape.borderRadius,
   borderBottom: `1px solid ${theme.palette.divider}`,
   transition: 'transform 0.3s ease',
+  [theme.breakpoints.down('sm')]: {
+    height: 150, // Altezza per schermi piccoli
+  },
   '&:hover': {
     transform: 'scale(1.1)',
     filter: theme.palette.mode === 'dark' ? 'brightness(0.8)' : 'brightness(0.9)',
@@ -71,5 +76,9 @@ export const StyledButton = styled(Button)(({ theme }) => ({
       ? `linear-gradient(to right, ${theme.palette.background.paper}, ${theme.palette.background.default})`
       : `linear-gradient(to right, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
     boxShadow: theme.shadows[6],
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1, 2), // Ridotto il padding per mobile
+    fontSize: '0.875rem', // Font size per mobile
   },
 }));

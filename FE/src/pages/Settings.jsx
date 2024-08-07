@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 import {
   Container,
   Typography,
@@ -84,6 +85,7 @@ const layoutOptions = [
 
 const Settings = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate(); // Usa useNavigate
   const [theme, setTheme] = useState('light');
   const [notifications, setNotifications] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -123,7 +125,7 @@ const Settings = () => {
     }
   }, [theme]);
 
-  // Salva le impostazioni
+  // Salva le impostazioni e reindirizza
   const handleSave = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -136,6 +138,7 @@ const Settings = () => {
       localStorage.setItem('highContrast', highContrast.toString());
       localStorage.setItem('layout', layout);
       enqueueSnackbar('Settings saved successfully!', { variant: 'success' });
+      navigate('/'); // Reindirizza alla home page
     } catch (err) {
       console.error('Failed to save settings:', err);
       enqueueSnackbar('Failed to save settings', { variant: 'error' });

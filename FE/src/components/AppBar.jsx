@@ -1,4 +1,3 @@
-// src/components/CustomAppBar.jsx
 import React from 'react'
 import { useAuth } from '../context/AuthContext' // Assicurati che il percorso sia corretto
 import {
@@ -90,21 +89,21 @@ const MotionNavButton = motion(Button)
 const CustomAppBar = () => {
   const theme = useTheme()
   const { isAuthenticated, logout } = useAuth() // Usa il contesto di autenticazione
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState(null)
   const [userMenuAnchorEl, setUserMenuAnchorEl] = React.useState(null)
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
 
-  const handleMenuClick = event => {
-    setAnchorEl(event.currentTarget)
+  const handleMobileMenuClick = event => {
+    setMobileMenuAnchorEl(event.currentTarget)
+    setUserMenuAnchorEl(null) // Chiudi il menu utente se aperto
   }
 
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-    setMobileMenuOpen(false)
+  const handleMobileMenuClose = () => {
+    setMobileMenuAnchorEl(null)
   }
 
   const handleUserMenuClick = event => {
     setUserMenuAnchorEl(event.currentTarget)
+    setMobileMenuAnchorEl(null) // Chiudi il menu mobile se aperto
   }
 
   const handleUserMenuClose = () => {
@@ -116,28 +115,32 @@ const CustomAppBar = () => {
     window.location.href = '/login' // Redireziona verso la pagina di login
   }
 
-  const handleMobileMenuClick = () => {
-    setMobileMenuOpen(prev => !prev)
-  }
-
   const menuItems = (
     <>
-      <MenuItem component={Link} to="/" onClick={handleMenuClose}>
+      <MenuItem component={Link} to="/" onClick={handleMobileMenuClose}>
         Home
       </MenuItem>
-      <MenuItem component={Link} to="/explore" onClick={handleMenuClose}>
+      <MenuItem component={Link} to="/explore" onClick={handleMobileMenuClose}>
         Explore
       </MenuItem>
-      <MenuItem component={Link} to="/events" onClick={handleMenuClose}>
+      <MenuItem component={Link} to="/events" onClick={handleMobileMenuClose}>
         Events
       </MenuItem>
       {!isAuthenticated && (
         <>
           <Divider />
-          <MenuItem component={Link} to="/register" onClick={handleMenuClose}>
+          <MenuItem
+            component={Link}
+            to="/register"
+            onClick={handleMobileMenuClose}
+          >
             Register
           </MenuItem>
-          <MenuItem component={Link} to="/login" onClick={handleMenuClose}>
+          <MenuItem
+            component={Link}
+            to="/login"
+            onClick={handleMobileMenuClose}
+          >
             Login
           </MenuItem>
         </>
@@ -145,21 +148,21 @@ const CustomAppBar = () => {
       {isAuthenticated && (
         <>
           <Divider />
-          <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
-            Profile
-          </MenuItem>
-          <MenuItem component={Link} to="/settings" onClick={handleMenuClose}>
+          <MenuItem
+            component={Link}
+            to="/settings"
+            onClick={handleUserMenuClose}
+          >
             Settings
           </MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </>
       )}
     </>
   )
 
   const menuSpring = useSpring({
-    opacity: mobileMenuOpen ? 1 : 0,
-    transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-20px)',
+    opacity: mobileMenuAnchorEl ? 1 : 0,
+    transform: mobileMenuAnchorEl ? 'translateY(0)' : 'translateY(-20px)',
     config: { tension: 250, friction: 20 },
   })
 
@@ -236,15 +239,6 @@ const CustomAppBar = () => {
             <>
               <MotionNavButton
                 component={Link}
-                to="/profile"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                sx={{ color: theme.palette.common.white }}
-              >
-                Profile
-              </MotionNavButton>
-              <MotionNavButton
-                component={Link}
                 to="/settings"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -279,16 +273,22 @@ const CustomAppBar = () => {
           >
             <MenuIcon />
           </IconButton>
-          {mobileMenuOpen && (
-            <animated.div style={menuSpring}>
-              <StyledMenu
-                anchorEl={null}
-                open={mobileMenuOpen}
-                onClose={handleMenuClose}
-              >
-                {menuItems}
-              </StyledMenu>
-            </animated.div>
+          <StyledMenu
+            anchorEl={mobileMenuAnchorEl}
+            open={Boolean(mobileMenuAnchorEl)}
+            onClose={handleMobileMenuClose}
+            sx={{ display: mobileMenuAnchorEl ? 'block' : 'none' }}
+          >
+            <animated.div style={menuSpring}>{menuItems}</animated.div>
+          </StyledMenu>
+          {isAuthenticated && (
+            <IconButton
+              color="inherit"
+              edge="end"
+              onClick={handleUserMenuClick}
+            >
+              <FaUserCircle size={32} color={theme.palette.common.white} />
+            </IconButton>
           )}
         </Box>
         {isAuthenticated && (
@@ -298,13 +298,6 @@ const CustomAppBar = () => {
             onClose={handleUserMenuClose}
             sx={{ display: { xs: 'none', md: 'block' } }}
           >
-            <MenuItem
-              component={Link}
-              to="/profile"
-              onClick={handleUserMenuClose}
-            >
-              Profile
-            </MenuItem>
             <MenuItem
               component={Link}
               to="/settings"

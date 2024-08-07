@@ -1,10 +1,7 @@
 package YahiaLakrikba.CulturalConnect.entities;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,8 +15,13 @@ public class Article {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 500)
     private String title;
-    private String content;
+
+    @Column(length = 500)
     private String imageUrl;
+
+    @Lob
+    private String content;
 
 }

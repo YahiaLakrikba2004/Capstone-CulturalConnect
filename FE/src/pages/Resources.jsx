@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Typography,
@@ -8,13 +8,14 @@ import {
   Button,
   Box,
   Divider,
-  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   IconButton,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { motion } from 'framer-motion';
-import { SnackbarProvider, useSnackbar } from 'notistack';
-import { styled, useTheme } from '@mui/system';
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { styled, useTheme } from '@mui/system'
 
 // Componenti Stilizzati
 const StyledCard = styled(Box)(({ theme }) => ({
@@ -28,19 +29,19 @@ const StyledCard = styled(Box)(({ theme }) => ({
     transform: 'scale(1.05)',
     boxShadow: theme.shadows[8],
   },
-}));
+}))
 
 const StyledCardMedia = styled('img')(({ theme }) => ({
   height: 200,
   objectFit: 'cover',
   borderTopLeftRadius: theme.shape.borderRadius,
   borderTopRightRadius: theme.shape.borderRadius,
-}));
+}))
 
 const StyledButton = styled(Button)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   textTransform: 'none',
-}));
+}))
 
 const ModalContent = styled(Box)(({ theme }) => ({
   bgcolor: theme.palette.background.paper,
@@ -52,58 +53,61 @@ const ModalContent = styled(Box)(({ theme }) => ({
   maxHeight: '80%',
   overflowY: 'auto',
   position: 'relative',
-}));
+}))
 
-// Funzione per il componente delle risorse
 const Resources = () => {
-  const [open, setOpen] = React.useState(false);
-  const [selectedResource, setSelectedResource] = React.useState(null);
-
-  const { enqueueSnackbar } = useSnackbar();
-  const theme = useTheme();
+  const [open, setOpen] = React.useState(false)
+  const [selectedResource, setSelectedResource] = React.useState(null)
+  const theme = useTheme()
 
   const resources = [
     {
       id: 1,
       title: 'Guida agli Eventi Locali',
-      description: 'Scopri come trovare e organizzare eventi locali con successo. Una guida completa per ogni esigenza.',
-      imageUrl: 'https://www.webepc.it/wp-content/webpc-passthru.php?src=https://www.webepc.it/wp-content/uploads/2023/12/il-mio-sito-wordpress-e-professionale.png&nocache=1',
+      description:
+        'Scopri come trovare e organizzare eventi locali con successo. Una guida completa per ogni esigenza.',
+      imageUrl:
+        'https://www.webepc.it/wp-content/webpc-passthru.php?src=https://www.webepc.it/wp-content/uploads/2023/12/il-mio-sito-wordpress-e-professionale.png&nocache=1',
       link: 'https://www.eventbrite.com/blog/guide-to-local-events-ds00/',
     },
     {
       id: 2,
       title: 'Strumenti per la Pianificazione di Eventi',
-      description: 'Esplora gli strumenti e le app migliori per gestire e promuovere i tuoi eventi in modo efficace.',
-      imageUrl: 'https://assets.asana.biz/transform/af148fbe-ea78-4c15-8db4-5c2d47d4b30d/article-marketing-event-planning-tools-2x',
+      description:
+        'Esplora gli strumenti e le app migliori per gestire e promuovere i tuoi eventi in modo efficace.',
+      imageUrl:
+        'https://assets.asana.biz/transform/af148fbe-ea78-4c15-8db4-5c2d47d4b30d/article-marketing-event-planning-tools-2x',
       link: 'https://www.eventplanner.com/tools/',
     },
     {
       id: 3,
       title: 'Guide al Networking',
-      description: 'Leggi le nostre guide su come costruire e mantenere una rete professionale solida.',
-      imageUrl: 'https://www.millionaire.it/wp-content/uploads/2024/03/iStock-1485726179.jpg',
+      description:
+        'Leggi le nostre guide su come costruire e mantenere una rete professionale solida.',
+      imageUrl:
+        'https://www.millionaire.it/wp-content/uploads/2024/03/iStock-1485726179.jpg',
       link: 'https://www.forbes.com/sites/forbeshumanresourcescouncil/2020/03/10/how-to-build-and-maintain-your-professional-network/',
     },
     {
       id: 4,
       title: 'Piattaforme per Connessioni Professionali',
-      description: 'Scopri le migliori piattaforme online per fare networking e connetterti con professionisti del tuo settore.',
-      imageUrl: 'https://prod-images.dacast.com/wp-content/uploads/2022/11/12-Best-Professional-Video-Hosting-Platforms_-Choosing-the-Best-Solution-for-Business-2022-Update-1024x574.png',
+      description:
+        'Scopri le migliori piattaforme online per fare networking e connetterti con professionisti del tuo settore.',
+      imageUrl:
+        'https://prod-images.dacast.com/wp-content/uploads/2022/11/12-Best-Professional-Video-Hosting-Platforms_-Choosing-the-Best-Solution-for-Business-2022-Update-1024x574.png',
       link: 'https://www.linkedin.com/',
     },
-  ];
+  ]
 
-  const handleOpen = (resource) => {
-    setSelectedResource(resource);
-    setOpen(true);
-    enqueueSnackbar('Dettagli del prodotto aperti', { variant: 'info' });
-  };
+  const handleOpen = resource => {
+    setSelectedResource(resource)
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-    setSelectedResource(null);
-    enqueueSnackbar('Dettagli del prodotto chiusi', { variant: 'info' });
-  };
+    setOpen(false)
+    setSelectedResource(null)
+  }
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
@@ -142,7 +146,8 @@ const Resources = () => {
             fontSize: '1.2rem',
           }}
         >
-          Esplora una selezione curata di risorse per ampliare le tue conoscenze e capacità.
+          Esplora una selezione curata di risorse per ampliare le tue conoscenze
+          e capacità.
         </Typography>
         <Divider
           sx={{
@@ -160,10 +165,7 @@ const Resources = () => {
         {resources.map(resource => (
           <Grid item xs={12} sm={6} md={4} key={resource.id}>
             <StyledCard>
-              <StyledCardMedia
-                src={resource.imageUrl}
-                alt={resource.title}
-              />
+              <StyledCardMedia src={resource.imageUrl} alt={resource.title} />
               <CardContent>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
                   {resource.title}
@@ -188,12 +190,14 @@ const Resources = () => {
       </Grid>
 
       {/* Modal per dettagli aggiuntivi */}
-      <Modal
+      <Dialog
         open={open}
         onClose={handleClose}
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        maxWidth="md"
+        fullWidth
       >
-        <ModalContent>
+        <DialogTitle>
+          {selectedResource?.title}
           <IconButton
             aria-label="close"
             onClick={handleClose}
@@ -201,38 +205,41 @@ const Resources = () => {
           >
             <CloseIcon />
           </IconButton>
-          {selectedResource && (
-            <>
-              <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
-                {selectedResource.title}
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                {selectedResource.description}
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  href={selectedResource.link}
-                  target="_blank"
-                  sx={{ mt: 2 }}
-                >
-                  Leggi di più
-                </Button>
-              </Box>
-            </>
+        </DialogTitle>
+        <DialogContent>
+          {selectedResource?.imageUrl && (
+            <img
+              src={selectedResource.imageUrl}
+              alt={selectedResource.title}
+              style={{
+                width: '100%',
+                height: 'auto',
+                borderTopLeftRadius: theme.shape.borderRadius,
+                borderTopRightRadius: theme.shape.borderRadius,
+                marginBottom: theme.spacing(2),
+              }}
+            />
           )}
-        </ModalContent>
-      </Modal>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            {selectedResource?.description}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            color="primary"
+            href={selectedResource?.link}
+            target="_blank"
+          >
+            Leggi di più
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Chiudi
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
-  );
-};
+  )
+}
 
-// Componente principale con SnackbarProvider
-const App = () => (
-  <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
-    <Resources />
-  </SnackbarProvider>
-);
-
-export default App;
+export default Resources

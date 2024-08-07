@@ -35,8 +35,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam("username") String username,
-                                       @RequestParam("password") String password) {
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> credentials) {
+        String username = credentials.get("username");
+        String password = credentials.get("password");
+
         try {
             Optional<User> userOptional = userService.findUserByUsername(username);
             if (userOptional.isPresent()) {
@@ -52,4 +54,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Login failed: " + e.getMessage());
         }
     }
+
 }

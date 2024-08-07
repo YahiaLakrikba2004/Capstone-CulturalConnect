@@ -28,6 +28,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useTheme } from '@mui/material/styles';
 import { Star, StarBorder, Share } from '@mui/icons-material';
 import MuiAlert from '@mui/material/Alert';
+import Comments from '../components/comments'; // Assicurati che il percorso sia corretto
 
 // Animazioni
 const fadeIn = keyframes`
@@ -52,9 +53,9 @@ const Articles = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const [favorites, setFavorites] = useState(new Set()); // Gestione degli articoli preferiti
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Gestione Snackbar
-  const [snackbarMessage, setSnackbarMessage] = useState(''); // Messaggio dello Snackbar
+  const [favorites, setFavorites] = useState(new Set());
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const theme = useTheme();
 
   useEffect(() => {
@@ -64,7 +65,7 @@ const Articles = () => {
         if (Array.isArray(response.data)) {
           setArticles(response.data);
         } else {
-          throw new Error('Data is not an array');
+          throw new Error('Dati non validi');
         }
       } catch (error) {
         setError('Errore nel recupero degli articoli. Riprova più tardi.');
@@ -77,13 +78,8 @@ const Articles = () => {
     fetchArticles();
   }, []);
 
-  const handleOpenModal = (article) => {
-    setSelectedArticle(article);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedArticle(null);
-  };
+  const handleOpenModal = (article) => setSelectedArticle(article);
+  const handleCloseModal = () => setSelectedArticle(null);
 
   const toggleFavorite = (id) => {
     setFavorites(prevFavorites => {
@@ -101,17 +97,17 @@ const Articles = () => {
     const shareData = {
       title: article.title,
       text: `Leggi questo articolo: ${article.title} - ${article.content}`,
-      url: window.location.href, // Link alla pagina dell'articolo
+      url: window.location.href,
     };
-    navigator.share(shareData).then(() => {
-      setSnackbarMessage('Articolo condiviso con successo!');
-      setSnackbarOpen(true);
-    }).catch(console.error);
+    navigator.share(shareData)
+      .then(() => {
+        setSnackbarMessage('Articolo condiviso con successo!');
+        setSnackbarOpen(true);
+      })
+      .catch(console.error);
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  const handleSnackbarClose = () => setSnackbarOpen(false);
 
   if (loading) {
     return (
@@ -171,7 +167,6 @@ const Articles = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
-      {/* Sezione Introduttiva */}
       <Box
         sx={{
           mt: { xs: 3, sm: 4 },
@@ -221,7 +216,6 @@ const Articles = () => {
         />
       </Box>
 
-      {/* Articoli */}
       <Grid container spacing={4}>
         {articles.map((article) => (
           <Grid item xs={12} sm={6} md={4} key={article.id}>
@@ -231,97 +225,77 @@ const Articles = () => {
               variants={cardVariants}
             >
               <Card
-  sx={{
-    borderRadius: 2,
-    boxShadow: 3,
-    overflow: 'hidden',
-    minHeight: '300px', // Altezza minima per garantire la coerenza
-    maxHeight: '500px', // Altezza massima per evitare che le card diventino troppo alte
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.03)',
-      boxShadow: 6,
-    },
-    animation: `${fadeIn} 0.5s ease-in-out`,
-  }}
->
-
-
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  overflow: 'hidden',
+                  height: '500px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.03)',
+                    boxShadow: 6,
+                  },
+                  animation: `${fadeIn} 0.5s ease-in-out`,
+                }}
+              >
                 {article.imageUrl && (
                   <CardMedia
-                  component="img"
-                  image={article.imageUrl}
-                  alt={article.title}
-                  sx={{ height: '250px', objectFit: 'cover' }}
-                />
-                
+                    component="img"
+                    image={article.imageUrl}
+                    alt={article.title}
+                    sx={{ height: '200px', objectFit: 'cover' }}
+                  />
                 )}
-                <CardContent sx={{ padding: 2 }}>
-  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-    {article.title}
-  </Typography>
-  <Typography variant="body2" color="textSecondary">
-    {article.content}
-  </Typography>
-  <Box sx={{ display: 'flex', gap: 1, flexDirection: 'column', mt: 3 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
-        <IconButton onClick={() => toggleFavorite(article.id)} color={favorites.has(article.id) ? "primary" : "default"}>
-          {favorites.has(article.id) ? <Star /> : <StarBorder />}
-        </IconButton>
-      </Tooltip>
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        onClick={() => handleShare(article)}
-      >
-        <Share sx={{ mr: 1 }} />
-        Condividi
-      </Button>
-    </Box>
-    <Button
-      size="small"
-      variant="contained"
-      color="primary"
-      onClick={() => handleOpenModal(article)}
-    >
-      Maggiori Dettagli
-    </Button>
-  </Box>
-</CardContent>
-
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+                    {article.title}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {article.content}
+                  </Typography>
+                </CardContent>
+                <Box sx={{ display: 'flex', gap: 1, p: 2, justifyContent: 'space-between' }}>
+                  <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
+                    <IconButton
+                      color={favorites.has(article.id) ? 'warning' : 'default'}
+                      onClick={() => toggleFavorite(article.id)}
+                    >
+                      {favorites.has(article.id) ? <Star /> : <StarBorder />}
+                    </IconButton>
+                  </Tooltip>
+                  <Button variant="contained" color="primary" onClick={() => handleOpenModal(article)} sx={{ flexGrow: 1 }}>
+                    Leggi di più
+                  </Button>
+                  <Button variant="outlined" color="primary" onClick={() => handleShare(article)}>
+                    <Share />
+                  </Button>
+                </Box>
               </Card>
             </motion.div>
           </Grid>
         ))}
       </Grid>
 
-      {/* Modale Dettagli Articolo */}
       {selectedArticle && (
-        <Dialog
-          open={Boolean(selectedArticle)}
-          onClose={handleCloseModal}
-          maxWidth="md"
-          fullWidth
-          sx={{ '& .MuiDialog-paper': { borderRadius: 2, overflow: 'hidden' } }}
-        >
-          <DialogTitle sx={{ fontWeight: 600 }}>
+        <Dialog open={Boolean(selectedArticle)} onClose={handleCloseModal} maxWidth="md" fullWidth>
+          <DialogTitle>
             {selectedArticle.title}
           </DialogTitle>
           <DialogContent>
             {selectedArticle.imageUrl && (
               <CardMedia
                 component="img"
-                height="200"
                 image={selectedArticle.imageUrl}
                 alt={selectedArticle.title}
-                sx={{ mb: 2, borderRadius: 1, objectFit: 'cover' }}
+                sx={{ mb: 2, borderRadius: 1, maxHeight: 400, objectFit: 'cover' }}
               />
             )}
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+            <Typography variant="body1" color="textPrimary" paragraph>
               {selectedArticle.content}
             </Typography>
+            <Comments articleId={selectedArticle.id} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseModal} color="primary">
@@ -331,12 +305,13 @@ const Articles = () => {
         </Dialog>
       )}
 
-      <ToastContainer />
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
         <AlertComponent onClose={handleSnackbarClose} severity="success">
           {snackbarMessage}
         </AlertComponent>
       </Snackbar>
+
+      <ToastContainer />
     </Container>
   );
 };

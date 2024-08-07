@@ -50,8 +50,9 @@ public class SecurityConfig {
                                 .requestMatchers("/api/recipes/**").permitAll()
                                 .requestMatchers("/api/connections/**").permitAll()
                                 .requestMatchers("/api/articles/**").permitAll()
-                                .requestMatchers("/api/users/me/update").authenticated()
-                                .requestMatchers("/api/profile/**").authenticated()
+                                .requestMatchers("/api/comments/**").permitAll()
+                                .requestMatchers("/api/users/me/").authenticated()
+                                .requestMatchers("/api/profile/**").authenticated() // Modifica qui per richiedere autenticazione
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);

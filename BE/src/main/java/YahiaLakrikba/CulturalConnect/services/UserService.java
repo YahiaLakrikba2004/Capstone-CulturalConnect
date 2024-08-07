@@ -133,8 +133,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
     // Metodo per codificare la password (separato per chiarezza)
     public String encodePassword(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
     }
 }
+

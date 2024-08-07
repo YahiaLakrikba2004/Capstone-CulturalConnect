@@ -1,3 +1,4 @@
+// Home.js
 import React, { useState } from 'react';
 import {
   Container, Typography, Grid, Box, Dialog, DialogTitle, DialogContent, IconButton, TextField
@@ -49,13 +50,17 @@ const Home = () => {
         {/* Hero Section */}
         <Box
           sx={{
-            background: `url(${heroBackground}) no-repeat center center/cover`,
+            position: 'relative',
+            overflow: 'hidden',
             height: { xs: '300px', sm: '400px', md: '500px' }, // Altezza reattiva
+            backgroundImage: `url(${heroBackground})`,
+            backgroundSize: 'cover',
+            backgroundAttachment: 'fixed', // Effetto parallax
+            backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: '12px',
-            position: 'relative',
             marginTop: '1rem',
             boxShadow: 'inset 0 0 0 1000px rgba(0, 0, 0, 0.3)'
           }}
@@ -277,7 +282,8 @@ const Home = () => {
           </DialogContent>
         </Dialog>
       </Container>
-      <Testimonials /> {/* Corretto uso del componente Testimonials */}
+      <Testimonials />
+       {/* Corretto uso del componente Testimonials */}
       <Footer />
     </div>
   );
