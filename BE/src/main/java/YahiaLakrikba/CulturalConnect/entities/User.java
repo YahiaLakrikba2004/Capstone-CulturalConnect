@@ -22,10 +22,9 @@ public class User {
 
     private String profilePic;
 
-    @Transient // Questo campo non verrà salvato nel database
+    @Transient
     private String newPassword;
 
-    // Getters e Setters
 
     public Long getId() {
         return id;

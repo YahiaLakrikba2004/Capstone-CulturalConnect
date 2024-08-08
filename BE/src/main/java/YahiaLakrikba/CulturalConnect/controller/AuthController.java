@@ -44,7 +44,6 @@ public class AuthController {
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
                 if (userService.checkPassword(password, user.getPassword())) {
-                    // Autenticazione avvenuta con successo
                     String token = userService.generateToken(user);
                     return ResponseEntity.ok(Map.of("token", token));
                 }

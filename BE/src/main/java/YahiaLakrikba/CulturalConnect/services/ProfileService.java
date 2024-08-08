@@ -23,12 +23,10 @@ public class ProfileService {
     }
 
     public User updateProfile(User user) {
-        // Logica per aggiornare l'utente nel database
         return userRepository.save(user);
     }
 
     public String saveProfilePic(MultipartFile file) throws IOException {
-        // Logica per salvare l'immagine del profilo e restituire il percorso
         String fileName = file.getOriginalFilename();
         Path filePath = Paths.get("path/to/save/" + fileName);
         Files.write(filePath, file.getBytes());

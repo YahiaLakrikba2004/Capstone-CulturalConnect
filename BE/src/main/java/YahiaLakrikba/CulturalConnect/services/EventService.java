@@ -14,21 +14,18 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    // Recupera tutti gli eventi
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
-    // Recupera un evento per ID
     public Optional<Event> getEventById(Long id) {
         return eventRepository.findById(id);
     }
 
-    // Crea un nuovo evento
     public Event createEvent(Event event) {
         return eventRepository.save(event);
     }
-    // Aggiorna un evento esistente
+
     public Event updateEvent(Event event) {
         if (event.getId() != null && eventRepository.existsById(event.getId())) {
             return eventRepository.save(event);
@@ -37,7 +34,6 @@ public class EventService {
         }
     }
 
-    // Elimina un evento per ID
     public boolean deleteEvent(Long id) {
         if (eventRepository.existsById(id)) {
             eventRepository.deleteById(id);

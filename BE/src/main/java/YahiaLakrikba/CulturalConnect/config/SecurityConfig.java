@@ -40,7 +40,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JWTRequestFilter jwtRequestFilter) throws Exception {
+    public JWTRequestFilter jwtRequestFilter() {
+        return new JWTRequestFilter(userDetailsService());
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(authorizeRequests ->
@@ -51,11 +56,12 @@ public class SecurityConfig {
                                 .requestMatchers("/api/connections/**").permitAll()
                                 .requestMatchers("/api/articles/**").permitAll()
                                 .requestMatchers("/api/comments/**").permitAll()
+                                .requestMatchers("/api/friendships/**").permitAll()
                                 .requestMatchers("/api/users/me/").authenticated()
-                                .requestMatchers("/api/profile/**").authenticated() // Modifica qui per richiedere autenticazione
+                                .requestMatchers("/api/profile/**").authenticated()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

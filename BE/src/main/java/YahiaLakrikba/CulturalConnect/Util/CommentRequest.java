@@ -12,7 +12,6 @@ public class CommentRequest {
     @Size(min = 1, message = "Il testo del commento non può essere vuoto")
     private String text;
 
-    // Costruttori, getter e setter
     public CommentRequest() {
     }
 

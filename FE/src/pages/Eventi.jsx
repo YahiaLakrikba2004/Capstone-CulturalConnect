@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
   Container,
   Typography,
@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
-  Alert,
+  Alert as MuiAlert,
   Card,
   CardMedia,
   CardContent,
@@ -19,16 +19,15 @@ import {
   IconButton,
   Tooltip,
   Snackbar,
-} from '@mui/material'
-import { keyframes } from '@mui/system'
-import { motion } from 'framer-motion'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import { useTheme } from '@mui/material/styles'
-import { Star, StarBorder, Share, CalendarToday } from '@mui/icons-material'
-import MuiAlert from '@mui/material/Alert'
-import { format, parseISO } from 'date-fns'
+} from '@mui/material';
+import { keyframes } from '@mui/system';
+import { motion } from 'framer-motion';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useTheme } from '@mui/material/styles';
+import { Star, StarBorder, Share, CalendarToday } from '@mui/icons-material';
+import { format, parseISO } from 'date-fns';
 
 // Animazioni
 const fadeIn = keyframes`
@@ -38,93 +37,93 @@ const fadeIn = keyframes`
   to {
     opacity: 1;
   }
-`
+`;
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.98 },
   visible: { opacity: 1, scale: 1 },
-}
+};
 
 // Funzione di notifica per Alert
 const AlertComponent = props => (
   <MuiAlert elevation={6} variant="filled" {...props} />
-)
+);
 
 const Events = () => {
-  const [events, setEvents] = useState([])
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [selectedEvent, setSelectedEvent] = useState(null)
-  const [favorites, setFavorites] = useState(new Set()) // Gestione degli eventi preferiti
-  const [snackbarOpen, setSnackbarOpen] = useState(false) // Gestione Snackbar
-  const theme = useTheme()
+  const [events, setEvents] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [favorites, setFavorites] = useState(new Set());
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/events')
+        const response = await axios.get('http://localhost:8080/api/events');
         if (Array.isArray(response.data)) {
-          setEvents(response.data)
+          setEvents(response.data);
         } else {
-          throw new Error('I dati non sono un array')
+          throw new Error('I dati non sono un array');
         }
       } catch (error) {
-        setError('Errore nel recupero degli eventi. Riprova più tardi.')
-        toast.error('Errore nel recupero degli eventi.')
+        setError('Errore nel recupero degli eventi. Riprova più tardi.');
+        toast.error('Errore nel recupero degli eventi.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchEvents()
-  }, [])
+    fetchEvents();
+  }, []);
 
   const handleOpenModal = event => {
-    setSelectedEvent(event)
-  }
+    setSelectedEvent(event);
+  };
 
   const handleCloseModal = () => {
-    setSelectedEvent(null)
-  }
+    setSelectedEvent(null);
+  };
 
   const toggleFavorite = id => {
     setFavorites(prevFavorites => {
-      const newFavorites = new Set(prevFavorites)
+      const newFavorites = new Set(prevFavorites);
       if (newFavorites.has(id)) {
-        newFavorites.delete(id)
+        newFavorites.delete(id);
       } else {
-        newFavorites.add(id)
+        newFavorites.add(id);
       }
-      return newFavorites
-    })
-  }
+      return newFavorites;
+    });
+  };
 
   const handleShare = event => {
     const shareData = {
       title: event.title,
       text: `Scopri questo evento: ${event.title} - ${event.description}`,
-      url: window.location.href, // Link alla pagina dell'evento
-    }
-    navigator.share(shareData).catch(console.error)
-  }
+      url: window.location.href,
+    };
+    navigator.share(shareData).catch(console.error);
+  };
 
   const handleAddToCalendar = event => {
-    const start = format(parseISO(event.date), "yyyyMMdd'T'HHmmss")
+    const start = format(parseISO(event.date), "yyyyMMdd'T'HHmmss");
     const end = format(
       new Date(new Date(event.date).getTime() + 60 * 60 * 1000),
       "yyyyMMdd'T'HHmmss"
-    )
+    );
     const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
       event.title
     )}&dates=${start}/${end}&details=${encodeURIComponent(
       event.description
-    )}&location=${encodeURIComponent(event.location)}`
-    window.open(calendarUrl, '_blank')
-  }
+    )}&location=${encodeURIComponent(event.location || '')}`;
+    window.open(calendarUrl, '_blank');
+  };
 
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false)
-  }
+    setSnackbarOpen(false);
+  };
 
   if (loading) {
     return (
@@ -152,7 +151,7 @@ const Events = () => {
           </Typography>
         </Box>
       </Container>
-    )
+    );
   }
 
   if (error) {
@@ -191,7 +190,7 @@ const Events = () => {
           </Button>
         </Box>
       </Container>
-    )
+    );
   }
 
   return (
@@ -260,7 +259,10 @@ const Events = () => {
                   borderRadius: 2,
                   boxShadow: 3,
                   overflow: 'hidden',
-                  animation: `${fadeIn} 0.5s ease-in-out`,
+                  height: '100%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  position: 'relative',
                 }}
               >
                 {event.imageUrl && (
@@ -269,17 +271,25 @@ const Events = () => {
                     image={event.imageUrl}
                     alt={event.title}
                     sx={{
-                      borderBottom: `1px solid ${theme.palette.divider}`,
-                      height: '200px',
+                      height: 200,
                       objectFit: 'cover',
+                      borderBottom: `1px solid ${theme.palette.divider}`,
                     }}
                   />
                 )}
-                <CardContent>
+                <CardContent
+                  sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    p: 4,
+                  }}
+                >
                   <Typography
                     variant="h6"
                     gutterBottom
-                    sx={{ fontWeight: 600, color: theme.palette.text.primary }}
+                    sx={{ fontWeight: 700, color: theme.palette.text.primary }}
                   >
                     {event.title}
                   </Typography>
@@ -291,9 +301,21 @@ const Events = () => {
                     {format(parseISO(event.date), 'd MMMM yyyy HH:mm')}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    {event.location}
+                    {event.location || 'Luogo non specificato'}
                   </Typography>
-                  <Typography variant="body2" paragraph sx={{ mt: 2 }}>
+                  <Typography variant="body2" color="textSecondary">
+                    Categoria: {event.category || 'Non specificata'}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Organizzatore: {event.organizer || 'Non specificato'}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Status: {event.status || 'Non specificato'}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Prezzo: {event.ticketPrice ? `${event.ticketPrice} €` : 'Gratuito'}
+                  </Typography>
+                  <Typography variant="body2" paragraph sx={{ mt: 3 }}>
                     {event.description}
                   </Typography>
                   <Box
@@ -322,14 +344,20 @@ const Events = () => {
                         </IconButton>
                       </Tooltip>
                       <Button
-                        size="small"
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleShare(event)}
-                      >
-                        <Share sx={{ mr: 1 }} />
-                        Condividi
-                      </Button>
+  size="large"
+  variant="contained"
+  color="secondary"
+  onClick={() => handleShare(event)}
+  sx={{ 
+    padding: '15px 35px', // Padding personalizzato (top/bottom, left/right)
+    fontSize: '1rem', // Dimensione del font per adattarsi al padding
+    borderRadius: '10px' // Opzionale: bordi arrotondati per un aspetto più elegante
+  }}
+>
+  <Share sx={{ mr: 1 }} />
+  Condividi
+</Button>
+
                       <Button
                         size="small"
                         variant="contained"
@@ -356,45 +384,161 @@ const Events = () => {
         ))}
       </Grid>
 
-      {/* Modale Dettagli Evento */}
       {selectedEvent && (
-        <Dialog
-          open={Boolean(selectedEvent)}
-          onClose={handleCloseModal}
-          maxWidth="md"
-          fullWidth
-          sx={{ '& .MuiDialog-paper': { borderRadius: 2, overflow: 'hidden' } }}
-        >
-          <DialogTitle sx={{ fontWeight: 600 }}>
-            {selectedEvent.title}
-          </DialogTitle>
-          <DialogContent>
-            {selectedEvent.imageUrl && (
-              <CardMedia
-                component="img"
-                height="200"
-                image={selectedEvent.imageUrl}
-                alt={selectedEvent.title}
-                sx={{ mb: 2, borderRadius: 1, objectFit: 'cover' }}
-              />
-            )}
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              {format(parseISO(selectedEvent.date), 'd MMMM yyyy HH:mm')}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              {selectedEvent.location}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              {selectedEvent.description}
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModal} color="primary">
-              Chiudi
-            </Button>
-          </DialogActions>
-        </Dialog>
+  <Dialog
+    open={Boolean(selectedEvent)}
+    onClose={handleCloseModal}
+    maxWidth="md"
+    fullWidth
+    sx={{ 
+      '& .MuiDialog-paper': { 
+        borderRadius: 2, 
+        overflow: 'hidden', 
+        padding: 0
+      },
+      '& .MuiDialogContent-root': {
+        maxHeight: '70vh', // Imposta l'altezza massima del contenuto
+        overflowY: 'auto', // Aggiungi la barra di scorrimento verticale
+        padding: 3,
+        '&::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: '#f1f1f1',
+          borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: '#888',
+          borderRadius: '4px',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+          background: '#555',
+        },
+      }
+    }}
+  >
+    <DialogTitle 
+      sx={{
+        fontWeight: 600, 
+        bgcolor: theme.palette.primary.main, 
+        color: theme.palette.common.white,
+        py: 2,
+        px: 3
+      }}
+    >
+      {selectedEvent.title}
+    </DialogTitle>
+    <DialogContent 
+      sx={{ 
+        py: 4,
+        px: 3
+      }}
+    >
+      {selectedEvent.imageUrl && (
+        <CardMedia
+        component="img"
+        image={selectedEvent.imageUrl}
+        alt={selectedEvent.title}
+        sx={{
+          mb: 3,
+          borderRadius: 1,
+          objectFit: 'cover', 
+          width: '100%',
+          maxHeight: '300px',
+          height: 'auto',
+        }}
+      />
+      
+      
       )}
+      <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+        {format(parseISO(selectedEvent.date), 'd MMMM yyyy HH:mm')}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+        <strong>Luogo:</strong> {selectedEvent.location || 'Luogo non specificato'}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+        <strong>Categoria:</strong> {selectedEvent.category || 'Non specificata'}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+        <strong>Organizzatore:</strong> {selectedEvent.organizer || 'Non specificato'}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+        <strong>Status:</strong> {selectedEvent.status || 'Non specificato'}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+        <strong>Prezzo:</strong> {selectedEvent.ticketPrice ? `${selectedEvent.ticketPrice} €` : 'Gratuito'}
+      </Typography>
+      <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+        <strong>Descrizione:</strong> {selectedEvent.description}
+      </Typography>
+      {/* Aggiungi ulteriori dettagli qui */}
+      {selectedEvent.contactEmail && (
+        <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+          <strong>Email di contatto:</strong> {selectedEvent.contactEmail}
+        </Typography>
+      )}
+      {selectedEvent.contactPhone && (
+        <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+          <strong>Telefono di contatto:</strong> {selectedEvent.contactPhone}
+        </Typography>
+      )}
+      {selectedEvent.website && (
+        <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+          <strong>Sito web:</strong> <a href={selectedEvent.website} target="_blank" rel="noopener noreferrer">{selectedEvent.website}</a>
+        </Typography>
+      )}
+      {selectedEvent.mapLink && (
+        <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+          <strong>Mappa:</strong> <a href={selectedEvent.mapLink} target="_blank" rel="noopener noreferrer">Vedi sulla mappa</a>
+        </Typography>
+      )}
+      {selectedEvent.program && (
+        <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+          <strong>Programma:</strong> {selectedEvent.program}
+        </Typography>
+      )}
+      {selectedEvent.socialMedia && (
+        <Typography variant="body1" paragraph sx={{ mb: 2 }}>
+          <strong>Seguici sui social:</strong>
+          <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+            {selectedEvent.socialMedia.map((link, index) => (
+              <Tooltip key={index} title={`Visita ${link.platform}`}>
+                <IconButton
+                  component="a"
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img src={link.icon} alt={link.platform} style={{ width: 24, height: 24 }} />
+                </IconButton>
+              </Tooltip>
+            ))}
+          </Box>
+        </Typography>
+      )}
+    </DialogContent>
+    <DialogActions 
+      sx={{ 
+        px: 3, 
+        pb: 2 
+      }}
+    >
+      <Button 
+        onClick={handleCloseModal} 
+        color="primary"
+        variant="contained"
+        sx={{ borderRadius: 2, px: 3 }}
+      >
+        Chiudi
+      </Button>
+    </DialogActions>
+  </Dialog>
+)}
+
+
+
+
 
       <ToastContainer />
       <Snackbar
@@ -407,7 +551,7 @@ const Events = () => {
         </AlertComponent>
       </Snackbar>
     </Container>
-  )
-}
+  );
+};
 
-export default Events
+export default Events;

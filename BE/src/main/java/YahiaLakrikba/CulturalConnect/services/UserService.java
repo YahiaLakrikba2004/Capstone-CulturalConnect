@@ -114,27 +114,22 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + userId));
 
-        // Pulisce il nome del file
         String fileName = StringUtils.cleanPath(profilePic.getOriginalFilename());
 
-        // Imposta la directory di upload
         String uploadDir = "uploads/";
         File uploadDirFile = new File(uploadDir);
         if (!uploadDirFile.exists()) {
             uploadDirFile.mkdirs();
         }
 
-        // Salva il file
         File file = new File(uploadDir + fileName);
         profilePic.transferTo(file);
 
-        // Aggiorna il percorso del file nel database
         user.setProfilePic(uploadDir + fileName);
         return userRepository.save(user);
     }
 
 
-    // Metodo per codificare la password (separato per chiarezza)
     public String encodePassword(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
     }

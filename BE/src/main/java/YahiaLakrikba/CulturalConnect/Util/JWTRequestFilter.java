@@ -19,9 +19,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Date;
 
-@Component
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JWTRequestFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JWTRequestFilter.class);
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -38,7 +43,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
         final String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7); // Rimuove "Bearer " dal token
+            String token = authorizationHeader.substring(7);
             try {
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(secretKey.getBytes())
@@ -55,10 +60,16 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                     }
                 }
             } catch (MalformedJwtException e) {
+                logger.error("Malformed JWT Token", e);
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid Token");
                 return;
             } catch (SignatureException e) {
+                logger.error("JWT Token Signature Exception", e);
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid Token Signature");
+                return;
+            } catch (Exception e) {
+                logger.error("JWT Token Exception", e);
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid Token");
                 return;
             }
         }
@@ -74,7 +85,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                     .getBody();
             return userDetails.getUsername().equals(claims.getSubject());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Token validation failed", e);
         }
         return false;
     }

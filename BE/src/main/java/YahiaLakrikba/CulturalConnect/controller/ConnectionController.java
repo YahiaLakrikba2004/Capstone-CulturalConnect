@@ -1,8 +1,10 @@
 package YahiaLakrikba.CulturalConnect.controller;
 
 import YahiaLakrikba.CulturalConnect.entities.Connection;
-import YahiaLakrikba.CulturalConnect.repositories.ConnectionRepository;
+import YahiaLakrikba.CulturalConnect.services.ConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,35 +14,61 @@ import java.util.List;
 public class ConnectionController {
 
     @Autowired
-    private ConnectionRepository connectionRepository;
+    private ConnectionService connectionService;
 
     @PostMapping
-    public Connection createConnection(@RequestBody Connection connection) {
-        // Usa l'URL dell'immagine fornito o lascia vuoto se non è fornito
-        return connectionRepository.save(connection);
+    public ResponseEntity<Connection> createConnection(@RequestBody Connection connection) {
+        try {
+            Connection createdConnection = connectionService.createConnection(connection);
+            return new ResponseEntity<>(createdConnection, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping
-    public List<Connection> getAllConnections() {
-        return connectionRepository.findAll();
+    public ResponseEntity<List<Connection>> getAllConnections() {
+        try {
+            List<Connection> connections = connectionService.getAllConnections();
+            return new ResponseEntity<>(connections, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/{id}")
-    public Connection getConnectionById(@PathVariable Long id) {
-        return connectionRepository.findById(id).orElse(null);
+    public ResponseEntity<Connection> getConnectionById(@PathVariable Long id) {
+        Connection connection = connectionService.getConnectionById(id);
+        if (connection != null) {
+            return new ResponseEntity<>(connection, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping("/{id}")
-    public Connection updateConnection(@PathVariable Long id, @RequestBody Connection connection) {
-        if (connectionRepository.existsById(id)) {
-            connection.setId(id);
-            return connectionRepository.save(connection);
+    public ResponseEntity<Connection> updateConnection(@PathVariable Long id, @RequestBody Connection connection) {
+        Connection updatedConnection = connectionService.updateConnection(id, connection);
+        if (updatedConnection != null) {
+            return new ResponseEntity<>(updatedConnection, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return null;
     }
 
     @DeleteMapping("/{id}")
-    public void deleteConnection(@PathVariable Long id) {
-        connectionRepository.deleteById(id);
+    public ResponseEntity<Void> deleteConnection(@PathVariable Long id) {
+        boolean deleted = connectionService.deleteConnection(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/toggle/{id}")
+    public ResponseEntity<Void> toggleOnlineStatus(@PathVariable Long id) {
+        connectionService.toggleOnlineStatus(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

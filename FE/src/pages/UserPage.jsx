@@ -2,7 +2,7 @@ import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import UserList from '../components/UserList'
 import UserDetail from '../components/UserDetail'
-import UserForm from '../components/Register'
+import UserForm from './Register'
 
 const UserPage = () => (
   <Routes>

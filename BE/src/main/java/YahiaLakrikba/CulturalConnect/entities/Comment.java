@@ -23,7 +23,6 @@ public class Comment {
     @Column(name = "text", nullable = false)
     private String text;
 
-    // Costruttori
     public Comment() {
         this.createdAt = LocalDateTime.now();
         this.likes = 0; // Inizializza i like a 0
@@ -36,7 +35,6 @@ public class Comment {
         this.likes = 0; // Inizializza i like a 0
     }
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

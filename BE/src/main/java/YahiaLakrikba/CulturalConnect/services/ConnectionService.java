@@ -22,6 +22,10 @@ public class ConnectionService {
         return connectionRepository.findAll();
     }
 
+    public Connection getConnectionById(Long id) {
+        return connectionRepository.findById(id).orElse(null);
+    }
+
     public Connection updateConnection(Long id, Connection connection) {
         Optional<Connection> existingConnection = connectionRepository.findById(id);
         if (existingConnection.isPresent()) {
@@ -29,7 +33,8 @@ public class ConnectionService {
             updatedConnection.setName(connection.getName());
             updatedConnection.setInterests(connection.getInterests());
             updatedConnection.setBio(connection.getBio());
-            updatedConnection.setImageUrl(connection.getImageUrl()); // Aggiorna anche l'immagine se presente
+            updatedConnection.setImageUrl(connection.getImageUrl());
+            updatedConnection.setOnline(connection.getOnline());
             return connectionRepository.save(updatedConnection);
         } else {
             return null;
@@ -42,6 +47,15 @@ public class ConnectionService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void toggleOnlineStatus(Long id) {
+        Optional<Connection> connectionOptional = connectionRepository.findById(id);
+        if (connectionOptional.isPresent()) {
+            Connection connection = connectionOptional.get();
+            connection.setOnline(!connection.getOnline());
+            connectionRepository.save(connection);
         }
     }
 }

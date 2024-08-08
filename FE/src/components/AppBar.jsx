@@ -1,5 +1,5 @@
-import React from 'react'
-import { useAuth } from '../context/AuthContext' // Assicurati che il percorso sia corretto
+import React from 'react';
+import { useAuth } from '../context/AuthContext'; // Assicurati che il percorso sia corretto
 import {
   AppBar,
   Toolbar,
@@ -12,26 +12,26 @@ import {
   Divider,
   useTheme,
   styled,
-} from '@mui/material'
-import { Link } from 'react-router-dom'
-import MenuIcon from '@mui/icons-material/Menu'
-import { motion } from 'framer-motion'
-import { animated, useSpring } from '@react-spring/web'
-import { FaUserCircle } from 'react-icons/fa'
-import Logo from '../styles/Logo.jpg' // Assicurati che il percorso sia corretto
+} from '@mui/material';
+import { Link } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import { motion } from 'framer-motion';
+import { animated, useSpring } from '@react-spring/web';
+import { FaUserCircle } from 'react-icons/fa';
+import Logo from '../styles/Logo.jpg'; // Assicurati che il percorso sia corretto
 
 // Stile per il logo e il contenitore
 const LogoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
-}))
+}));
 
 const LogoImage = styled('img')(({ theme }) => ({
   height: '50px',
   borderRadius: '12px',
   boxShadow: theme.shadows[6],
-}))
+}));
 
 // Stile per i pulsanti
 const NavButton = styled(Button)(({ theme }) => ({
@@ -49,7 +49,7 @@ const NavButton = styled(Button)(({ theme }) => ({
   '&:active': {
     backgroundColor: theme.palette.secondary.main,
   },
-}))
+}));
 
 // Stile per la toolbar e la AppBar
 const CustomToolbar = styled(Toolbar)(({ theme }) => ({
@@ -62,7 +62,7 @@ const CustomToolbar = styled(Toolbar)(({ theme }) => ({
     flexDirection: 'row',
     alignItems: 'center',
   },
-}))
+}));
 
 // Stile per il Menu
 const StyledMenu = styled(Menu)(({ theme }) => ({
@@ -81,39 +81,41 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
       backgroundColor: theme.palette.action.hover,
     },
   },
-}))
+}));
 
 // Motion component for buttons
-const MotionNavButton = motion(Button)
+const MotionNavButton = motion(Button);
 
 const CustomAppBar = () => {
-  const theme = useTheme()
-  const { isAuthenticated, logout } = useAuth() // Usa il contesto di autenticazione
-  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState(null)
-  const [userMenuAnchorEl, setUserMenuAnchorEl] = React.useState(null)
+  const theme = useTheme();
+  const { isAuthenticated, logout } = useAuth(); // Usa il contesto di autenticazione
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = React.useState(null);
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = React.useState(null);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
 
-  const handleMobileMenuClick = event => {
-    setMobileMenuAnchorEl(event.currentTarget)
-    setUserMenuAnchorEl(null) // Chiudi il menu utente se aperto
-  }
+  const handleMobileMenuClick = (event) => {
+    setMobileMenuAnchorEl(event.currentTarget);
+    setUserMenuAnchorEl(null); // Chiudi il menu utente se aperto
+  };
 
   const handleMobileMenuClose = () => {
-    setMobileMenuAnchorEl(null)
-  }
+    setMobileMenuAnchorEl(null);
+  };
 
-  const handleUserMenuClick = event => {
-    setUserMenuAnchorEl(event.currentTarget)
-    setMobileMenuAnchorEl(null) // Chiudi il menu mobile se aperto
-  }
+  const handleUserMenuClick = (event) => {
+    setUserMenuAnchorEl(event.currentTarget);
+    setMobileMenuAnchorEl(null); // Chiudi il menu mobile se aperto
+    setUserMenuOpen(true);
+  };
 
   const handleUserMenuClose = () => {
-    setUserMenuAnchorEl(null)
-  }
+    setUserMenuOpen(false);
+  };
 
   const handleLogout = () => {
-    logout() // Usa la funzione di logout dal contesto
-    window.location.href = '/login' // Redireziona verso la pagina di login
-  }
+    logout(); // Usa la funzione di logout dal contesto
+    window.location.href = '/login'; // Redireziona verso la pagina di login
+  };
 
   const menuItems = (
     <>
@@ -129,18 +131,10 @@ const CustomAppBar = () => {
       {!isAuthenticated && (
         <>
           <Divider />
-          <MenuItem
-            component={Link}
-            to="/register"
-            onClick={handleMobileMenuClose}
-          >
+          <MenuItem component={Link} to="/register" onClick={handleMobileMenuClose}>
             Register
           </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/login"
-            onClick={handleMobileMenuClose}
-          >
+          <MenuItem component={Link} to="/login" onClick={handleMobileMenuClose}>
             Login
           </MenuItem>
         </>
@@ -148,23 +142,19 @@ const CustomAppBar = () => {
       {isAuthenticated && (
         <>
           <Divider />
-          <MenuItem
-            component={Link}
-            to="/settings"
-            onClick={handleUserMenuClose}
-          >
+          <MenuItem component={Link} to="/settings" onClick={handleUserMenuClose}>
             Settings
           </MenuItem>
         </>
       )}
     </>
-  )
+  );
 
   const menuSpring = useSpring({
     opacity: mobileMenuAnchorEl ? 1 : 0,
     transform: mobileMenuAnchorEl ? 'translateY(0)' : 'translateY(-20px)',
     config: { tension: 250, friction: 20 },
-  })
+  });
 
   return (
     <AppBar position="static">
@@ -282,34 +272,37 @@ const CustomAppBar = () => {
             <animated.div style={menuSpring}>{menuItems}</animated.div>
           </StyledMenu>
           {isAuthenticated && (
-            <IconButton
-              color="inherit"
-              edge="end"
-              onClick={handleUserMenuClick}
-            >
-              <FaUserCircle size={32} color={theme.palette.common.white} />
-            </IconButton>
+            <>
+              <IconButton
+                color="inherit"
+                edge="end"
+                onClick={handleUserMenuClick}
+              >
+                <FaUserCircle size={32} color={theme.palette.common.white} />
+              </IconButton>
+              <StyledMenu
+                anchorEl={userMenuAnchorEl}
+                open={userMenuOpen}
+                onClose={handleUserMenuClose}
+                PaperProps={{ sx: { mt: 1 } }}
+              >
+                <MenuItem
+                  component={Link}
+                  to="/settings"
+                  onClick={handleUserMenuClose}
+                >
+                  Settings
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  Logout
+                </MenuItem>
+              </StyledMenu>
+            </>
           )}
         </Box>
-        {isAuthenticated && (
-          <StyledMenu
-            anchorEl={userMenuAnchorEl}
-            open={Boolean(userMenuAnchorEl)}
-            onClose={handleUserMenuClose}
-            sx={{ display: { xs: 'none', md: 'block' } }}
-          >
-            <MenuItem
-              component={Link}
-              to="/settings"
-              onClick={handleUserMenuClose}
-            >
-              Settings
-            </MenuItem>
-          </StyledMenu>
-        )}
       </CustomToolbar>
     </AppBar>
-  )
-}
+  );
+};
 
-export default CustomAppBar
+export default CustomAppBar;

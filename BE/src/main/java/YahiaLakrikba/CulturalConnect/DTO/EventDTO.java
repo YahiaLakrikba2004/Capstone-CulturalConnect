@@ -10,7 +10,6 @@ public class EventDTO {
     private String description;
     private String imageUrl;
 
-    // Getters and Setters
     public String getTitle() {
         return title;
     }
