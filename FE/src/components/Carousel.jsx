@@ -13,22 +13,20 @@ import {
 import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
-// Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: 400, // Imposta un'altezza fissa per tutte le card
+  height: 400, 
   maxWidth: 345,
-  minWidth: 200, // Assicurati che tutte le card abbiano almeno questa larghezza
-  boxShadow: theme.shadows[3],
+  minWidth: 200, 
   borderRadius: theme.shape.borderRadius,
   overflow: 'hidden',
   display: 'flex',
-  flexDirection: 'column', // Assicurati che la card sia un contenitore a colonna
+  flexDirection: 'column',
 }));
 
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
-  height: 150, // Altezza fissa per l'immagine
-  width: '100%', // L'immagine deve occupare tutta la larghezza della card
-  objectFit: 'cover', // Mantiene le proporzioni dell'immagine senza distorsione
+  height: 150, 
+  width: '100%', 
+  objectFit: 'cover', 
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -40,7 +38,6 @@ const Carousel = ({ items, title }) => {
   const itemsPerPage = 3;
   const carouselRef = useRef(null);
 
-  // Duplicare gli elementi per la ripetizione continua
   const duplicatedItems = [...items, ...items, ...items];
 
   useEffect(() => {
@@ -60,7 +57,6 @@ const Carousel = ({ items, title }) => {
         );
         carouselRef.current.style.transform = `translateX(-${(newIndex / itemsPerPage) * 100}%)`;
 
-        // Gestire il ritorno all'inizio
         if (newIndex >= items.length * 2) {
           setTimeout(() => {
             carouselRef.current.style.transition = 'none';
@@ -81,7 +77,6 @@ const Carousel = ({ items, title }) => {
         const newIndex = Math.max(prevIndex - itemsPerPage, 0);
         carouselRef.current.style.transform = `translateX(-${(newIndex / itemsPerPage) * 100}%)`;
 
-        // Gestire il ritorno alla fine
         if (newIndex < items.length) {
           setTimeout(() => {
             carouselRef.current.style.transition = 'none';

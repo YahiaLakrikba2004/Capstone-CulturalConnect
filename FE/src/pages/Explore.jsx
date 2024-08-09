@@ -14,8 +14,11 @@ import {
   Divider,
   Grid,
   useMediaQuery,
+  IconButton,
 } from '@mui/material';
 import Carousel from '../components/Carousel'; // Assicurati che il percorso sia corretto
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowForward, ArrowBack } from '@mui/icons-material';
 
 const Explore = () => {
   const [events, setEvents] = useState([]);
@@ -29,7 +32,7 @@ const Explore = () => {
   const [selectedArticle, setSelectedArticle] = useState(null);
   const [openArticleDialog, setOpenArticleDialog] = useState(false);
 
-  const isMobile = useMediaQuery('(max-width:600px)'); // Verifica se il dispositivo è mobile
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +62,7 @@ const Explore = () => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError('Error fetching data');
+        setError(`Error fetching data: ${error.message}`);
       } finally {
         setLoading(false);
       }
@@ -107,7 +110,7 @@ const Explore = () => {
   if (error) {
     return (
       <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error" aria-live="assertive">{error}</Alert>
       </Container>
     );
   }
@@ -116,42 +119,55 @@ const Explore = () => {
     <Grid container spacing={2}>
       {items.map(item => (
         <Grid item xs={12} sm={6} md={4} key={item.id}>
-          <Box
-            sx={{
-              p: 2,
-              border: '1px solid #e0d6cc',
-              borderRadius: '8px',
-              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              bgcolor: '#fff',
-              textAlign: 'center',
-            }}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <Typography variant="h6">{item.title}</Typography>
-            <Typography variant="body2" color="textSecondary">
-              {item.description}
-            </Typography>
-            {item.imageUrl && (
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  borderRadius: '8px',
-                  margin: '8px 0',
-                  objectFit: 'cover',
-                }}
-              />
-            )}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={item.onClick}
-              sx={{ mt: 2 }}
+            <Box
+              sx={{
+                p: 2,
+                border: '1px solid #e0d6cc',
+                borderRadius: '8px',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                bgcolor: '#fff',
+                textAlign: 'center',
+                position: 'relative',
+                transition: 'transform 0.3s, box-shadow 0.3s',
+                '&:hover': {
+                  transform: 'scale(1.02)',
+                  boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
+                },
+              }}
+              aria-label={`${type} ${item.title}`}
             >
-              {item.buttonText}
-            </Button>
-          </Box>
+              <Typography variant="h6">{item.title}</Typography>
+              <Typography variant="body2" color="textSecondary">
+                {item.description}
+              </Typography>
+              {item.imageUrl && (
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    margin: '8px 0',
+                    objectFit: 'cover',
+                  }}
+                />
+              )}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={item.onClick}
+                sx={{ mt: 2 }}
+              >
+                {item.buttonText}
+              </Button>
+            </Box>
+          </motion.div>
         </Grid>
       ))}
     </Grid>
@@ -159,7 +175,6 @@ const Explore = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
-      {/* Sezione Iniziale */}
       <Box
         sx={{
           mt: 4,
@@ -184,7 +199,7 @@ const Explore = () => {
             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
           }}
         >
-          Esplora le Nostre Offerte
+          Esplora I nostri cataloghi
         </Typography>
         <Typography
           variant="h5"
@@ -196,8 +211,7 @@ const Explore = () => {
             fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
           }}
         >
-          Scopri una vasta gamma di eventi, connessioni e articoli per
-          arricchire la tua esperienza culturale.
+          Scopri una vasta gamma di eventi, connessioni e articoli per arricchire la tua esperienza culturale.
         </Typography>
         <Divider
           sx={{
@@ -209,210 +223,221 @@ const Explore = () => {
           }}
         />
       </Box>
-      
-      {/* Eventi */}
-      {isMobile ? (
-        renderCardGrid(
-          events.map(event => ({
-            id: event.id,
-            title: event.title,
-            description: event.description,
-            imageUrl: event.imageUrl || '', // Assicurati che imageUrl non sia null
-            onClick: () => handleOpenDetails(event),
-            buttonText: 'Maggiori dettagli',
-          })),
-          'event'
-        )
-      ) : (
-        <Carousel
-          title="Eventi"
-          items={events.map(event => ({
-            id: event.id,
-            title: event.title,
-            date: event.date,
-            location: event.location,
-            description: event.description,
-            imageUrl: event.imageUrl || '', // Assicurati che imageUrl non sia null
-            onClick: () => handleOpenDetails(event),
-            buttonText: 'Maggiori dettagli',
-          }))}
-          sx={{
-            '& .carousel-item': {
-              padding: { xs: '8px', sm: '16px' },
-            },
-            '& img': {
-              width: '100%',
-              height: 'auto',
-              objectFit: 'cover',
-              borderRadius: '8px',
-            },
-          }}
-        />
-      )}
 
-      {/* Connessioni */}
-      {isMobile ? (
-        renderCardGrid(
-          connections.map(connection => ({
-            id: connection.id,
-            title: connection.name,
-            description: connection.bio,
-            Interests: connection.Interests,
-            gender: connection.gender,
-            imageUrl: connection.imageUrl || '', // Assicurati che imageUrl non sia null
-            onClick: () => handleConnect(connection),
-            buttonText: 'Connettiti',
-          })),
-          'connection'
-        )
-      ) : (
-        <Carousel
-          title="Connessioni"
-          items={connections.map(connection => ({
-            id: connection.id,
-            title: connection.name,
-            description: connection.bio,
-            imageUrl: connection.imageUrl || '', // Assicurati che imageUrl non sia null
-            onClick: () => handleConnect(connection),
-            buttonText: 'Connettiti',
-          }))}
-          sx={{
-            '& .carousel-item': {
-              padding: { xs: '8px', sm: '16px' },
-            },
-            '& img': {
-              width: '100%',
-              height: 'auto',
-              objectFit: 'cover',
-              borderRadius: '8px',
-            },
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isMobile ? (
+          renderCardGrid(
+            events.map(event => ({
+              id: event.id,
+              title: event.title,
+              description: event.description,
+              imageUrl: event.imageUrl || '',
+              onClick: () => handleOpenDetails(event),
+              buttonText: 'Maggiori dettagli',
+            })),
+            'event'
+          )
+        ) : (
+          <Carousel
+            title="Eventi"
+            items={events.map(event => ({
+              id: event.id,
+              title: event.title,
+              date: event.date,
+              location: event.location,
+              description: event.description,
+              imageUrl: event.imageUrl || '',
+              onClick: () => handleOpenDetails(event),
+              buttonText: 'Maggiori dettagli',
+            }))}
+            sx={{
+              '& .carousel-item': {
+                padding: { xs: '8px', sm: '16px' },
+              },
+              '& img': {
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+                borderRadius: '8px',
+              },
+            }}
+            prevArrow={<IconButton><ArrowBack /></IconButton>}
+            nextArrow={<IconButton><ArrowForward /></IconButton>}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isMobile ? (
+          renderCardGrid(
+            connections.map(connection => ({
+              id: connection.id,
+              title: connection.name,
+              description: connection.bio,
+              Interests: connection.Interests,
+              gender: connection.gender,
+              imageUrl: connection.imageUrl || '',
+              onClick: () => handleConnect(connection),
+              buttonText: 'Connettiti',
+            })),
+            'connection'
+          )
+        ) : (
+          <Carousel
+            title="Connessioni"
+            items={connections.map(connection => ({
+              id: connection.id,
+              title: connection.name,
+              description: connection.bio,
+              imageUrl: connection.imageUrl || '',
+              onClick: () => handleConnect(connection),
+              buttonText: 'Connettiti',
+            }))}
+            sx={{
+              '& .carousel-item': {
+                padding: { xs: '8px', sm: '16px' },
+              },
+              '& img': {
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+                borderRadius: '8px',
+              },
+            }}
+            prevArrow={<IconButton><ArrowBack /></IconButton>}
+            nextArrow={<IconButton><ArrowForward /></IconButton>}
+          />
+        )}
+      </AnimatePresence>
 
       {connectionMessage && (
-        <Alert severity="info" sx={{ mt: 2 }}>
+        <Alert severity="info" sx={{ mt: 2 }} aria-live="polite">
           {connectionMessage}
         </Alert>
       )}
 
-      {/* Articoli */}
-      {isMobile ? (
-        renderCardGrid(
-          articles.map(article => ({
-            id: article.id,
-            title: article.title,
-            description: article.content,
-            imageUrl: article.imageUrl || '', // Assicurati che imageUrl non sia null
-            onClick: () => handleOpenArticleDetails(article),
-            buttonText: 'Leggi di più',
-          })),
-          'article'
-        )
-      ) : (
-        <Carousel
-          title="Articoli"
-          items={articles.map(article => ({
-            id: article.id,
-            title: article.title,
-            date: article.date,
-            description: article.content,
-            imageUrl: article.imageUrl || '', // Assicurati che imageUrl non sia null
-            onClick: () => handleOpenArticleDetails(article),
-            buttonText: 'Leggi di più',
-          }))}
-          sx={{
-            '& .carousel-item': {
-              padding: { xs: '8px', sm: '16px' },
-            },
-            '& img': {
-              width: '100%',
-              height: 'auto',
-              objectFit: 'cover',
-              borderRadius: '8px',
-            },
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isMobile ? (
+          renderCardGrid(
+            articles.map(article => ({
+              id: article.id,
+              title: article.title,
+              description: article.content,
+              imageUrl: article.imageUrl || '',
+              onClick: () => handleOpenArticleDetails(article),
+              buttonText: 'Leggi di più',
+            })),
+            'article'
+          )
+        ) : (
+          <Carousel
+            title="Articoli"
+            items={articles.map(article => ({
+              id: article.id,
+              title: article.title,
+              date: article.date,
+              description: article.content,
+              imageUrl: article.imageUrl || '',
+              onClick: () => handleOpenArticleDetails(article),
+              buttonText: 'Leggi di più',
+            }))}
+            sx={{
+              '& .carousel-item': {
+                padding: { xs: '8px', sm: '16px' },
+              },
+              '& img': {
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+                borderRadius: '8px',
+              },
+            }}
+            prevArrow={<IconButton><ArrowBack /></IconButton>}
+            nextArrow={<IconButton><ArrowForward /></IconButton>}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Modale Dettagli Evento */}
-      <Dialog
-        open={openDetailsDialog}
-        onClose={handleCloseDetails}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>Dettagli Evento</DialogTitle>
-        <DialogContent>
-          {selectedEvent && (
-            <>
-              {selectedEvent.imageUrl && (
-                <img
-                  src={selectedEvent.imageUrl}
-                  alt={selectedEvent.title}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    marginBottom: '16px',
-                    objectFit: 'cover',
-                  }}
-                />
-              )}
-              <Typography variant="h5">{selectedEvent.title}</Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
-                {selectedEvent.description}
-              </Typography>
-              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                {selectedEvent.date ? new Date(selectedEvent.date).toLocaleDateString() : ''} - {selectedEvent.location}
-              </Typography>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDetails} color="primary">
-            Chiudi
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AnimatePresence>
+        <Dialog
+          open={openDetailsDialog}
+          onClose={handleCloseDetails}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>Dettagli Evento</DialogTitle>
+          <DialogContent>
+            {selectedEvent && (
+              <>
+                {selectedEvent.imageUrl && (
+                  <img
+                    src={selectedEvent.imageUrl}
+                    alt={selectedEvent.title}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      borderRadius: '8px',
+                      marginBottom: '16px',
+                      objectFit: 'cover',
+                    }}
+                  />
+                )}
+                <Typography variant="h5">{selectedEvent.title}</Typography>
+                <Typography variant="body1" sx={{ mt: 2 }}>
+                  {selectedEvent.description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                  {selectedEvent.date ? new Date(selectedEvent.date).toLocaleDateString() : ''} - {selectedEvent.location}
+                </Typography>
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDetails} color="primary">
+              Chiudi
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </AnimatePresence>
 
-      {/* Modale Dettagli Articolo */}
-      <Dialog
-        open={openArticleDialog}
-        onClose={handleCloseArticleDetails}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>Dettagli Articolo</DialogTitle>
-        <DialogContent>
-          {selectedArticle && (
-            <>
-              {selectedArticle.imageUrl && (
-                <img
-                  src={selectedArticle.imageUrl}
-                  alt={selectedArticle.title}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    margin: '8px 0',
-                    objectFit: 'cover',
-                  }}
-                />
-              )}
-              <Typography variant="h5">{selectedArticle.title}</Typography>
-              <Typography variant="body1" sx={{ mt: 2 }}>
-                {selectedArticle.content}
-              </Typography>
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseArticleDetails} color="primary">
-            Chiudi
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AnimatePresence>
+        <Dialog
+          open={openArticleDialog}
+          onClose={handleCloseArticleDetails}
+          maxWidth="md"
+          fullWidth
+        >
+          <DialogTitle>Dettagli Articolo</DialogTitle>
+          <DialogContent>
+            {selectedArticle && (
+              <>
+                {selectedArticle.imageUrl && (
+                  <img
+                    src={selectedArticle.imageUrl}
+                    alt={selectedArticle.title}
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      borderRadius: '8px',
+                      margin: '8px 0',
+                      objectFit: 'cover',
+                    }}
+                  />
+                )}
+                <Typography variant="h5">{selectedArticle.title}</Typography>
+                <Typography variant="body1" sx={{ mt: 2 }}>
+                  {selectedArticle.content}
+                </Typography>
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseArticleDetails} color="primary">
+              Chiudi
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </AnimatePresence>
     </Container>
   );
 };

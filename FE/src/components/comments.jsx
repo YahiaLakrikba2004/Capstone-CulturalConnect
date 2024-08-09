@@ -22,7 +22,6 @@ const Comments = ({ articleId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Funzione per recuperare i commenti
   const fetchComments = async () => {
     setLoading(true);
     try {
@@ -59,12 +58,12 @@ const Comments = ({ articleId }) => {
     }
   };
 
-  const yourAuthToken = 'YOUR_AUTH_TOKEN'; // Sostituisci con il tuo token di autenticazione
+  const yourAuthToken = 'YOUR_AUTH_TOKEN'; 
 
   const handleLikeComment = async (commentId) => {
     try {
       await axios.post(`http://localhost:8080/api/comments/${commentId}/like`);
-      await fetchComments(); // Aggiorna la lista dei commenti
+      await fetchComments(); 
     } catch (err) {
       setError('Errore nel mettere mi piace al commento.');
     }
@@ -73,7 +72,7 @@ const Comments = ({ articleId }) => {
   const handleUnlikeComment = async (commentId) => {
     try {
       await axios.post(`http://localhost:8080/api/comments/${commentId}/unlike`);
-      await fetchComments(); // Aggiorna la lista dei commenti
+      await fetchComments(); 
     } catch (err) {
       setError('Errore nel rimuovere mi piace dal commento.');
     }

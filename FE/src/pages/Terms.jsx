@@ -26,7 +26,6 @@ const IconSection = styled(Box)(({ theme }) => ({
 }))
 
 const Terms = () => {
-  // Ottieni la data corrente nel formato '1 gennaio 2024'
   const currentDate = new Intl.DateTimeFormat('it-IT', {
     year: 'numeric',
     month: 'long',

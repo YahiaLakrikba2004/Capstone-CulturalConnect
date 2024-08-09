@@ -1,16 +1,15 @@
 import { Card, CardMedia, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-// StyledCard component
 export const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[4],
   transition: 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease',
-  padding: theme.spacing(2), // Ridotto il padding per mobile
+  padding: theme.spacing(2),
   textAlign: 'center',
   backgroundColor: theme.palette.background.paper,
   overflow: 'hidden',
-  minHeight: '300px', // Altezza minima adattata per mobile
+  minHeight: '300px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -26,11 +25,10 @@ export const StyledCard = styled(Card)(({ theme }) => ({
     transform: 'scale(0.98)',
   },
   [theme.breakpoints.down('sm')]: {
-    minHeight: '250px', // Altezza per schermi piccoli
+    minHeight: '250px', 
   },
 }));
 
-// StyledCardMedia component
 export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   height: 200,
   objectFit: 'cover',
@@ -39,7 +37,7 @@ export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   borderBottom: `1px solid ${theme.palette.divider}`,
   transition: 'transform 0.3s ease',
   [theme.breakpoints.down('sm')]: {
-    height: 150, // Altezza per schermi piccoli
+    height: 150, 
   },
   '&:hover': {
     transform: 'scale(1.1)',
@@ -47,7 +45,6 @@ export const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
   },
 }));
 
-// StyledButton component
 export const StyledButton = styled(Button)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   marginTop: theme.spacing(2),
@@ -78,7 +75,7 @@ export const StyledButton = styled(Button)(({ theme }) => ({
     boxShadow: theme.shadows[6],
   },
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1, 2), // Ridotto il padding per mobile
-    fontSize: '0.875rem', // Font size per mobile
+    padding: theme.spacing(1, 2), 
+    fontSize: '0.875rem', 
   },
 }));

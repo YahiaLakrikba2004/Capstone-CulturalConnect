@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem('token')
     if (token && !isTokenExpired(token)) {
       setIsAuthenticated(true)
-      setUser(decodeJwt(token)) // Decodifica il token per ottenere i dettagli dell'utente
+      setUser(decodeJwt(token)) 
     } else {
       setIsAuthenticated(false)
       setUser(null)
@@ -21,11 +21,11 @@ export const AuthProvider = ({ children }) => {
 
   const decodeJwt = token => {
     try {
-      const payload = token.split('.')[1] // Ottieni il payload
-      const decoded = atob(payload) // Decodifica il payload base64
-      return JSON.parse(decoded) // Parsea il payload JSON
+      const payload = token.split('.')[1] 
+      const decoded = atob(payload) 
+      return JSON.parse(decoded) 
     } catch (e) {
-      return null // Token non valido o non decodificabile
+      return null 
     }
   }
 
@@ -36,23 +36,23 @@ export const AuthProvider = ({ children }) => {
         const now = Date.now() / 1000
         return decoded.exp < now
       }
-      return true // Token non valido o non decodificabile
+      return true 
     } catch (e) {
-      return true // Token non valido o non decodificabile
+      return true 
     }
   }
 
   const login = token => {
     localStorage.setItem('token', token)
     setIsAuthenticated(true)
-    setUser(decodeJwt(token)) // Decodifica il token per ottenere i dettagli dell'utente
+    setUser(decodeJwt(token)) 
     navigate('/home')
   }
 
   const logout = () => {
     localStorage.removeItem('token')
     setIsAuthenticated(false)
-    setUser(null) // Rimuovi i dettagli dell'utente
+    setUser(null) 
     navigate('/login')
   }
 

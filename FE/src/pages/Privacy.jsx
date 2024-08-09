@@ -3,7 +3,6 @@ import { Container, Typography, Box, Divider } from '@mui/material'
 import { styled } from '@mui/system'
 import { AccessTime, Lock, Shield } from '@mui/icons-material'
 
-// Styled Components
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   marginBottom: theme.spacing(2),
@@ -26,7 +25,6 @@ const IconSection = styled(Box)(({ theme }) => ({
 }))
 
 const Privacy = () => {
-  // Ottieni la data corrente nel formato '1 gennaio 2024'
   const currentDate = new Intl.DateTimeFormat('it-IT', {
     year: 'numeric',
     month: 'long',

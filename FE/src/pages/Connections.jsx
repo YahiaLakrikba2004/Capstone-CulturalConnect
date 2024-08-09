@@ -20,6 +20,8 @@ import {
   DialogTitle,
   Alert,
   Divider,
+  useTheme,
+  useMediaQuery
 } from '@mui/material'
 import { keyframes } from '@mui/system'
 import { motion } from 'framer-motion'
@@ -34,7 +36,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import CheckIcon from '@mui/icons-material/Check'
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
 
-// Variabili per le animazioni
+// Animazioni e stili
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { opacity: 1, scale: 1 },
@@ -50,20 +52,22 @@ const scaleHover = keyframes`
   to { transform: scale(1.05); }
 `
 
-const cardStyles = {
+const cardStyles = theme => ({
   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   borderRadius: '16px',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
   overflow: 'hidden',
   position: 'relative',
-  height: 'auto',
+  height: '35vh', // Imposta l'altezza della card in vh
+  display: 'flex',
+  flexDirection: 'column',
   '&:hover': {
     animation: `${scaleHover} 0.3s ease-in-out`,
     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
   },
-}
+})
 
-const onlineStatusStyles = {
+const onlineStatusStyles = theme => ({
   position: 'absolute',
   top: '16px',
   right: '16px',
@@ -74,14 +78,13 @@ const onlineStatusStyles = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}
+})
 
-const statusIconStyles = {
+const statusIconStyles = theme => ({
   fontSize: '1.2rem',
-}
+})
 
-// Stili per la paginazione
-const paginationButtonStyles = {
+const paginationButtonStyles = theme => ({
   mx: 1,
   px: 3,
   py: 1.5,
@@ -89,7 +92,7 @@ const paginationButtonStyles = {
   fontWeight: 600,
   minWidth: '120px',
   fontSize: '16px',
-}
+})
 
 const Connections = () => {
   const [connections, setConnections] = useState([])
@@ -102,13 +105,13 @@ const Connections = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false)
   const [selectedConnection, setSelectedConnection] = useState(null)
   const itemsPerPage = 6
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
-  // Funzione per simulare lo stato di connessione
-  const simulateOnlineStatus = connectionId => {
-    return Math.random() > 0.2 // 80% di probabilità di essere online
-  }
+  // Simulazione dello stato di connessione
+  const simulateOnlineStatus = connectionId => Math.random() > 0.2
 
-  // Funzione per il recupero delle connessioni
+  // Recupero delle connessioni
   const fetchConnections = useCallback(async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/connections')
@@ -135,7 +138,6 @@ const Connections = () => {
     fetchConnections()
   }, [fetchConnections])
 
-  // Filtra le connessioni quando cambia il termine di ricerca o le connessioni
   useEffect(() => {
     const filtered = connections.filter(
       connection =>
@@ -148,17 +150,16 @@ const Connections = () => {
     setCurrentPage(1)
   }, [searchTerm, connections])
 
-  // Gestione dell'aggiunta come amico
+  // Gestione delle azioni
   const handleAddFriend = async id => {
     if (connecting === id) return
-
     setConnecting(id)
     try {
       const response = await axios.post(
         'http://localhost:8080/api/friendships/send',
         null,
         {
-          params: { requesterId: 1, receiverId: id }, // Assicurati che `requesterId` e `receiverId` siano corretti
+          params: { requesterId: 1, receiverId: id },
         }
       )
       if (response.status === 200) {
@@ -172,30 +173,23 @@ const Connections = () => {
         )
       }
     } catch (error) {
-      console.error(
-        'Error sending friend request:',
-        error.response ? error.response.data : error.message
-      )
-      if (error.response && error.response.status === 403) {
-        toast.error('Richiesta di amicizia già inviata!')
-      } else {
-        toast.error("Errore nell'invio della richiesta di amicizia.")
-      }
+      console.error('Error sending friend request:', error.response ? error.response.data : error.message)
+      toast.error(error.response && error.response.status === 403
+        ? 'Richiesta di amicizia già inviata!'
+        : "Errore nell'invio della richiesta di amicizia.")
     } finally {
       setConnecting(null)
     }
   }
 
-  // Gestione della rimozione di una richiesta di amicizia
   const handleRemoveFriendRequest = async id => {
     if (connecting === id) return
-
     setConnecting(id)
     try {
       const response = await axios.delete(
         'http://localhost:8080/api/friendships/cancel',
         {
-          params: { requesterId: 1, receiverId: id }, // Assicurati che `requesterId` e `receiverId` siano corretti
+          params: { requesterId: 1, receiverId: id },
         }
       )
       if (response.status === 200) {
@@ -209,17 +203,13 @@ const Connections = () => {
         )
       }
     } catch (error) {
-      console.error(
-        'Error canceling friend request:',
-        error.response ? error.response.data : error.message
-      )
+      console.error('Error canceling friend request:', error.response ? error.response.data : error.message)
       toast.error('Errore nella cancellazione della richiesta di amicizia.')
     } finally {
       setConnecting(null)
     }
   }
 
-  // Gestione dell'accettazione di una richiesta di amicizia
   const handleAcceptFriendRequest = async receiverId => {
     try {
       const response = await axios.post(
@@ -240,30 +230,23 @@ const Connections = () => {
     } catch (error) {
       console.error('Error accepting friend request:', error)
       toast.error(
-        error.response?.data ||
-          "Errore durante l'accettazione della richiesta di amicizia"
+        error.response?.data || "Errore durante l'accettazione della richiesta di amicizia"
       )
     }
   }
 
-  // Gestione della modifica del termine di ricerca
-  const handleSearchChange = event => {
-    setSearchTerm(event.target.value)
-  }
+  const handleSearchChange = event => setSearchTerm(event.target.value)
 
-  // Gestione del cambio di pagina
   const handlePageChange = page => {
     if (page < 1 || page > totalPages) return
     setCurrentPage(page)
   }
 
-  // Apertura del dialogo dei dettagli
   const handleDetailDialogOpen = connection => {
     setSelectedConnection(connection)
     setDetailDialogOpen(true)
   }
 
-  // Chiusura del dialogo dei dettagli
   const handleDetailDialogClose = () => {
     setDetailDialogOpen(false)
     setSelectedConnection(null)
@@ -338,7 +321,6 @@ const Connections = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
-      {/* Box Connessioni */}
       <Box
         sx={{
           mt: { xs: 3, sm: 4 },
@@ -360,7 +342,7 @@ const Connections = () => {
             mb: 2,
             fontWeight: 700,
             color: theme => theme.palette.text.primary,
-            fontSize: { xs: '1.8rem', sm: '2.2rem' },
+            fontSize: { xs: '2rem', sm: '2.2rem' },
             textShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
           }}
         >
@@ -396,120 +378,126 @@ const Connections = () => {
         />
       </Box>
 
-      {/* Connessioni */}
       <Box sx={{ mb: 6 }}>
-        <Grid container spacing={4}>
-          {currentConnections.map(connection => (
-            <Grid item xs={12} sm={6} md={4} key={connection.id}>
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={cardVariants}
+  <Grid container spacing={4}>
+    {currentConnections.map(connection => (
+      <Grid item xs={12} sm={6} md={4} key={connection.id}>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={cardVariants}
+        >
+          <Card
+            sx={{
+              height: '80vh', 
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              ...cardStyles(theme),
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="50%" 
+              image={connection.imageUrl || 'https://via.placeholder.com/160'}
+              alt={connection.name}
+              sx={{ objectFit: 'fit', width: '100%' }}
+            />
+            <CardContent
+              sx={{
+                flex: 1, 
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                overflow: 'hidden',
+              }}
+            >
+              <Box sx={{ overflow: 'hidden' }}>
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontWeight: 600, overflow: 'hidden' }}
+                >
+                  {connection.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden' }}>
+                  {connection.interests.join(', ')}
+                </Typography>
+              </Box>
+              <Box />
+            </CardContent>
+            <CardActions>
+              <Box sx={onlineStatusStyles(theme)}>
+                {connection.online ? (
+                  <Tooltip title="Online">
+                    <CircleIcon sx={statusIconStyles(theme)} color="success" />
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Offline">
+                    <CancelIcon sx={statusIconStyles(theme)} color="error" />
+                  </Tooltip>
+                )}
+              </Box>
+              <IconButton
+                color="primary"
+                disabled={connecting === connection.id}
+                onClick={() => handleDetailDialogOpen(connection)}
               >
-                <Card sx={cardStyles}>
-                  <CardMedia
-                    component="img"
-                    height="160"
-                    image={
-                      connection.imageUrl || 'https://via.placeholder.com/160'
+                <InfoOutlinedIcon />
+              </IconButton>
+              {connection.friendshipStatus === 'ACCEPTED' ? (
+                <Typography variant="body2" color="success">
+                  Amico
+                </Typography>
+              ) : connection.friendshipStatus === 'PENDING' ? (
+                <>
+                  <Typography variant="body2" color="warning">
+                    Richiesta Inviata
+                  </Typography>
+                  <IconButton
+                    color="primary"
+                    disabled={connecting === connection.id}
+                    onClick={() =>
+                      handleRemoveFriendRequest(connection.id)
                     }
-                    alt={connection.name}
-                    sx={{ objectFit: 'cover' }} // Mantiene la proporzione
-                  />
-                  <CardContent
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: '100%',
-                      justifyContent: 'space-between',
-                    }}
                   >
-                    <Box>
-                      <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ fontWeight: 600 }}
-                      >
-                        {connection.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {connection.interests.join(', ')}
-                      </Typography>
-                    </Box>
-                    <Box>{/* Spazio per le azioni */}</Box>
-                  </CardContent>
-                  <CardActions>
-                    <Box sx={onlineStatusStyles}>
-                      {connection.online ? (
-                        <Tooltip title="Online">
-                          <CircleIcon sx={statusIconStyles} color="success" />
-                        </Tooltip>
-                      ) : (
-                        <Tooltip title="Offline">
-                          <CancelIcon sx={statusIconStyles} color="error" />
-                        </Tooltip>
-                      )}
-                    </Box>
-                    <IconButton
-                      color="primary"
-                      disabled={connecting === connection.id}
-                      onClick={() => handleDetailDialogOpen(connection)}
-                    >
-                      <InfoOutlinedIcon />
-                    </IconButton>
-                    {connection.friendshipStatus === 'ACCEPTED' ? (
-                      <Typography variant="body2" color="success">
-                        Amico
-                      </Typography>
-                    ) : connection.friendshipStatus === 'PENDING' ? (
-                      <>
-                        <Typography variant="body2" color="warning">
-                          Richiesta Inviata
-                        </Typography>
-                        <IconButton
-                          color="primary"
-                          disabled={connecting === connection.id}
-                          onClick={() =>
-                            handleRemoveFriendRequest(connection.id)
-                          }
-                        >
-                          <RemoveCircleOutlineIcon />
-                        </IconButton>
-                      </>
-                    ) : (
-                      <IconButton
-                        color="primary"
-                        disabled={connecting === connection.id}
-                        onClick={() => handleAddFriend(connection.id)}
-                      >
-                        <PersonAddIcon />
-                      </IconButton>
-                    )}
-                    {connection.friendshipStatus === 'REQUESTED' && (
-                      <IconButton
-                        color="primary"
-                        disabled={connecting === connection.id}
-                        onClick={() => handleAcceptFriendRequest(connection.id)}
-                      >
-                        <CheckIcon />
-                      </IconButton>
-                    )}
-                  </CardActions>
-                </Card>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                    <RemoveCircleOutlineIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <IconButton
+                  color="primary"
+                  disabled={connecting === connection.id}
+                  onClick={() => handleAddFriend(connection.id)}
+                >
+                  <PersonAddIcon />
+                </IconButton>
+              )}
+              {connection.friendshipStatus === 'REQUESTED' && (
+                <IconButton
+                  color="primary"
+                  disabled={connecting === connection.id}
+                  onClick={() => handleAcceptFriendRequest(connection.id)}
+                >
+                  <CheckIcon />
+                </IconButton>
+              )}
+            </CardActions>
+          </Card>
+        </motion.div>
+      </Grid>
+    ))}
+  </Grid>
+</Box>
 
-      {/* Paginazione */}
+
       <Box sx={{ mt: 4, textAlign: 'center' }}>
         <Button
           variant="contained"
           color="primary"
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
-          sx={paginationButtonStyles}
+          sx={paginationButtonStyles(theme)}
         >
           Precedente
         </Button>
@@ -521,13 +509,12 @@ const Connections = () => {
           color="primary"
           disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
-          sx={paginationButtonStyles}
+          sx={paginationButtonStyles(theme)}
         >
           Successivo
         </Button>
       </Box>
 
-      {/* Dialogo Dettagli */}
       <Dialog
         open={detailDialogOpen}
         onClose={handleDetailDialogClose}
@@ -556,7 +543,6 @@ const Connections = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Toast Container */}
       <ToastContainer
         position="bottom-right"
         autoClose={5000}

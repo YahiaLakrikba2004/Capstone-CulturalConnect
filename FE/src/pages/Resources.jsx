@@ -17,7 +17,6 @@ import {
 import CloseIcon from '@mui/icons-material/Close'
 import { styled, useTheme } from '@mui/system'
 
-// Componenti Stilizzati
 const StyledCard = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',

@@ -1,4 +1,3 @@
-// src/pages/Logout.jsx
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Container, Typography, CircularProgress, Snackbar, Alert as MuiAlert } from '@mui/material'
@@ -14,20 +13,14 @@ const Logout = () => {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        // Simula una richiesta di logout se necessario
-        // Se il tuo server gestisce il logout tramite API, decommenta la chiamata seguente
-        // await axios.post('http://localhost:8080/api/logout', {}, {
-        //   headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-        // });
-
-        // Rimuove il token di autenticazione dal localStorage
+       
         localStorage.removeItem('authToken')
-        setLoading(false) // Imposta lo stato di caricamento su false dopo aver rimosso il token
-        navigate('/login') // Reindirizza alla pagina di login
+        setLoading(false) 
+        navigate('/login') 
       } catch (err) {
         console.error('Logout failed', err)
-        setLoading(false) // Anche in caso di errore, ferma il caricamento
-        setError('Logout failed. Please try again.') // Imposta un messaggio di errore
+        setLoading(false) 
+        setError('Logout failed. Please try again.') 
       }
     }
 

@@ -1,4 +1,3 @@
-// Home.js
 import React, { useState } from 'react';
 import {
   Container, Typography, Grid, Box, Dialog, DialogTitle, DialogContent, IconButton, TextField
@@ -7,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { StyledCard, StyledButton } from '../components/StyledComponents';
 import { Event, People, LibraryBooks, Article, Close } from '@mui/icons-material';
 import Footer from '../components/Footer';
-import Testimonials from '../components/Testimonial'; // Verifica il percorso e il nome
+import Testimonials from '../components/Testimonial';
 
 import Logo from '../styles/Logo.jpg';
 import { motion } from 'framer-motion';
@@ -52,10 +51,10 @@ const Home = () => {
           sx={{
             position: 'relative',
             overflow: 'hidden',
-            height: { xs: '300px', sm: '400px', md: '500px' }, // Altezza reattiva
+            height: { xs: '300px', sm: '400px', md: '500px' },
             backgroundImage: `url(${heroBackground})`,
             backgroundSize: 'cover',
-            backgroundAttachment: 'fixed', // Effetto parallax
+            backgroundAttachment: 'fixed',
             backgroundPosition: 'center',
             display: 'flex',
             alignItems: 'center',
@@ -68,7 +67,7 @@ const Home = () => {
           <Box
             sx={{
               backgroundColor: 'rgba(0, 0, 0, 0.6)',
-              padding: { xs: 2, sm: 3, md: 4 }, // Padding reattivo
+              padding: { xs: 2, sm: 3, md: 4 },
               borderRadius: '12px',
               maxWidth: '90%',
               textAlign: 'center',
@@ -174,8 +173,8 @@ const Home = () => {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    height: '100%', // Altezza uniforme
-                    minHeight: '300px', // Altezza minima uniforme
+                    height: '100%',
+                    minHeight: '300px',
                   }}
                 >
                   <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -283,7 +282,6 @@ const Home = () => {
         </Dialog>
       </Container>
       <Testimonials />
-       {/* Corretto uso del componente Testimonials */}
       <Footer />
     </div>
   );
