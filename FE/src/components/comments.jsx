@@ -34,7 +34,6 @@ const Comments = ({ articleId }) => {
     }
   };
 
-  // Recupera i commenti quando il componente viene montato o quando l'ID dell'articolo cambia
   useEffect(() => {
     fetchComments();
   }, [articleId]);
@@ -49,7 +48,7 @@ const Comments = ({ articleId }) => {
       try {
         await axios.post('http://localhost:8080/api/comments', { articleId, text: newComment });
         setNewComment('');
-        await fetchComments(); // Aggiorna la lista dei commenti
+        await fetchComments(); 
       } catch (err) {
         setError("Errore nell'aggiunta del commento.");
       } finally {
@@ -57,8 +56,6 @@ const Comments = ({ articleId }) => {
       }
     }
   };
-
-  const yourAuthToken = 'YOUR_AUTH_TOKEN'; 
 
   const handleLikeComment = async (commentId) => {
     try {

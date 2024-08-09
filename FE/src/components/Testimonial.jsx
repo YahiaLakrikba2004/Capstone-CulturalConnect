@@ -34,7 +34,7 @@ const Testimonials = () => {
         ref={titleRef}
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: titleInView ? 1 : 0, y: titleInView ? 0 : -50 }}
-        transition={{ duration: 1, type: 'spring', stiffness: 50 }}
+        transition={{ duration: 0.8, type: 'spring', stiffness: 60 }}
       >
         <Typography
           variant="h4"
@@ -43,7 +43,7 @@ const Testimonials = () => {
             textAlign: 'center',
             mb: 6,
             fontWeight: 700,
-            fontSize: '2.5rem',
+            fontSize: { xs: '1.8rem', sm: '2.5rem' },
             color: 'text.primary',
           }}
         >
@@ -59,15 +59,16 @@ const Testimonials = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: '300px',
+                minHeight: 400,
                 textAlign: 'center',
                 p: 4,
                 bgcolor: 'background.paper',
-                boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
-                transition: 'transform 0.3s ease',
+                borderRadius: 2,
+                boxShadow: 3,
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                 '&:hover': {
                   transform: 'scale(1.05)',
-                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
+                  boxShadow: 6,
                 },
               }}
             >
@@ -78,8 +79,8 @@ const Testimonials = () => {
                   width: 100,
                   height: 100,
                   mb: 3,
-                  border: `4px solid ${theme => theme.palette.primary.main}`,
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  border: (theme) => `4px solid ${theme.palette.primary.main}`,
+                  boxShadow: 3,
                 }}
               />
               <Typography
@@ -88,7 +89,7 @@ const Testimonials = () => {
                   fontWeight: 600,
                   mb: 2,
                   color: 'text.primary',
-                  fontSize: '1.2rem',
+                  fontSize: { xs: '1rem', sm: '1.2rem' },
                 }}
               >
                 {testimonial.name}
@@ -98,8 +99,9 @@ const Testimonials = () => {
                 sx={{
                   color: 'text.secondary',
                   fontStyle: 'italic',
-                  fontSize: '1rem',
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
                   lineHeight: 1.5,
+                  px: 2,
                 }}
               >
                 "{testimonial.text}"

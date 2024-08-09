@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 import {
   AppBar,
   Toolbar,
@@ -13,9 +13,9 @@ import {
   useMediaQuery,
   styled,
   Drawer,
-} from '@mui/material';
-import { Link } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
+} from '@mui/material'
+import { Link } from 'react-router-dom'
+import MenuIcon from '@mui/icons-material/Menu'
 import {
   FaUserCircle,
   FaSignOutAlt,
@@ -26,23 +26,24 @@ import {
   FaSignInAlt,
   FaUserPlus,
   FaUserFriends,
-  FaFileAlt
-} from 'react-icons/fa';
-import Logo from '../styles/Logo.jpg';
-import { motion } from 'framer-motion';
-import MenuItems from '../components/MenuItems';
+  FaFileAlt,
+  FaInfoCircle, 
+} from 'react-icons/fa'
+import Logo from '../styles/Logo.jpg'
+import { motion } from 'framer-motion'
+import MenuItems from '../components/MenuItems'
 
 const LogoContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
-}));
+}))
 
 const LogoImage = styled('img')(({ theme }) => ({
   height: '50px',
   borderRadius: '12px',
   boxShadow: theme.shadows[6],
-}));
+}))
 
 const NavButton = styled(Button)(({ theme }) => ({
   color: theme.palette.common.white,
@@ -62,7 +63,7 @@ const NavButton = styled(Button)(({ theme }) => ({
   '&:active': {
     backgroundColor: theme.palette.secondary.main,
   },
-}));
+}))
 
 const CustomToolbar = styled(Toolbar)(({ theme }) => ({
   background: 'linear-gradient(to right, #ff8a65, #ff6f61)',
@@ -74,7 +75,7 @@ const CustomToolbar = styled(Toolbar)(({ theme }) => ({
     flexDirection: 'row',
     alignItems: 'center',
   },
-}));
+}))
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
   '& .MuiMenu-paper': {
@@ -95,7 +96,7 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
       minWidth: '40px',
     },
   },
-}));
+}))
 
 const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '.MuiDrawer-paper': {
@@ -106,42 +107,42 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     padding: theme.spacing(2),
     overflow: 'auto',
   },
-}));
+}))
 
 const CustomAppBar = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { isAuthenticated, logout } = useAuth();
-  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const { isAuthenticated, logout } = useAuth()
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const handleMobileMenuClick = event => {
-    setUserMenuAnchorEl(event.currentTarget);
-    setUserMenuOpen(false);
-  };
+    setUserMenuAnchorEl(event.currentTarget)
+    setUserMenuOpen(false)
+  }
 
   const handleMobileMenuClose = () => {
-    setUserMenuAnchorEl(null);
-  };
+    setUserMenuAnchorEl(null)
+  }
 
   const handleUserMenuClick = event => {
-    setUserMenuAnchorEl(event.currentTarget);
-    setUserMenuOpen(true);
-  };
+    setUserMenuAnchorEl(event.currentTarget)
+    setUserMenuOpen(true)
+  }
 
   const handleUserMenuClose = () => {
-    setUserMenuOpen(false);
-  };
+    setUserMenuOpen(false)
+  }
 
   const handleLogout = async () => {
-    await logout();
-    window.location.href = '/login';
-  };
+    await logout()
+    window.location.href = '/login'
+  }
 
   const handleDrawerToggle = () => {
-    setDrawerOpen(!drawerOpen);
-  };
+    setDrawerOpen(!drawerOpen)
+  }
 
   return (
     <AppBar position="static">
@@ -169,15 +170,31 @@ const CustomAppBar = () => {
           <NavButton component={Link} to="/explore" startIcon={<FaSearch />}>
             Explore
           </NavButton>
-          <NavButton component={Link} to="/events" startIcon={<FaCalendarAlt />}>
+          <NavButton
+            component={Link}
+            to="/events"
+            startIcon={<FaCalendarAlt />}
+          >
             Events
           </NavButton>
-          <NavButton component={Link} to="/connections" startIcon={<FaUserFriends />}>
+          <NavButton
+            component={Link}
+            to="/connections"
+            startIcon={<FaUserFriends />}
+          >
             Connections
           </NavButton>
           <NavButton component={Link} to="/articles" startIcon={<FaFileAlt />}>
             Articles
           </NavButton>
+          <NavButton
+            component={Link}
+            to="/about-us"
+            startIcon={<FaInfoCircle />}
+          >
+            Chi Siamo
+          </NavButton>
+
           {isAuthenticated ? (
             <IconButton
               color="inherit"
@@ -190,10 +207,18 @@ const CustomAppBar = () => {
             </IconButton>
           ) : (
             <>
-              <NavButton component={Link} to="/register" startIcon={<FaUserPlus />}>
+              <NavButton
+                component={Link}
+                to="/register"
+                startIcon={<FaUserPlus />}
+              >
                 Register
               </NavButton>
-              <NavButton component={Link} to="/login" startIcon={<FaSignInAlt />}>
+              <NavButton
+                component={Link}
+                to="/login"
+                startIcon={<FaSignInAlt />}
+              >
                 Login
               </NavButton>
             </>
@@ -264,6 +289,14 @@ const CustomAppBar = () => {
                     <FaCog style={{ marginRight: '8px' }} />
                     Settings
                   </MenuItem>
+                  <MenuItem
+                    component={Link}
+                    to="/about-us"
+                    onClick={handleUserMenuClose}
+                  >
+                    <FaInfoCircle style={{ marginRight: '8px' }} />
+                    Chi Siamo
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>
                     <FaSignOutAlt style={{ marginRight: '8px' }} />
                     Logout
@@ -275,7 +308,7 @@ const CustomAppBar = () => {
         </Box>
       </CustomToolbar>
     </AppBar>
-  );
-};
+  )
+}
 
-export default CustomAppBar;
+export default CustomAppBar

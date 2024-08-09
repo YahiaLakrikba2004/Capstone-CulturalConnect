@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import {
   Container,
   Typography,
@@ -22,50 +22,51 @@ import {
   Divider,
   useTheme,
   useMediaQuery
-} from '@mui/material'
-import { keyframes } from '@mui/system'
-import { motion } from 'framer-motion'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import CircleIcon from '@mui/icons-material/Circle'
-import CancelIcon from '@mui/icons-material/Cancel'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import CheckIcon from '@mui/icons-material/Check'
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline'
+} from '@mui/material';
+import { keyframes } from '@mui/system';
+import { motion } from 'framer-motion';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CircleIcon from '@mui/icons-material/Circle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CheckIcon from '@mui/icons-material/Check';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
-// Animazioni e stili
+// Definizione delle animazioni
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: { opacity: 1, scale: 1 },
-}
+};
 
 const fadeIn = keyframes`
   from { opacity: 0; }
   to { opacity: 1; }
-`
+`;
 
 const scaleHover = keyframes`
   from { transform: scale(1); }
   to { transform: scale(1.05); }
-`
+`;
 
+// Stili per i componenti
 const cardStyles = theme => ({
   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   borderRadius: '16px',
   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
   overflow: 'hidden',
   position: 'relative',
-  height: '35vh', // Imposta l'altezza della card in vh
+  height: '35vh',
   display: 'flex',
   flexDirection: 'column',
   '&:hover': {
     animation: `${scaleHover} 0.3s ease-in-out`,
     boxShadow: '0 8px 16px rgba(0, 0, 0, 0.3)',
   },
-})
+});
 
 const onlineStatusStyles = theme => ({
   position: 'absolute',
@@ -78,11 +79,11 @@ const onlineStatusStyles = theme => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-})
+});
 
 const statusIconStyles = theme => ({
   fontSize: '1.2rem',
-})
+});
 
 const paginationButtonStyles = theme => ({
   mx: 1,
@@ -92,51 +93,52 @@ const paginationButtonStyles = theme => ({
   fontWeight: 600,
   minWidth: '120px',
   fontSize: '16px',
-})
+});
 
+// Componente principale
 const Connections = () => {
-  const [connections, setConnections] = useState([])
-  const [filteredConnections, setFilteredConnections] = useState([])
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [connecting, setConnecting] = useState(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [detailDialogOpen, setDetailDialogOpen] = useState(false)
-  const [selectedConnection, setSelectedConnection] = useState(null)
-  const itemsPerPage = 6
-  const theme = useTheme()
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const [connections, setConnections] = useState([]);
+  const [filteredConnections, setFilteredConnections] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [selectedConnection, setSelectedConnection] = useState(null);
+  const itemsPerPage = 6;
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Simulazione dello stato di connessione
-  const simulateOnlineStatus = connectionId => Math.random() > 0.2
+  const simulateOnlineStatus = connectionId => Math.random() > 0.2;
 
   // Recupero delle connessioni
   const fetchConnections = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/connections')
+      const response = await axios.get('http://localhost:8080/api/connections');
       if (Array.isArray(response.data)) {
         const updatedConnections = response.data.map(connection => ({
           ...connection,
           online: simulateOnlineStatus(connection.id),
-        }))
-        setConnections(updatedConnections)
-        setFilteredConnections(updatedConnections)
+        }));
+        setConnections(updatedConnections);
+        setFilteredConnections(updatedConnections);
       } else {
-        throw new Error('Data is not an array')
+        throw new Error('Data is not an array');
       }
     } catch (error) {
-      console.error('Error fetching connections:', error)
-      setError('Errore nel recupero delle connessioni. Riprova più tardi.')
-      toast.error('Errore nel recupero delle connessioni. Riprova più tardi.')
+      console.error('Error fetching connections:', error);
+      setError('Errore nel recupero delle connessioni. Riprova più tardi.');
+      toast.error('Errore nel recupero delle connessioni. Riprova più tardi.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    fetchConnections()
-  }, [fetchConnections])
+    fetchConnections();
+  }, [fetchConnections]);
 
   useEffect(() => {
     const filtered = connections.filter(
@@ -145,15 +147,15 @@ const Connections = () => {
         connection.interests.some(interest =>
           interest.toLowerCase().includes(searchTerm.toLowerCase())
         )
-    )
-    setFilteredConnections(filtered)
-    setCurrentPage(1)
-  }, [searchTerm, connections])
+    );
+    setFilteredConnections(filtered);
+    setCurrentPage(1);
+  }, [searchTerm, connections]);
 
   // Gestione delle azioni
   const handleAddFriend = async id => {
-    if (connecting === id) return
-    setConnecting(id)
+    if (connecting === id) return;
+    setConnecting(id);
     try {
       const response = await axios.post(
         'http://localhost:8080/api/friendships/send',
@@ -161,54 +163,54 @@ const Connections = () => {
         {
           params: { requesterId: 1, receiverId: id },
         }
-      )
+      );
       if (response.status === 200) {
-        toast.success('Richiesta di amicizia inviata con successo!')
+        toast.success('Richiesta di amicizia inviata con successo!');
         setConnections(prevConnections =>
           prevConnections.map(connection =>
             connection.id === id
               ? { ...connection, friendshipStatus: 'PENDING' }
               : connection
           )
-        )
+        );
       }
     } catch (error) {
-      console.error('Error sending friend request:', error.response ? error.response.data : error.message)
+      console.error('Error sending friend request:', error.response ? error.response.data : error.message);
       toast.error(error.response && error.response.status === 403
         ? 'Richiesta di amicizia già inviata!'
-        : "Errore nell'invio della richiesta di amicizia.")
+        : "Errore nell'invio della richiesta di amicizia.");
     } finally {
-      setConnecting(null)
+      setConnecting(null);
     }
-  }
+  };
 
   const handleRemoveFriendRequest = async id => {
-    if (connecting === id) return
-    setConnecting(id)
+    if (connecting === id) return;
+    setConnecting(id);
     try {
       const response = await axios.delete(
         'http://localhost:8080/api/friendships/cancel',
         {
           params: { requesterId: 1, receiverId: id },
         }
-      )
+      );
       if (response.status === 200) {
-        toast.success('Richiesta di amicizia annullata con successo!')
+        toast.success('Richiesta di amicizia annullata con successo!');
         setConnections(prevConnections =>
           prevConnections.map(connection =>
             connection.id === id
               ? { ...connection, friendshipStatus: 'NOT_FRIEND' }
               : connection
           )
-        )
+        );
       }
     } catch (error) {
-      console.error('Error canceling friend request:', error.response ? error.response.data : error.message)
-      toast.error('Errore nella cancellazione della richiesta di amicizia.')
+      console.error('Error canceling friend request:', error.response ? error.response.data : error.message);
+      toast.error('Errore nella cancellazione della richiesta di amicizia.');
     } finally {
-      setConnecting(null)
+      setConnecting(null);
     }
-  }
+  };
 
   const handleAcceptFriendRequest = async receiverId => {
     try {
@@ -218,39 +220,39 @@ const Connections = () => {
         {
           params: { receiverId },
         }
-      )
-      toast.success('Richiesta di amicizia accettata con successo!')
+      );
+      toast.success('Richiesta di amicizia accettata con successo!');
       setConnections(prevConnections =>
         prevConnections.map(connection =>
           connection.id === receiverId
             ? { ...connection, friendshipStatus: 'ACCEPTED' }
             : connection
         )
-      )
+      );
     } catch (error) {
-      console.error('Error accepting friend request:', error)
+      console.error('Error accepting friend request:', error);
       toast.error(
         error.response?.data || "Errore durante l'accettazione della richiesta di amicizia"
-      )
+      );
     }
-  }
+  };
 
-  const handleSearchChange = event => setSearchTerm(event.target.value)
+  const handleSearchChange = event => setSearchTerm(event.target.value);
 
   const handlePageChange = page => {
-    if (page < 1 || page > totalPages) return
-    setCurrentPage(page)
-  }
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   const handleDetailDialogOpen = connection => {
-    setSelectedConnection(connection)
-    setDetailDialogOpen(true)
-  }
+    setSelectedConnection(connection);
+    setDetailDialogOpen(true);
+  };
 
   const handleDetailDialogClose = () => {
-    setDetailDialogOpen(false)
-    setSelectedConnection(null)
-  }
+    setDetailDialogOpen(false);
+    setSelectedConnection(null);
+  };
 
   // Stato di caricamento
   if (loading) {
@@ -275,7 +277,7 @@ const Connections = () => {
           </Typography>
         </Box>
       </Container>
-    )
+    );
   }
 
   // Stato di errore
@@ -307,17 +309,17 @@ const Connections = () => {
           </Button>
         </Box>
       </Container>
-    )
+    );
   }
 
   // Calcolo della paginazione
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentConnections = filteredConnections.slice(
     indexOfFirstItem,
     indexOfLastItem
-  )
-  const totalPages = Math.ceil(filteredConnections.length / itemsPerPage)
+  );
+  const totalPages = Math.ceil(filteredConnections.length / itemsPerPage);
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
@@ -379,141 +381,139 @@ const Connections = () => {
       </Box>
 
       <Box sx={{ mb: 6 }}>
-  <Grid container spacing={4}>
-    {currentConnections.map(connection => (
-      <Grid item xs={12} sm={6} md={4} key={connection.id}>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={cardVariants}
-        >
-          <Card
-            sx={{
-              height: '80vh', 
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              ...cardStyles(theme),
-            }}
-          >
-            <CardMedia
-              component="img"
-              height="50%" 
-              image={connection.imageUrl || 'https://via.placeholder.com/160'}
-              alt={connection.name}
-              sx={{ objectFit: 'fit', width: '100%' }}
-            />
-            <CardContent
-              sx={{
-                flex: 1, 
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                overflow: 'hidden',
-              }}
-            >
-              <Box sx={{ overflow: 'hidden' }}>
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontWeight: 600, overflow: 'hidden' }}
-                >
-                  {connection.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden' }}>
-                  {connection.interests.join(', ')}
-                </Typography>
-              </Box>
-              <Box />
-            </CardContent>
-            <CardActions>
-              <Box sx={onlineStatusStyles(theme)}>
-                {connection.online ? (
-                  <Tooltip title="Online">
-                    <CircleIcon sx={statusIconStyles(theme)} color="success" />
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Offline">
-                    <CancelIcon sx={statusIconStyles(theme)} color="error" />
-                  </Tooltip>
-                )}
-              </Box>
-              <IconButton
-                color="primary"
-                disabled={connecting === connection.id}
-                onClick={() => handleDetailDialogOpen(connection)}
+        <Grid container spacing={4}>
+          {currentConnections.map(connection => (
+            <Grid item xs={12} sm={6} md={4} key={connection.id}>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={cardVariants}
               >
-                <InfoOutlinedIcon />
-              </IconButton>
-              {connection.friendshipStatus === 'ACCEPTED' ? (
-                <Typography variant="body2" color="success">
-                  Amico
-                </Typography>
-              ) : connection.friendshipStatus === 'PENDING' ? (
-                <>
-                  <Typography variant="body2" color="warning">
-                    Richiesta Inviata
-                  </Typography>
-                  <IconButton
-                    color="primary"
-                    disabled={connecting === connection.id}
-                    onClick={() =>
-                      handleRemoveFriendRequest(connection.id)
-                    }
+                <Card
+                  sx={{
+                    height: '80vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    ...cardStyles(theme),
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="50%"
+                    image={connection.imageUrl || 'https://via.placeholder.com/160'}
+                    alt={connection.name}
+                    sx={{ objectFit: 'fit', width: '100%' }}
+                  />
+                  <CardContent
+                    sx={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      overflow: 'hidden',
+                    }}
                   >
-                    <RemoveCircleOutlineIcon />
-                  </IconButton>
-                </>
-              ) : (
-                <IconButton
-                  color="primary"
-                  disabled={connecting === connection.id}
-                  onClick={() => handleAddFriend(connection.id)}
-                >
-                  <PersonAddIcon />
-                </IconButton>
-              )}
-              {connection.friendshipStatus === 'REQUESTED' && (
-                <IconButton
-                  color="primary"
-                  disabled={connecting === connection.id}
-                  onClick={() => handleAcceptFriendRequest(connection.id)}
-                >
-                  <CheckIcon />
-                </IconButton>
-              )}
-            </CardActions>
-          </Card>
-        </motion.div>
-      </Grid>
-    ))}
-  </Grid>
+                    <Box sx={{ overflow: 'hidden' }}>
+                      <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{ fontWeight: 600, overflow: 'hidden' }}
+                      >
+                        {connection.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ overflow: 'hidden' }}>
+                        {connection.interests.join(', ')}
+                      </Typography>
+                    </Box>
+                    <Box />
+                  </CardContent>
+                  <CardActions>
+                    <Box sx={onlineStatusStyles(theme)}>
+                      {connection.online ? (
+                        <Tooltip title="Online">
+                          <CircleIcon sx={statusIconStyles(theme)} color="success" />
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title="Offline">
+                          <CancelIcon sx={statusIconStyles(theme)} color="error" />
+                        </Tooltip>
+                      )}
+                    </Box>
+                    <IconButton
+                      color="primary"
+                      disabled={connecting === connection.id}
+                      onClick={() => handleDetailDialogOpen(connection)}
+                    >
+                      <InfoOutlinedIcon />
+                    </IconButton>
+                    {connection.friendshipStatus === 'ACCEPTED' ? (
+                      <Typography variant="body2" color="success">
+                        Amico
+                      </Typography>
+                    ) : connection.friendshipStatus === 'PENDING' ? (
+                      <>
+                        <Typography variant="body2" color="warning">
+                          Richiesta Inviata
+                        </Typography>
+                        <IconButton
+                          color="primary"
+                          disabled={connecting === connection.id}
+                          onClick={() => handleRemoveFriendRequest(connection.id)}
+                        >
+                          <RemoveCircleOutlineIcon />
+                        </IconButton>
+                      </>
+                    ) : (
+                      <IconButton
+                        color="primary"
+                        disabled={connecting === connection.id}
+                        onClick={() => handleAddFriend(connection.id)}
+                      >
+                        <PersonAddIcon />
+                      </IconButton>
+                    )}
+                    {connection.friendshipStatus === 'REQUESTED' && (
+                      <IconButton
+                        color="primary"
+                        disabled={connecting === connection.id}
+                        onClick={() => handleAcceptFriendRequest(connection.id)}
+                      >
+                        <CheckIcon />
+                      </IconButton>
+                    )}
+                  </CardActions>
+                </Card>
+              </motion.div>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
+  <Button
+    variant="contained"
+    color="primary"
+    disabled={currentPage === 1}
+    onClick={() => handlePageChange(currentPage - 1)}
+    sx={paginationButtonStyles(theme)}
+  >
+    Precedente
+  </Button>
+  <Typography variant="body1" sx={{ fontWeight: 600 }}>
+    {currentPage} di {totalPages}
+  </Typography>
+  <Button
+    variant="contained"
+    color="primary"
+    disabled={currentPage === totalPages}
+    onClick={() => handlePageChange(currentPage + 1)}
+    sx={paginationButtonStyles(theme)}
+  >
+    Successivo
+  </Button>
 </Box>
 
-
-      <Box sx={{ mt: 4, textAlign: 'center' }}>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-          sx={paginationButtonStyles(theme)}
-        >
-          Precedente
-        </Button>
-        <Typography variant="body1" sx={{ mx: 2, fontWeight: 600 }}>
-          {currentPage} di {totalPages}
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-          sx={paginationButtonStyles(theme)}
-        >
-          Successivo
-        </Button>
-      </Box>
 
       <Dialog
         open={detailDialogOpen}
@@ -555,7 +555,7 @@ const Connections = () => {
         pauseOnHover
       />
     </Container>
-  )
-}
+  );
+};
 
-export default Connections
+export default Connections;

@@ -48,6 +48,12 @@ const Carousel = ({ items, title }) => {
     return () => clearInterval(interval);
   }, [currentIndex]);
 
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.style.transform = `translateX(-${(currentIndex / itemsPerPage) * 100}%)`;
+    }
+  }, [currentIndex]);
+
   const handleNext = () => {
     if (carouselRef.current) {
       setCurrentIndex(prevIndex => {
@@ -55,7 +61,6 @@ const Carousel = ({ items, title }) => {
           prevIndex + itemsPerPage,
           duplicatedItems.length - itemsPerPage
         );
-        carouselRef.current.style.transform = `translateX(-${(newIndex / itemsPerPage) * 100}%)`;
 
         if (newIndex >= items.length * 2) {
           setTimeout(() => {
@@ -65,7 +70,10 @@ const Carousel = ({ items, title }) => {
               carouselRef.current.style.transition = 'transform 0.5s ease';
             }, 50);
           }, 500);
+        } else {
+          carouselRef.current.style.transition = 'transform 0.5s ease';
         }
+
         return newIndex;
       });
     }
@@ -75,7 +83,6 @@ const Carousel = ({ items, title }) => {
     if (carouselRef.current) {
       setCurrentIndex(prevIndex => {
         const newIndex = Math.max(prevIndex - itemsPerPage, 0);
-        carouselRef.current.style.transform = `translateX(-${(newIndex / itemsPerPage) * 100}%)`;
 
         if (newIndex < items.length) {
           setTimeout(() => {
@@ -85,7 +92,10 @@ const Carousel = ({ items, title }) => {
               carouselRef.current.style.transition = 'transform 0.5s ease';
             }, 50);
           }, 500);
+        } else {
+          carouselRef.current.style.transition = 'transform 0.5s ease';
         }
+
         return newIndex;
       });
     }
@@ -141,7 +151,7 @@ const Carousel = ({ items, title }) => {
                     {item.description || item.content}
                   </Typography>
                 </CardContent>
-                <CardActions sx={{ marginTop: 'auto' }}> {/* Assicurati che le azioni siano posizionate correttamente */}
+                <CardActions sx={{ marginTop: 'auto' }}>
                   <StyledButton
                     size="small"
                     color="primary"

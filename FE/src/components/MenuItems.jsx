@@ -22,7 +22,6 @@ import {
 } from 'react-icons/fa'
 import { useSpring, animated } from 'react-spring'
 
-// Stile per i MenuItem nel Drawer
 const DrawerMenuItem = styled(ListItem)(({ theme, active }) => ({
   padding: theme.spacing(1.5, 2),
   borderRadius: theme.shape.borderRadius,
@@ -35,7 +34,7 @@ const DrawerMenuItem = styled(ListItem)(({ theme, active }) => ({
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
     color: theme.palette.primary.main,
-    transform: 'scale(1.05)', // Effetto di ingrandimento al passaggio del mouse
+    transform: 'scale(1.05)', 
   },
   '& .MuiListItemIcon-root': {
     minWidth: '40px',
@@ -47,13 +46,11 @@ const DrawerMenuItem = styled(ListItem)(({ theme, active }) => ({
   },
 }))
 
-// Stile per i Divider
 const StyledDivider = styled(Divider)(({ theme }) => ({
   margin: theme.spacing(1, 0),
   backgroundColor: theme.palette.divider,
 }))
 
-// Stile per i Titoli di Sezione
 const SectionTitle = styled(Typography)(({ theme }) => ({
   margin: theme.spacing(2, 0),
   padding: theme.spacing(1, 2),
@@ -62,7 +59,6 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }))
 
-// Component per la Spring Animation
 const AnimatedIcon = ({ icon: Icon, ...props }) => {
   const [propsSpring, set] = useSpring(() => ({
     transform: 'scale(1)',

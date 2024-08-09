@@ -16,9 +16,10 @@ import {
   useMediaQuery,
   IconButton,
 } from '@mui/material';
-import Carousel from '../components/Carousel'; // Assicurati che il percorso sia corretto
+import Carousel from '../components/Carousel';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowForward, ArrowBack } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Explore = () => {
   const [events, setEvents] = useState([]);
@@ -33,6 +34,7 @@ const Explore = () => {
   const [openArticleDialog, setOpenArticleDialog] = useState(false);
 
   const isMobile = useMediaQuery('(max-width:600px)');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,49 +122,59 @@ const Explore = () => {
       {items.map(item => (
         <Grid item xs={12} sm={6} md={4} key={item.id}>
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.3 }}
           >
             <Box
               sx={{
-                p: 2,
+                p: 3,
                 border: '1px solid #e0d6cc',
-                borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                borderRadius: '12px',
+                boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
                 bgcolor: '#fff',
                 textAlign: 'center',
                 position: 'relative',
                 transition: 'transform 0.3s, box-shadow 0.3s',
                 '&:hover': {
-                  transform: 'scale(1.02)',
-                  boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
                 },
               }}
               aria-label={`${type} ${item.title}`}
             >
-              <Typography variant="h6">{item.title}</Typography>
-              <Typography variant="body2" color="textSecondary">
-                {item.description}
-              </Typography>
               {item.imageUrl && (
                 <img
                   src={item.imageUrl}
                   alt={item.title}
                   style={{
                     width: '100%',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    margin: '8px 0',
+                    height: '150px',
                     objectFit: 'cover',
+                    borderRadius: '12px',
+                    marginBottom: '16px',
+                    transition: 'transform 0.3s',
                   }}
                 />
               )}
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                {item.title}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                {item.description}
+              </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={item.onClick}
-                sx={{ mt: 2 }}
+                sx={{
+                  borderRadius: '8px',
+                  transition: 'background-color 0.3s',
+                  '&:hover': {
+                    backgroundColor: '#004d40',
+                  },
+                }}
               >
                 {item.buttonText}
               </Button>
@@ -182,7 +194,7 @@ const Explore = () => {
           textAlign: 'center',
           py: 4,
           px: 2,
-          bgcolor: '#fff8f1',
+          bgcolor: '#f5f5f5',
           borderRadius: '16px',
           boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
           border: '1px solid #e0d6cc',
@@ -194,9 +206,9 @@ const Explore = () => {
           sx={{
             mb: 2,
             fontWeight: 700,
-            color: '#4e342e',
-            fontSize: { xs: '2rem', sm: '3rem', md: '3.5rem' },
-            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+            color: '#3e2723',
+            fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
+            textShadow: '1px 1px 3px rgba(0, 0, 0, 0.2)',
           }}
         >
           Esplora I nostri cataloghi
@@ -208,7 +220,7 @@ const Explore = () => {
             mb: 4,
             color: '#6d4c41',
             fontWeight: 400,
-            fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' },
+            fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.75rem' },
           }}
         >
           Scopri una vasta gamma di eventi, connessioni e articoli per arricchire la tua esperienza culturale.
@@ -224,6 +236,7 @@ const Explore = () => {
         />
       </Box>
 
+      {/* Eventi */}
       <AnimatePresence>
         {isMobile ? (
           renderCardGrid(
@@ -252,13 +265,14 @@ const Explore = () => {
             }))}
             sx={{
               '& .carousel-item': {
-                padding: { xs: '8px', sm: '16px' },
+                padding: { xs: '12px', sm: '16px' },
               },
               '& img': {
                 width: '100%',
                 height: 'auto',
                 objectFit: 'cover',
-                borderRadius: '8px',
+                borderRadius: '12px',
+                transition: 'transform 0.3s',
               },
             }}
             prevArrow={<IconButton><ArrowBack /></IconButton>}
@@ -266,7 +280,18 @@ const Explore = () => {
           />
         )}
       </AnimatePresence>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate('/events')}
+          sx={{ borderRadius: '8px', px: 4, mt: 2 }}
+        >
+          Vai alla pagina degli eventi
+        </Button>
+      </Box>
 
+      {/* Connessioni */}
       <AnimatePresence>
         {isMobile ? (
           renderCardGrid(
@@ -274,8 +299,6 @@ const Explore = () => {
               id: connection.id,
               title: connection.name,
               description: connection.bio,
-              Interests: connection.Interests,
-              gender: connection.gender,
               imageUrl: connection.imageUrl || '',
               onClick: () => handleConnect(connection),
               buttonText: 'Connettiti',
@@ -295,13 +318,14 @@ const Explore = () => {
             }))}
             sx={{
               '& .carousel-item': {
-                padding: { xs: '8px', sm: '16px' },
+                padding: { xs: '12px', sm: '16px' },
               },
               '& img': {
                 width: '100%',
                 height: 'auto',
                 objectFit: 'cover',
-                borderRadius: '8px',
+                borderRadius: '12px',
+                transition: 'transform 0.3s',
               },
             }}
             prevArrow={<IconButton><ArrowBack /></IconButton>}
@@ -309,6 +333,16 @@ const Explore = () => {
           />
         )}
       </AnimatePresence>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate('/connections')}
+          sx={{ borderRadius: '8px', px: 4, mt: 2 }}
+        >
+          Vai alla pagina delle connessioni
+        </Button>
+      </Box>
 
       {connectionMessage && (
         <Alert severity="info" sx={{ mt: 2 }} aria-live="polite">
@@ -316,6 +350,7 @@ const Explore = () => {
         </Alert>
       )}
 
+      {/* Articoli */}
       <AnimatePresence>
         {isMobile ? (
           renderCardGrid(
@@ -343,13 +378,14 @@ const Explore = () => {
             }))}
             sx={{
               '& .carousel-item': {
-                padding: { xs: '8px', sm: '16px' },
+                padding: { xs: '12px', sm: '16px' },
               },
               '& img': {
                 width: '100%',
                 height: 'auto',
                 objectFit: 'cover',
-                borderRadius: '8px',
+                borderRadius: '12px',
+                transition: 'transform 0.3s',
               },
             }}
             prevArrow={<IconButton><ArrowBack /></IconButton>}
@@ -357,6 +393,16 @@ const Explore = () => {
           />
         )}
       </AnimatePresence>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => navigate('/articles')}
+          sx={{ borderRadius: '8px', px: 4, mt: 2 }}
+        >
+          Vai alla pagina degli articoli
+        </Button>
+      </Box>
 
       <AnimatePresence>
         <Dialog
@@ -364,22 +410,31 @@ const Explore = () => {
           onClose={handleCloseDetails}
           maxWidth="md"
           fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: '12px',
+            },
+          }}
         >
           <DialogTitle>Dettagli Evento</DialogTitle>
           <DialogContent>
             {selectedEvent && (
               <>
                 {selectedEvent.imageUrl && (
-                  <img
+                  <motion.img
                     src={selectedEvent.imageUrl}
                     alt={selectedEvent.title}
                     style={{
                       width: '100%',
                       height: 'auto',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       marginBottom: '16px',
                       objectFit: 'cover',
                     }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
                   />
                 )}
                 <Typography variant="h5">{selectedEvent.title}</Typography>
@@ -406,22 +461,31 @@ const Explore = () => {
           onClose={handleCloseArticleDetails}
           maxWidth="md"
           fullWidth
+          PaperProps={{
+            sx: {
+              borderRadius: '12px',
+            },
+          }}
         >
           <DialogTitle>Dettagli Articolo</DialogTitle>
           <DialogContent>
             {selectedArticle && (
               <>
                 {selectedArticle.imageUrl && (
-                  <img
+                  <motion.img
                     src={selectedArticle.imageUrl}
                     alt={selectedArticle.title}
                     style={{
                       width: '100%',
                       height: 'auto',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       margin: '8px 0',
                       objectFit: 'cover',
                     }}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3 }}
                   />
                 )}
                 <Typography variant="h5">{selectedArticle.title}</Typography>

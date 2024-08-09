@@ -1,47 +1,74 @@
 import React, { useState } from 'react';
 import {
-  Container, Typography, Grid, Box, Dialog, DialogTitle, DialogContent, IconButton, TextField
+  Container,
+  Typography,
+  Grid,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  TextField,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { StyledCard, StyledButton } from '../components/StyledComponents';
 import { Event, People, LibraryBooks, Article, Close } from '@mui/icons-material';
 import Footer from '../components/Footer';
-import Testimonials from '../components/Testimonial';
-
+import Slider from 'react-slick'; // Aggiungi la libreria react-slick per il carousel
+import 'slick-carousel/slick/slick.css'; 
+import 'slick-carousel/slick/slick-theme.css';
 import Logo from '../styles/Logo.jpg';
 import { motion } from 'framer-motion';
+import Testimonials from '../components/Testimonial';
 
 // Hero Section Background Image
 const heroBackground = 'https://info.ehl.edu/hubfs/Cultural-Diversity-Accomodation.jpg';
 
+// Slider Settings
+const sliderSettings = {
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+};
+
+// FAQ Data
+const faqData = [
+  {
+    question: "Come posso connettermi con altre persone?",
+    answer: "Utilizza la nostra funzione di ricerca avanzata per trovare persone con interessi simili e invia loro una richiesta di connessione.",
+  },
+  {
+    question: "Dove posso trovare gli eventi locali?",
+    answer: "Visita la nostra sezione 'Eventi' per scoprire gli eventi culturali e sociali in programma nella tua area.",
+  },
+  {
+    question: "Come posso contattare il supporto?",
+    answer: "Puoi contattare il nostro supporto tramite il modulo di contatto nella sezione 'Contattaci' o inviarci un'email direttamente.",
+  },
+];
+
 const Home = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [modalType, setModalType] = useState(null);
   const [expandedFAQ, setExpandedFAQ] = useState(null);
 
   // Gestione Modale
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleOpenModal = (type) => {
+    setModalType(type);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setModalType(null);
+  };
 
   // Gestione FAQ
   const toggleFAQ = (index) => {
     setExpandedFAQ(expandedFAQ === index ? null : index);
   };
-
-  // Dati FAQ
-  const faqData = [
-    {
-      question: "Come posso connettermi con altre persone?",
-      answer: "Utilizza la nostra funzione di ricerca avanzata per trovare persone con interessi simili e invia loro una richiesta di connessione."
-    },
-    {
-      question: "Dove posso trovare gli eventi locali?",
-      answer: "Visita la nostra sezione 'Eventi' per scoprire gli eventi culturali e sociali in programma nella tua area."
-    },
-    {
-      question: "Come posso contattare il supporto?",
-      answer: "Puoi contattare il nostro supporto tramite il modulo di contatto nella sezione 'Contattaci' o inviarci un'email direttamente."
-    }
-  ];
 
   return (
     <div>
@@ -61,7 +88,7 @@ const Home = () => {
             justifyContent: 'center',
             borderRadius: '12px',
             marginTop: '1rem',
-            boxShadow: 'inset 0 0 0 1000px rgba(0, 0, 0, 0.3)'
+            boxShadow: 'inset 0 0 0 1000px rgba(0, 0, 0, 0.3)',
           }}
         >
           <Box
@@ -112,17 +139,6 @@ const Home = () => {
             </StyledButton>
           </Box>
         </Box>
-
-        {/* Chi Siamo */}
-        <Box sx={{ my: 8, textAlign: 'center' }}>
-          <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, mb: 3 }}>
-            Chi Siamo
-          </Typography>
-          <Typography variant="body1" paragraph sx={{ color: 'text.secondary', maxWidth: '800px', margin: '0 auto' }}>
-            Siamo CulturalConnect, la tua finestra sul mondo culturale. Offriamo una piattaforma unica per scoprire e interagire con eventi e contenuti culturali locali e globali. La nostra missione è creare connessioni significative e arricchire la tua esperienza culturale.
-          </Typography>
-        </Box>
-
         {/* Grid Section */}
         <Grid container spacing={5} sx={{ mt: 4 }}>
           {[
@@ -200,7 +216,7 @@ const Home = () => {
           ))}
         </Grid>
 
-        {/* Sezione Domande Frequenti (FAQ) */}
+        {/* FAQ Section */}
         <Box sx={{ my: 8 }}>
           <Typography variant="h4" gutterBottom sx={{ fontWeight: 700, mb: 4, textAlign: 'center' }}>
             Domande Frequenti
@@ -227,12 +243,13 @@ const Home = () => {
               </Box>
             ))}
           </Box>
+          <Testimonials />
         </Box>
 
-        {/* Modale di Contatto */}
+        {/* Modal Section */}
         <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
           <DialogTitle>
-            Contattaci
+            {modalType === 'contact' ? 'Contattaci' : 'Altro Titolo'}
             <IconButton
               edge="end"
               color="inherit"
@@ -244,44 +261,58 @@ const Home = () => {
             </IconButton>
           </DialogTitle>
           <DialogContent>
-            <form>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Nome"
-                type="text"
-                fullWidth
-                variant="standard"
-                required
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                margin="dense"
-                id="email"
-                label="Email"
-                type="email"
-                fullWidth
-                variant="standard"
-                required
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                margin="dense"
-                id="message"
-                label="Messaggio"
-                type="text"
-                fullWidth
-                multiline
-                rows={4}
-                variant="standard"
-                required
-              />
-            </form>
+            {modalType === 'contact' ? (
+              <form>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Nome"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  required
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  margin="dense"
+                  id="email"
+                  label="Email"
+                  type="email"
+                  fullWidth
+                  variant="standard"
+                  required
+                  sx={{ mb: 2 }}
+                />
+                <TextField
+                  margin="dense"
+                  id="message"
+                  label="Messaggio"
+                  type="text"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  variant="standard"
+                  required
+                />
+                <StyledButton
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 2 }}
+                  type="submit"
+                >
+                  Invia
+                </StyledButton>
+              </form>
+            ) : (
+              <Typography variant="body1">
+                Contenuto alternativo per il modale
+              </Typography>
+            )}
           </DialogContent>
         </Dialog>
       </Container>
-      <Testimonials />
+
       <Footer />
     </div>
   );

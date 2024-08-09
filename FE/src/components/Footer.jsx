@@ -18,7 +18,6 @@ const Footer = () => {
         alignItems: 'center',
       }}
     >
-      {/* Social Media Links */}
       <Box sx={{ mb: 2 }}>
         <IconButton
           component={Link}
@@ -58,7 +57,6 @@ const Footer = () => {
         </IconButton>
       </Box>
 
-      {/* Footer Content */}
       <Typography variant="body2" sx={{ mb: 2 }}>
         © {new Date().getFullYear()} CulturalConnect. Tutti i diritti riservati.
       </Typography>
@@ -88,7 +86,6 @@ const Footer = () => {
         </Link>
       </Typography>
 
-      {/* Contact Section */}
       <Box sx={{ mt: 4 }}>
         <Typography variant="body2" sx={{ mb: 1 }}>
           Contattaci:
