@@ -168,24 +168,24 @@ const CustomAppBar = () => {
             Home
           </NavButton>
           <NavButton component={Link} to="/explore" startIcon={<FaSearch />}>
-            Explore
+            Esplora
           </NavButton>
           <NavButton
             component={Link}
             to="/events"
             startIcon={<FaCalendarAlt />}
           >
-            Events
+            Eventi
           </NavButton>
           <NavButton
             component={Link}
             to="/connections"
             startIcon={<FaUserFriends />}
           >
-            Connections
+            Connessioni
           </NavButton>
           <NavButton component={Link} to="/articles" startIcon={<FaFileAlt />}>
-            Articles
+            Articoli
           </NavButton>
           <NavButton
             component={Link}
@@ -212,7 +212,7 @@ const CustomAppBar = () => {
                 to="/register"
                 startIcon={<FaUserPlus />}
               >
-                Register
+                Registrati
               </NavButton>
               <NavButton
                 component={Link}
@@ -287,7 +287,7 @@ const CustomAppBar = () => {
                     onClick={handleUserMenuClose}
                   >
                     <FaCog style={{ marginRight: '8px' }} />
-                    Settings
+                    Impostazioni
                   </MenuItem>
                   <MenuItem
                     component={Link}

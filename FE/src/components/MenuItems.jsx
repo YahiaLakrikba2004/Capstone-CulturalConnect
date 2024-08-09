@@ -117,7 +117,7 @@ const MenuItems = ({ isAuthenticated, handleDrawerToggle }) => {
         <ListItemIcon>
           <AnimatedIcon icon={FaCalendarAlt} size={22} color={theme.palette.text.primary} />
         </ListItemIcon>
-        <ListItemText primary="Events" />
+        <ListItemText primary="Eventi" />
       </DrawerMenuItem>
 
       {!isAuthenticated && (
@@ -135,7 +135,7 @@ const MenuItems = ({ isAuthenticated, handleDrawerToggle }) => {
                 <AnimatedIcon icon={FaSignInAlt} size={22} color={theme.palette.text.primary} />
               </Badge>
             </ListItemIcon>
-            <ListItemText primary="Register" />
+            <ListItemText primary="Registrati" />
           </DrawerMenuItem>
           <DrawerMenuItem
             component={Link}
@@ -156,7 +156,7 @@ const MenuItems = ({ isAuthenticated, handleDrawerToggle }) => {
       {isAuthenticated && (
         <>
           <StyledDivider />
-          <SectionTitle variant="body2">User Options</SectionTitle>
+          <SectionTitle variant="body2">User Optionsì</SectionTitle>
           <DrawerMenuItem
             component={Link}
             to="/settings"

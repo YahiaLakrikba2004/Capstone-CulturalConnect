@@ -354,19 +354,6 @@ const Articles = () => {
             ),
           }}
         />
-        <FormControl fullWidth sx={{ mb: 4 }}>
-          <InputLabel>Categoria</InputLabel>
-          <Select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            label="Categoria"
-          >
-            <MenuItem value="">Tutte</MenuItem>
-            {categories.map((category) => (
-              <MenuItem key={category} value={category}>{category}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
       </Box>
 
       <Grid container spacing={4}>

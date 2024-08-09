@@ -60,21 +60,42 @@ const themes = {
 
 // Stili generali
 const generalStyles = {
-  container: {
-    padding: '2rem',
-    borderRadius: '8px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-  },
-  formControl: {
-    marginTop: '1rem',
-  },
-  divider: {
-    margin: '1.5rem 0',
-  },
-  button: {
-    marginTop: '1rem',
-  },
-};
+    container: {
+      padding: '2rem',
+      borderRadius: '12px',
+      boxShadow: '0 6px 15px rgba(0, 0, 0, 0.1)',
+      backgroundColor: '#ffffff',
+      transition: 'all 0.3s ease-in-out',
+      '&:hover': {
+        boxShadow: '0 8px 20px rgba(0, 0, 0, 0.15)',
+      },
+    },
+    formControl: {
+      marginTop: '1.5rem',
+      minWidth: '200px',
+      '& .MuiInputLabel-root': {
+        color: '#1976d2',
+      },
+      '& .MuiInputBase-root': {
+        borderRadius: '8px',
+        backgroundColor: '#f0f4f8',
+      },
+    },
+    divider: {
+      margin: '2rem 0',
+      backgroundColor: '#1976d2',
+    },
+    button: {
+      marginTop: '1.5rem',
+      padding: '0.75rem 1.5rem',
+      borderRadius: '8px',
+      backgroundColor: '#1976d2',
+      color: '#ffffff',
+      '&:hover': {
+        backgroundColor: '#1565c0',
+      },
+    },
+  };
 
 // Opzioni per il layout
 const layoutOptions = [
@@ -172,120 +193,121 @@ const Settings = () => {
 
   return (
     <ThemeProvider theme={themeToApply}>
-      <Container
-        maxWidth="sm"
-        style={{
-          ...generalStyles.container,
-          backgroundColor: themes[theme]?.backgroundColor || themes.light.backgroundColor,
-          color: themes[theme]?.color || themes.light.color,
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Settings
-        </Typography>
+  <Container
+    maxWidth="sm"
+    style={{
+      ...generalStyles.container,
+      backgroundColor: themes[theme]?.backgroundColor || themes.light.backgroundColor,
+      color: themes[theme]?.color || themes.light.color,
+    }}
+  >
+    <Typography variant="h4" gutterBottom>
+      Settings
+    </Typography>
 
-        <Box component="form" onSubmit={handleSave} noValidate sx={{ mt: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Theme
-          </Typography>
-          <FormControl fullWidth sx={generalStyles.formControl}>
-            <InputLabel>Theme</InputLabel>
-            <Select
-              value={theme}
-              onChange={(e) => setTheme(e.target.value)}
-              label="Theme"
-            >
-              {Object.keys(themes).map(themeKey => (
-                <MenuItem key={themeKey} value={themeKey}>
-                  {themeKey.charAt(0).toUpperCase() + themeKey.slice(1)}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+    <Box component="form" onSubmit={handleSave} noValidate sx={{ mt: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        Theme
+      </Typography>
+      <FormControl fullWidth sx={{ ...generalStyles.formControl, mb: 2 }}>
+        <InputLabel>Theme</InputLabel>
+        <Select
+          value={theme}
+          onChange={(e) => setTheme(e.target.value)}
+          label="Theme"
+        >
+          {Object.keys(themes).map(themeKey => (
+            <MenuItem key={themeKey} value={themeKey}>
+              {themeKey.charAt(0).toUpperCase() + themeKey.slice(1)}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-          <Divider sx={generalStyles.divider} />
+      <Divider sx={{ ...generalStyles.divider, mb: 2 }} />
 
-          <Typography variant="h6" gutterBottom>
-            Profile Visibility
-          </Typography>
-          <FormControl fullWidth sx={generalStyles.formControl}>
-            <InputLabel>Profile Visibility</InputLabel>
-            <Select
-              value={profileVisibility}
-              onChange={(e) => setProfileVisibility(e.target.value)}
-              label="Profile Visibility"
-            >
-              <MenuItem value="public">Public</MenuItem>
-              <MenuItem value="private">Private</MenuItem>
-              <MenuItem value="friends">Friends</MenuItem>
-            </Select>
-          </FormControl>
+      <Typography variant="h6" gutterBottom>
+        Profile Visibility
+      </Typography>
+      <FormControl fullWidth sx={{ ...generalStyles.formControl, mb: 2 }}>
+        <InputLabel>Profile Visibility</InputLabel>
+        <Select
+          value={profileVisibility}
+          onChange={(e) => setProfileVisibility(e.target.value)}
+          label="Profile Visibility"
+        >
+          <MenuItem value="public">Public</MenuItem>
+          <MenuItem value="private">Private</MenuItem>
+          <MenuItem value="friends">Friends</MenuItem>
+        </Select>
+      </FormControl>
 
-          <Divider sx={generalStyles.divider} />
+      <Divider sx={{ ...generalStyles.divider, mb: 2 }} />
 
-          <Typography variant="h6" gutterBottom>
-            Notifications
-          </Typography>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={notifications}
-                onChange={(e) => setNotifications(e.target.checked)}
-                color="primary"
-              />
-            }
-            label="Notifications"
+      <Typography variant="h6" gutterBottom>
+        Notifications
+      </Typography>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={notifications}
+            onChange={(e) => setNotifications(e.target.checked)}
+            color="primary"
           />
+        }
+        label="Notifications"
+        sx={{ mb: 2 }}
+      />
 
-          <Divider sx={generalStyles.divider} />
+      <Divider sx={{ ...generalStyles.divider, mb: 2 }} />
 
-          <Typography variant="h6" gutterBottom>
-            Accessibility
-          </Typography>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={highContrast}
-                onChange={(e) => setHighContrast(e.target.checked)}
-                color="primary"
-              />
-            }
-            label="High Contrast"
+      <Typography variant="h6" gutterBottom>
+        Accessibility
+      </Typography>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={highContrast}
+            onChange={(e) => setHighContrast(e.target.checked)}
+            color="primary"
           />
+        }
+        label="High Contrast"
+        sx={{ mb: 2 }}
+      />
 
-          <Divider sx={generalStyles.divider} />
+      <Divider sx={{ ...generalStyles.divider, mb: 2 }} />
 
-          <Typography variant="h6" gutterBottom>
-            Layout
-          </Typography>
-          <FormControl fullWidth sx={generalStyles.formControl}>
-            <InputLabel>Layout</InputLabel>
-            <Select
-              value={layout}
-              onChange={(e) => setLayout(e.target.value)}
-              label="Layout"
-            >
-              {layoutOptions.map(option => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+      <Typography variant="h6" gutterBottom>
+        Layout
+      </Typography>
+      <FormControl fullWidth sx={{ ...generalStyles.formControl, mb: 2 }}>
+        <InputLabel>Layout</InputLabel>
+        <Select
+          value={layout}
+          onChange={(e) => setLayout(e.target.value)}
+          label="Layout"
+        >
+          {layoutOptions.map(option => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-          <Box sx={{ mt: 3 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={loading}
-              sx={generalStyles.button}
-            >
-              {loading ? <CircularProgress size={24} /> : 'Save Settings'}
-            </Button>
-          </Box>
-        </Box>
-
+      <Box sx={{ mt: 3 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+          sx={generalStyles.button}
+        >
+          {loading ? <CircularProgress size={24} /> : 'Save Settings'}
+        </Button>
+      </Box>
+    </Box>
         {/* Renderizza i componenti stilizzati basati sul layout */}
         <Box sx={{ mt: 4 }}>
           <Typography variant="h6" gutterBottom>
