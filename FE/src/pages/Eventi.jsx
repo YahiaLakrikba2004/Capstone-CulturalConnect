@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Container,
@@ -27,7 +27,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useTheme } from '@mui/material/styles';
-import { Star, StarBorder, Share, CalendarToday } from '@mui/icons-material';
+import { Star, StarBorder, Share, Favorite, FavoriteBorder } from '@mui/icons-material';
 import { format, parseISO } from 'date-fns';
 
 // Animazioni
@@ -57,6 +57,7 @@ const Events = () => {
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+  const [wishList, setWishList] = useState(new Set()); // Nuovo stato per la Lista dei Desideri
   const [searchTerm, setSearchTerm] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,6 +115,19 @@ const Events = () => {
     });
   };
 
+  const handleAddToWishList = id => {
+    setWishList(prevWishList => {
+      const newWishList = new Set(prevWishList);
+      if (newWishList.has(id)) {
+        newWishList.delete(id);
+      } else {
+        newWishList.add(id);
+      }
+      return newWishList;
+    });
+    toast.success('Evento aggiunto alla Lista dei Desideri!');
+  };
+
   const handleShare = event => {
     const shareData = {
       title: event.title,
@@ -121,21 +135,6 @@ const Events = () => {
       url: window.location.href,
     };
     navigator.share(shareData).catch(console.error);
-  };
-
-  const handleAddToCalendar = event => {
-    const start = format(parseISO(event.date), "yyyyMMdd'T'HHmmss");
-    const end = format(
-      new Date(new Date(event.date).getTime() + 60 * 60 * 1000),
-      "yyyyMMdd'T'HHmmss"
-    );
-    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      event.title
-    )}&dates=${start}/${end}&details=${encodeURIComponent(
-      event.description
-    )}&location=${encodeURIComponent(event.location || '')}`;
-    window.open(calendarUrl, '_blank');
-    setSnackbarOpen(true);
   };
 
   const handleSnackbarClose = () => {
@@ -147,6 +146,15 @@ const Events = () => {
   const handlePageChange = page => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
+  };
+
+  const handlePurchaseTicket = () => {
+    if (selectedEvent) {
+      // Simula l'acquisto
+      toast.success('Biglietto aggiunto al carrello!');
+      // Per esempio, potrebbe essere interessante aggiornare lo stato per riflettere l'acquisto
+      // In questo esempio, non ci sono cambiamenti nello stato
+    }
   };
 
   // Calcolo della paginazione
@@ -259,169 +267,100 @@ const Events = () => {
             mb: 4,
             color: theme.palette.text.secondary,
             fontWeight: 400,
-            fontSize: { xs: '0.9rem', sm: '1.1rem' },
+            fontSize: { xs: '1rem', sm: '1.2rem' },
           }}
         >
-          Scopri gli eventi recenti e rimani aggiornato sulle ultime novità.
+          Scopri i prossimi eventi nella tua area e aggiungili alla tua lista dei desideri.
         </Typography>
-        <Divider
-          sx={{
-            mb: 4,
-            mx: 'auto',
-            width: { xs: '50px', sm: '70px' },
-            borderBottomWidth: '4px',
-            borderColor: theme.palette.primary.main,
-          }}
-        />
         <TextField
+          label="Cerca Evento"
           variant="outlined"
           fullWidth
-          placeholder="Cerca per titolo o descrizione..."
           value={searchTerm}
           onChange={handleSearchChange}
           sx={{ mb: 4 }}
         />
       </Box>
 
-      {/* Eventi */}
-      <Grid container spacing={4}>
+      <Grid container spacing={3}>
         {currentEvents.map(event => (
           <Grid item xs={12} sm={6} md={4} key={event.id}>
             <motion.div
+              variants={cardVariants}
               initial="hidden"
               animate="visible"
-              variants={cardVariants}
+              transition={{ duration: 0.5 }}
             >
               <Card
                 sx={{
-                  borderRadius: 2,
-                  boxShadow: 3,
-                  overflow: 'hidden',
-                  height: '90vh',
+                  borderRadius: '8px',
+                  boxShadow: '0px 8px 24px rgba(0, 0, 0, 0.2)',
+                  bgcolor: theme.palette.background.paper,
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                   display: 'flex',
                   flexDirection: 'column',
-                  position: 'relative',
-                  transition: 'transform 0.3s ease-in-out',
+                  height: '600px',
                   '&:hover': {
-                    transform: 'scale(1.02)',
-                  }
+                    transform: 'scale(1.03)',
+                    boxShadow: '0px 12px 32px rgba(0, 0, 0, 0.3)',
+                  },
+                  border: `1px solid ${theme.palette.divider}`,
                 }}
               >
-                {event.imageUrl && (
-                  <CardMedia
-                    component="img"
-                    image={event.imageUrl}
-                    alt={event.title}
-                    sx={{
-                      height: 200,
-                      objectFit: 'cover',
-                      borderBottom: `1px solid ${theme.palette.divider}`,
-                    }}
-                  />
-                )}
-                <CardContent
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={event.imageUrl}
+                  alt={event.title}
                   sx={{
-                    flexGrow: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    p: 3,
+                    objectFit: 'cover',
                   }}
-                >
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    sx={{ fontWeight: 700, color: theme.palette.text.primary }}
-                  >
+                />
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
                     {event.title}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    sx={{ fontStyle: 'italic' }}
-                  >
-                    {format(parseISO(event.date), 'd MMMM yyyy HH:mm')}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {event.location || 'Luogo non specificato'}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Categoria: {event.category || 'Non specificata'}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Organizzatore: {event.organizer || 'Non specificato'}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Status: {event.status || 'Non specificato'}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Prezzo: {event.ticketPrice ? `${event.ticketPrice} €` : 'Gratuito'}
-                  </Typography>
-                  <Typography variant="body2" paragraph sx={{ mt: 2 }}>
+                  <Typography variant="body2" color="text.secondary">
                     {event.description}
                   </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      gap: 2,
-                      flexDirection: 'column',
-                      mt: 2,
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Tooltip
-                        title={
-                          favorites.has(event.id)
-                            ? 'Rimuovi dai preferiti'
-                            : 'Aggiungi ai preferiti'
-                        }
-                      >
-                        <IconButton
-                          onClick={() => toggleFavorite(event.id)}
-                          color={
-                            favorites.has(event.id) ? 'primary' : 'default'
-                          }
-                        >
-                          {favorites.has(event.id) ? <Star /> : <StarBorder />}
-                        </IconButton>
-                      </Tooltip>
-                      <Button
-                        size="large"
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => handleShare(event)}
-                        sx={{
-                          padding: '20px 30px',
-                          fontSize: '0.875rem',
-                          borderRadius: '10px',
-                          '&:hover': {
-                            backgroundColor: theme.palette.secondary.dark,
-                          }
-                        }}
-                      >
-                        <Share sx={{ mr: 1 }} />
-                        Condividi
-                      </Button>
-                      <Button
-                        size="medium"
-                        variant="contained"
-                        color="success"
-                        onClick={() => handleAddToCalendar(event)}
-                      >
-                        <CalendarToday sx={{ mr: 1 }} />
-                        Aggiungi al Calendario
-                      </Button>
-                    </Box>
-                    <Button
-                      size="medium"
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleOpenModal(event)}
-                    >
-                      Maggiori Dettagli
-                    </Button>
-                  </Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                    {format(parseISO(event.date), 'dd MMM yyyy')}
+                  </Typography>
                 </CardContent>
+                <Divider />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', p: 2 }}>
+                  <Tooltip title={favorites.has(event.id) ? 'Rimuovi dai Preferiti' : 'Aggiungi ai Preferiti'}>
+                    <IconButton
+                      onClick={() => toggleFavorite(event.id)}
+                      color={favorites.has(event.id) ? 'primary' : 'default'}
+                      sx={{ transition: 'color 0.3s' }}
+                    >
+                      {favorites.has(event.id) ? <Star /> : <StarBorder />}
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={wishList.has(event.id) ? 'Rimuovi dalla Lista dei Desideri' : 'Aggiungi alla Lista dei Desideri'}>
+                    <IconButton
+                      onClick={() => handleAddToWishList(event.id)}
+                      color={wishList.has(event.id) ? 'primary' : 'default'}
+                      sx={{ transition: 'color 0.3s' }}
+                    >
+                      {wishList.has(event.id) ? <Favorite /> : <FavoriteBorder />}
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Condividi Evento">
+                    <IconButton onClick={() => handleShare(event)} sx={{ transition: 'color 0.3s' }}>
+                      <Share />
+                    </IconButton>
+                  </Tooltip>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleOpenModal(event)}
+                    sx={{ textTransform: 'none' }}
+                  >
+                    Dettagli
+                  </Button>
+                </Box>
               </Card>
             </motion.div>
           </Grid>
@@ -429,196 +368,81 @@ const Events = () => {
       </Grid>
 
       {/* Paginazione */}
-      <Box
-        sx={{
-          mt: 4,
-          display: 'flex',
-          justifyContent: 'center',
-          gap: 2,
-        }}
-      >
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
         <Button
-          variant="outlined"
-          disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          variant="contained"
+          color="primary"
+          sx={{ mr: 2 }}
         >
           Precedente
         </Button>
-        <Typography
-          variant="body1"
-          sx={{ display: 'flex', alignItems: 'center' }}
-        >
-          Pagina {currentPage} di {totalPages}
-        </Typography>
         <Button
-          variant="outlined"
-          disabled={currentPage === totalPages}
           onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          variant="contained"
+          color="primary"
         >
           Successivo
         </Button>
       </Box>
 
-      {/* Dettagli dell'Evento */}
+      {/* Modale Evento */}
       {selectedEvent && (
-        <Dialog
-          open={Boolean(selectedEvent)}
-          onClose={handleCloseModal}
-          maxWidth="md"
-          fullWidth
-          sx={{ 
-            '& .MuiDialog-paper': { 
-              borderRadius: 2, 
-              overflow: 'hidden', 
-              padding: 0
-            },
-            '& .MuiDialogContent-root': {
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              padding: 10,
-              '&::-webkit-scrollbar': {
-                width: '8px',
-              },
-              '&::-webkit-scrollbar-track': {
-                background: '#f1f1f1',
-                borderRadius: '4px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                background: '#888',
-                borderRadius: '4px',
-              },
-              '&::-webkit-scrollbar-thumb:hover': {
-                background: '#555',
-              },
-            }
-          }}
-        >
-          <DialogTitle 
-            sx={{
-              fontWeight: 700, 
-              bgcolor: theme.palette.primary.main, 
-              color: theme.palette.common.white,
-              py: 2,
-              px: 3
-            }}
-          >
-            {selectedEvent.title}
-          </DialogTitle>
-          <DialogContent 
-            sx={{ 
-              py: 4,
-              px: 3
-            }}
-          >
-            {selectedEvent.imageUrl && (
-              <CardMedia
-                component="img"
-                image={selectedEvent.imageUrl}
-                alt={selectedEvent.title}
-                sx={{
-                  mb: 3,
-                  borderRadius: 1,
-                  objectFit: 'cover', 
-                  width: '100%',
-                  maxHeight: '300px',
-                  height: 'auto',
-                }}
-              />
-            )}
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-              {format(parseISO(selectedEvent.date), 'd MMMM yyyy HH:mm')}
+        <Dialog open={Boolean(selectedEvent)} onClose={handleCloseModal} fullWidth maxWidth="sm">
+          <DialogTitle>{selectedEvent.title}</DialogTitle>
+          <DialogContent>
+            <CardMedia
+              component="img"
+              height="300"
+              image={selectedEvent.imageUrl}
+              alt={selectedEvent.title}
+              sx={{ mb: 2, borderRadius: '8px', objectFit: 'cover' }}
+            />
+            <Typography variant="body1" paragraph>
+              {selectedEvent.description}
             </Typography>
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              <strong>Luogo:</strong> {selectedEvent.location || 'Luogo non specificato'}
+            <Typography variant="caption" color="textSecondary" sx={{ mb: 1 }}>
+              {format(parseISO(selectedEvent.date), 'dd MMM yyyy')}
             </Typography>
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              <strong>Categoria:</strong> {selectedEvent.category || 'Non specificata'}
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+              <strong>Categoria:</strong> {selectedEvent.category}
             </Typography>
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              <strong>Organizzatore:</strong> {selectedEvent.organizer || 'Non specificato'}
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+              <strong>Organizzatore:</strong> {selectedEvent.organizer}
             </Typography>
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              <strong>Status:</strong> {selectedEvent.status || 'Non specificato'}
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+              <strong>Status:</strong> {selectedEvent.status}
             </Typography>
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              <strong>Prezzo:</strong> {selectedEvent.ticketPrice ? `${selectedEvent.ticketPrice} €` : 'Gratuito'}
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+              <strong>Prezzo Biglietto:</strong> €{selectedEvent.ticketPrice}
             </Typography>
-            <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-              <strong>Descrizione:</strong> {selectedEvent.description}
+            <Typography variant="body2" color="textSecondary" sx={{ mb: 1 }}>
+              <strong>Luogo:</strong> {selectedEvent.locationName}, {selectedEvent.locationAddress}
             </Typography>
-            {selectedEvent.contactEmail && (
-              <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-                <strong>Email di contatto:</strong> {selectedEvent.contactEmail}
-              </Typography>
-            )}
-            {selectedEvent.contactPhone && (
-              <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-                <strong>Telefono di contatto:</strong> {selectedEvent.contactPhone}
-              </Typography>
-            )}
-            {selectedEvent.website && (
-              <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-                <strong>Sito web:</strong> <a href={selectedEvent.website} target="_blank" rel="noopener noreferrer">{selectedEvent.website}</a>
-              </Typography>
-            )}
-            {selectedEvent.mapLink && (
-              <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-                <strong>Mappa:</strong> <a href={selectedEvent.mapLink} target="_blank" rel="noopener noreferrer">Vedi sulla mappa</a>
-              </Typography>
-            )}
-            {selectedEvent.program && (
-              <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-                <strong>Programma:</strong> {selectedEvent.program}
-              </Typography>
-            )}
-            {selectedEvent.socialMedia && (
-              <Typography variant="body1" paragraph sx={{ mb: 2 }}>
-                <strong>Seguici sui social:</strong>
-                <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
-                  {selectedEvent.socialMedia.map((link, index) => (
-                    <Tooltip key={index} title={`Visita ${link.platform}`}>
-                      <IconButton
-                        component="a"
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img src={link.icon} alt={link.platform} style={{ width: 24, height: 24 }} />
-                      </IconButton>
-                    </Tooltip>
-                  ))}
-                </Box>
-              </Typography>
-            )}
-          </DialogContent>
-          <DialogActions 
-            sx={{ 
-              px: 3, 
-              pb: 2 
-            }}
-          >
-            <Button 
-              onClick={handleCloseModal} 
-              color="primary"
+            <Button
               variant="contained"
-              sx={{ borderRadius: 2, px: 3 }}
+              color="primary"
+              onClick={handlePurchaseTicket}
+              sx={{ mt: 2 }}
             >
-              Chiudi
+              Aggiungi al Carrello
             </Button>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal}>Chiudi</Button>
           </DialogActions>
         </Dialog>
       )}
 
-      <ToastContainer />
+      <ToastContainer autoClose={3000} position="bottom-right" />
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
-      >
-        <AlertComponent onClose={handleSnackbarClose} severity="success">
-          Evento aggiunto al calendario!
-        </AlertComponent>
-      </Snackbar>
+        message="Evento aggiunto alla Lista dei Desideri!"
+      />
     </Container>
   );
 };

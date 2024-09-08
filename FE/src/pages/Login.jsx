@@ -56,13 +56,19 @@ const Login = () => {
       }
 
       login(token, rememberMe);
-      toast.success('Login successful');
+      toast.success('Login effettuato con successo');
       setTimeout(() => navigate('/dashboard'), 500);
     } catch (error) {
-      console.error('Login failed:', error.response ? error.response.data : error.message);
-      toast.error('Login failed: ' + (error.response?.data?.message || error.message));
-    } finally {
       setLoading(false);
+      
+      // Personalizzazione del messaggio di errore basato sul codice di stato
+      if (error.response && error.response.status === 401) {
+        toast.error('Utente non esistente o password errata');
+      } else if (error.response && error.response.status === 403) {
+        toast.error('Accesso negato');
+      } else {
+        toast.error('Errore durante il login: ' + (error.response?.data?.message || error.message));
+      }
     }
   };
 
@@ -166,7 +172,7 @@ const Login = () => {
                   color="primary"
                 />
               }
-              label="Remember me"
+              label="Ricordami"
               sx={{ mb: 2 }}
             />
             <Button
@@ -203,7 +209,7 @@ const Login = () => {
                     },
                   }}
                 >
-                  Forgot password?
+                  Forgot Password?
                 </MuiLink>
               </Typography>
             </Box>

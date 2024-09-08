@@ -171,7 +171,6 @@ const AboutUs = () => {
                   sx={{
                     padding: 4,
                     borderRadius: '12px',
-                    
                     boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
                   }}
                 >
@@ -232,10 +231,6 @@ const AboutUs = () => {
                 <PhoneIcon fontSize="large" />
               </IconButton>
             </Box>
-            <Typography variant="body2" color="text.secondary">
-              Segui i nostri aggiornamenti su{' '}
-              <Link to="/social-media">social media</Link>.
-            </Typography>
           </Box>
         </Box>
       </Container>

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import axios from 'axios'
 import {
   Container,
   Typography,
@@ -21,21 +21,17 @@ import {
   Snackbar,
   TextField,
   InputAdornment,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Pagination
-} from '@mui/material';
-import { keyframes } from '@mui/system';
-import { motion } from 'framer-motion';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { useTheme } from '@mui/material/styles';
-import { Star, StarBorder, Search } from '@mui/icons-material';
-import MuiAlert from '@mui/material/Alert';
-import Comments from '../components/comments';
+  Pagination,
+} from '@mui/material'
+import { keyframes } from '@mui/system'
+import { motion } from 'framer-motion'
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import { useTheme } from '@mui/material/styles'
+import { Star, StarBorder, Search } from '@mui/icons-material'
+import MuiAlert from '@mui/material/Alert'
+import Comments from '../components/comments'
 
 // Animazioni
 const fadeIn = keyframes`
@@ -45,27 +41,29 @@ const fadeIn = keyframes`
   to {
     opacity: 1;
   }
-`;
+`
 
 const cardVariants = {
   hidden: { opacity: 0, scale: 0.98 },
   visible: { opacity: 1, scale: 1 },
-};
+}
 
 // Funzione di notifica per Alert
-const AlertComponent = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+const AlertComponent = props => (
+  <MuiAlert elevation={6} variant="filled" {...props} />
+)
 
 const ArticleCard = ({ article, favorites, toggleFavorite, onOpenModal }) => {
-  const theme = useTheme();
+  const theme = useTheme()
   return (
     <Grid item xs={12} sm={6} md={4} key={article.id}>
       <motion.div initial="hidden" animate="visible" variants={cardVariants}>
         <Card
           sx={{
-            borderRadius: 2,
+            borderRadius: 1,
             boxShadow: 3,
             overflow: 'hidden',
-            height: '500px',
+            height: '500px', // Altezza fissa per la Card
             display: 'flex',
             flexDirection: 'column',
             transition: 'transform 0.3s ease, box-shadow 0.3s ease',
@@ -81,19 +79,42 @@ const ArticleCard = ({ article, favorites, toggleFavorite, onOpenModal }) => {
               component="img"
               image={article.imageUrl}
               alt={article.title}
-              sx={{ height: '200px', objectFit: 'cover' }}
+              sx={{ height: '200px', objectFit: 'cover' }} // Altezza fissa per l'immagine
             />
           )}
-          <CardContent sx={{ flexGrow: 1 }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
+          <CardContent
+            sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
+          >
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ fontWeight: 600, color: theme.palette.text.primary }}
+            >
               {article.title}
             </Typography>
-            <Typography variant="body2" color="textSecondary">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ flexGrow: 1 }}
+            >
               {article.content}
             </Typography>
           </CardContent>
-          <Box sx={{ display: 'flex', gap: 1, p: 2, justifyContent: 'space-between' }}>
-            <Tooltip title={favorites.has(article.id) ? "Rimuovi dai preferiti" : "Aggiungi ai preferiti"}>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 1,
+              p: 2,
+              justifyContent: 'space-between',
+            }}
+          >
+            <Tooltip
+              title={
+                favorites.has(article.id)
+                  ? 'Rimuovi dai preferiti'
+                  : 'Aggiungi ai preferiti'
+              }
+            >
               <IconButton
                 color={favorites.has(article.id) ? 'warning' : 'default'}
                 onClick={() => toggleFavorite(article.id)}
@@ -114,8 +135,8 @@ const ArticleCard = ({ article, favorites, toggleFavorite, onOpenModal }) => {
         </Card>
       </motion.div>
     </Grid>
-  );
-};
+  )
+}
 
 const ArticleDialog = ({ article, onClose }) => (
   <Dialog open={Boolean(article)} onClose={onClose} maxWidth="md" fullWidth>
@@ -135,10 +156,12 @@ const ArticleDialog = ({ article, onClose }) => (
       <Comments articleId={article?.id} />
     </DialogContent>
     <DialogActions>
-      <Button onClick={onClose} color="primary">Chiudi</Button>
+      <Button onClick={onClose} color="primary">
+        Chiudi
+      </Button>
     </DialogActions>
   </Dialog>
-);
+)
 
 const ErrorAlert = ({ errorMessage, onRetry }) => (
   <Box
@@ -151,107 +174,124 @@ const ErrorAlert = ({ errorMessage, onRetry }) => (
       animation: `${fadeIn} 0.5s ease-in-out`,
     }}
   >
-    <AlertComponent severity="error" icon={<ErrorOutlineIcon />} sx={{ mb: 2, fontWeight: 500 }}>
+    <AlertComponent
+      severity="error"
+      icon={<ErrorOutlineIcon />}
+      sx={{ mb: 2, fontWeight: 500 }}
+    >
       {errorMessage}
     </AlertComponent>
-    <Button variant="contained" color="error" onClick={onRetry}>Riprova</Button>
+    <Button variant="contained" color="error" onClick={onRetry}>
+      Riprova
+    </Button>
   </Box>
-);
+)
 
 const Articles = () => {
-  const [articles, setArticles] = useState([]);
-  const [filteredArticles, setFilteredArticles] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [selectedArticle, setSelectedArticle] = useState(null);
-  const [favorites, setFavorites] = useState(new Set());
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [page, setPage] = useState(1); // Stato per la pagina corrente
-  const [articlesPerPage, setArticlesPerPage] = useState(6); // Numero di articoli per pagina
-  const theme = useTheme();
+  const [articles, setArticles] = useState([])
+  const [filteredArticles, setFilteredArticles] = useState([])
+  const [categories, setCategories] = useState([])
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [selectedArticle, setSelectedArticle] = useState(null)
+  const [favorites, setFavorites] = useState(new Set())
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [page, setPage] = useState(1) // Stato per la pagina corrente
+  const [articlesPerPage, setArticlesPerPage] = useState(6) // Numero di articoli per pagina
+  const theme = useTheme()
 
   useEffect(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    setFavorites(new Set(savedFavorites));
-  }, []);
+    const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || []
+    setFavorites(new Set(savedFavorites))
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(Array.from(favorites)));
-  }, [favorites]);
+    localStorage.setItem('favorites', JSON.stringify(Array.from(favorites)))
+  }, [favorites])
 
-  const fetchArticles = async () => {
+  const fetchArticles = useCallback(async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/articles');
+      const response = await axios.get('http://localhost:8080/api/articles')
       if (Array.isArray(response.data)) {
-        setArticles(response.data);
-        setFilteredArticles(response.data);
-        const uniqueCategories = [...new Set(response.data.map(article => article.category))];
-        setCategories(uniqueCategories);
+        setArticles(response.data)
+        setFilteredArticles(response.data)
+        const uniqueCategories = [
+          ...new Set(response.data.map(article => article.category)),
+        ]
+        setCategories(uniqueCategories)
       } else {
-        throw new Error('Dati non validi');
+        throw new Error('Dati non validi')
       }
     } catch (error) {
-      const errorMessage = error.response?.status === 404
-        ? 'Articoli non trovati.'
-        : error.response?.status === 500
-        ? 'Errore del server. Riprova più tardi.'
-        : 'Errore nella richiesta degli articoli. Riprova più tardi.';
-      setError(errorMessage);
-      toast.error(errorMessage);
+      const errorMessage =
+        error.response?.status === 404
+          ? 'Articoli non trovati.'
+          : error.response?.status === 500
+          ? 'Errore del server. Riprova più tardi.'
+          : 'Errore nella richiesta degli articoli. Riprova più tardi.'
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [])
 
   useEffect(() => {
-    fetchArticles();
-  }, []);
+    fetchArticles()
+  }, [fetchArticles])
+
+  const filterArticles = useMemo(() => {
+    return articles.filter(
+      article =>
+        (article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          article.content.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (selectedCategory === '' || article.category === selectedCategory)
+    )
+  }, [searchTerm, selectedCategory, articles])
 
   useEffect(() => {
-    const filtered = articles.filter(article =>
-      (article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      article.content.toLowerCase().includes(searchTerm.toLowerCase())) &&
-      (selectedCategory === '' || article.category === selectedCategory)
-    );
-    setFilteredArticles(filtered);
-    setPage(1); // Reset to first page when filters change
-  }, [searchTerm, selectedCategory, articles]);
+    setFilteredArticles(filterArticles)
+    setPage(1) // Reset to first page when filters change
+  }, [filterArticles])
 
   const handlePageChange = (event, value) => {
-    setPage(value);
-  };
+    setPage(value)
+  }
 
-  const handleOpenModal = (article) => {
+  const handleOpenModal = article => {
     if (article) {
-      setSelectedArticle(article);
-      window.scrollTo(0, 0); // Scrolla verso l'alto quando il modal è aperto
+      setSelectedArticle(article)
+      window.scrollTo(0, 0) // Scrolla verso l'alto quando il modal è aperto
     }
-  };
+  }
 
-  const handleCloseModal = () => setSelectedArticle(null);
+  const handleCloseModal = () => setSelectedArticle(null)
 
-  const toggleFavorite = (id) => {
+  const toggleFavorite = id => {
     setFavorites(prevFavorites => {
-      const newFavorites = new Set(prevFavorites);
+      const newFavorites = new Set(prevFavorites)
       if (newFavorites.has(id)) {
-        newFavorites.delete(id);
+        newFavorites.delete(id)
       } else {
-        newFavorites.add(id);
+        newFavorites.add(id)
       }
-      return newFavorites;
-    });
-  };
+      return newFavorites
+    })
+  }
 
-  const handleSnackbarClose = () => setSnackbarOpen(false);
+  const handleSnackbarClose = () => setSnackbarOpen(false)
 
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ textAlign: 'center', mt: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}
+        >
           Caricamento Articoli
         </Typography>
         <Box
@@ -270,25 +310,32 @@ const Articles = () => {
           </Typography>
         </Box>
       </Container>
-    );
+    )
   }
 
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ mb: 2, fontWeight: 700, color: theme.palette.text.primary }}
+        >
           Articoli Recenti
         </Typography>
-        <ErrorAlert errorMessage={error} onRetry={() => window.location.reload()} />
+        <ErrorAlert
+          errorMessage={error}
+          onRetry={() => fetchArticles()}
+        />
       </Container>
-    );
+    )
   }
 
   // Pagina corrente e articoli da mostrare per pagina
-  const startIndex = (page - 1) * articlesPerPage;
-  const endIndex = startIndex + articlesPerPage;
-  const paginatedArticles = filteredArticles.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+  const startIndex = (page - 1) * articlesPerPage
+  const endIndex = startIndex + articlesPerPage
+  const paginatedArticles = filteredArticles.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage)
 
   return (
     <Container maxWidth="lg" sx={{ mb: 6 }}>
@@ -344,7 +391,7 @@ const Articles = () => {
           placeholder="Cerca articoli..."
           fullWidth
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={e => setSearchTerm(e.target.value)}
           sx={{ mb: 2 }}
           InputProps={{
             startAdornment: (
@@ -357,7 +404,7 @@ const Articles = () => {
       </Box>
 
       <Grid container spacing={4}>
-        {paginatedArticles.map((article) => (
+        {paginatedArticles.map(article => (
           <ArticleCard
             key={article.id}
             article={article}
@@ -381,7 +428,11 @@ const Articles = () => {
         <ArticleDialog article={selectedArticle} onClose={handleCloseModal} />
       )}
 
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
         <AlertComponent onClose={handleSnackbarClose} severity="success">
           {snackbarMessage}
         </AlertComponent>
@@ -389,7 +440,7 @@ const Articles = () => {
 
       <ToastContainer />
     </Container>
-  );
-};
+  )
+}
 
-export default Articles;
+export default Articles

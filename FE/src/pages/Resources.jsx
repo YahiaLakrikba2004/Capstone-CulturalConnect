@@ -13,15 +13,16 @@ import {
   DialogContent,
   DialogActions,
   IconButton,
+  useTheme
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
-import { styled, useTheme } from '@mui/system'
+import { styled } from '@mui/system'
 
 const StyledCard = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   height: '100%',
-  borderRadius: theme.shape.borderRadius,
+  borderRadius: 0,  // Imposta a 0 per rimuovere l'arrotondamento
   boxShadow: theme.shadows[4],
   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
   '&:hover': {
@@ -33,8 +34,8 @@ const StyledCard = styled(Box)(({ theme }) => ({
 const StyledCardMedia = styled('img')(({ theme }) => ({
   height: 200,
   objectFit: 'cover',
-  borderTopLeftRadius: theme.shape.borderRadius,
-  borderTopRightRadius: theme.shape.borderRadius,
+  borderTopLeftRadius: 0,  // Imposta a 0 per rimuovere l'arrotondamento
+  borderTopRightRadius: 0, // Imposta a 0 per rimuovere l'arrotondamento
 }))
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -66,7 +67,7 @@ const Resources = () => {
       description:
         'Scopri come trovare e organizzare eventi locali con successo. Una guida completa per ogni esigenza.',
       imageUrl:
-        'https://www.webepc.it/wp-content/webpc-passthru.php?src=https://www.webepc.it/wp-content/uploads/2023/12/il-mio-sito-wordpress-e-professionale.png&nocache=1',
+        'https://www.webrevolutionagency.com/wp-content/uploads/2021/08/Guide-turistiche-img-720x480.jpg',
       link: 'https://www.eventbrite.com/blog/guide-to-local-events-ds00/',
     },
     {
@@ -119,7 +120,7 @@ const Resources = () => {
           py: 6,
           px: 4,
           bgcolor: theme.palette.background.default,
-          borderRadius: 4,
+          borderRadius: 1,
           boxShadow: theme.shadows[3],
           border: `1px solid ${theme.palette.divider}`,
         }}
@@ -145,8 +146,7 @@ const Resources = () => {
             fontSize: '1.2rem',
           }}
         >
-          Esplora una selezione curata di risorse per ampliare le tue conoscenze
-          e capacità.
+          Esplora una selezione curata di risorse per ampliare le tue conoscenze e capacità.
         </Typography>
         <Divider
           sx={{
@@ -213,8 +213,6 @@ const Resources = () => {
               style={{
                 width: '100%',
                 height: 'auto',
-                borderTopLeftRadius: theme.shape.borderRadius,
-                borderTopRightRadius: theme.shape.borderRadius,
                 marginBottom: theme.spacing(2),
               }}
             />
@@ -229,6 +227,7 @@ const Resources = () => {
             color="primary"
             href={selectedResource?.link}
             target="_blank"
+            rel="noopener noreferrer"
           >
             Leggi di più
           </Button>
